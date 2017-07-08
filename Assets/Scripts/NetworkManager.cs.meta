@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0de8a4a703005924da86f658a55b3a87
+timeCreated: 1497129972
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - canvas: {instanceID: 0}
+  - playerNameInput: {instanceID: 0}
+  - player: {instanceID: 0}
+  - otherPlayer: {instanceID: 0}
+  - skeleton: {instanceID: 0}
+  executionOrder: -100
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
