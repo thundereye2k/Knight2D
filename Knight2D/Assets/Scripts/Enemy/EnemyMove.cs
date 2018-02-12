@@ -48,7 +48,8 @@ public class EnemyMove : MonoBehaviour
                     moveV = -1f;
             }
 
-            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 0.2f);
+            var speed = new EnemySpeed().getEnemySpeed(gameObject.name);
+            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, speed);
 
             if (moveH != 0f)
             {
