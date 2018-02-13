@@ -10,6 +10,15 @@ public class PlayerController : MonoBehaviour
     private float updatesPerSecond = 10f;
     private float baseMoveSpeed = 100f;
     private float timer = 0f;
+    private Vector3 currentPosition;
+    private float moveH;
+    private float moveV;
+    private float attackType;
+    private float attackRadian;
+    private string skillsJSON;
+    private string world;
+    private string zone;
+    private float attackCounter;
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -33,16 +42,16 @@ public class PlayerController : MonoBehaviour
     {
         #region Movement
 
-        var currentPosition = transform.position;
         var moveSpeed = baseMoveSpeed;
         var playerMoving = false;
-        var attackType = 0f;
-        var world = "test";
-        var zone = "test";
-        var skillsJSON = "test skill";
 
-        var moveH = Input.GetAxisRaw("Horizontal");
-        var moveV = Input.GetAxisRaw("Vertical");
+        currentPosition = transform.position;
+        attackType = 0f; // TODO
+        world = "test"; // TODO
+        zone = "test"; // TODO
+        skillsJSON = "test skill"; // TODO
+        moveH = Input.GetAxisRaw("Horizontal");
+        moveV = Input.GetAxisRaw("Vertical");
 
         if (moveH != 0f)
         {
@@ -76,6 +85,15 @@ public class PlayerController : MonoBehaviour
         {
             attackType = 1f;
             Debug.DrawLine(currentPosition, aimPosition, Color.blue);
+
+            var resource = Resources.Load("Attack1", typeof(GameObject));
+            var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
+            var rot = Quaternion.Euler(0, 0, 0);
+            var attack = Instantiate(resource, pos, rot) as GameObject;
+            var ac = attack.GetComponent<AttackController>();
+            ac.Radian = attackRadian;
+            ac.Speed = 10f; // TODO
+            ac.MaxDistance = 1000f; // TODO
         }
 
         #endregion
@@ -90,8 +108,10 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-        #region Network 
+    }
 
+    void LateUpdate()
+    {
         timer += Time.deltaTime;
         var tick = 1f / updatesPerSecond;
         if (timer > tick)
@@ -99,7 +119,5 @@ public class PlayerController : MonoBehaviour
             timer = 0f;
             Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, world, zone, Health, Mana);
         }
-
-        #endregion
     }
 }
