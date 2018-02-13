@@ -80,7 +80,7 @@ public class NetworkPlay : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
-    public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, float attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
+    public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
     {
         var position = new Vector2(vec3.x, vec3.y);
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, moveH, moveV, lastMove.x, lastMove.y, attackType, attackRadian, skillsJSON, world, zone, health, mana);
@@ -355,12 +355,12 @@ public class NetworkPlay : MonoBehaviour
         public float moveV;
         public float lastMoveX;
         public float lastMoveY;
-        public float attackType;
+        public string attackType;
         public float attackRadian;
         public float health;
         public float mana;
 
-        public PlayerJSON(string token, string username, float positionX, float positionY, float moveH, float moveV, float lastMoveX, float lastMoveY, float attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
+        public PlayerJSON(string token, string username, float positionX, float positionY, float moveH, float moveV, float lastMoveX, float lastMoveY, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
         {
             this.token = token;
             this.username = username;

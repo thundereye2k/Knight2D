@@ -12,7 +12,7 @@ public class UpdateOtherPlayers : MonoBehaviour
     private float moveV;
     private float health;
     private float mana;
-    private float attackType;
+    private string attackType;
     private float attackRadian;
     private float baseMoveSpeed = 100f;
 
@@ -63,7 +63,7 @@ public class UpdateOtherPlayers : MonoBehaviour
 
         var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
 
-        if (attackType == 1f)
+        if (attackType == "basic")
         {
             Debug.DrawLine(currentPosition, aimPosition, Color.green);
         }
@@ -90,7 +90,7 @@ public class UpdateOtherPlayers : MonoBehaviour
         }
     }
 
-    public void UpdateOtherPlayer(Vector3 targetPosition, Vector2 lastMove, float moveH, float moveV, float attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
+    public void UpdateOtherPlayer(Vector3 targetPosition, Vector2 lastMove, float moveH, float moveV, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
     {
         this.targetPosition = targetPosition;
         this.lastMove = lastMove;
