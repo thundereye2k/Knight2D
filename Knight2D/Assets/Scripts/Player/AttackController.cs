@@ -34,5 +34,10 @@ public class AttackController : MonoBehaviour
             Debug.Log("Hit:" + coll.gameObject.name);
             Destroy(gameObject);
         }
+        if (coll.gameObject.tag == "Objects")
+        {
+            Debug.Log("Hit:" + coll.gameObject.name);
+            Destroy(gameObject);
+        }
     }
 }

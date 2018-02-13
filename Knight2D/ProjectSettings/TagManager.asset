@@ -12,6 +12,7 @@ TagManager:
   - NetworkPlay
   - OtherPlayer
   - Attack
+  - Objects
   layers:
   - Default
   - TransparentFX
