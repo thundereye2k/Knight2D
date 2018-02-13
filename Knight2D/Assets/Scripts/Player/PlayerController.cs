@@ -7,9 +7,6 @@ public class PlayerController : MonoBehaviour
     private Animator myAnimator;
     private Vector3 moveVelocity;
     private Vector2 lastMove;
-    private float updatesPerSecond = 10f;
-    private float baseMoveSpeed = 100f;
-    private float timer = 0f;
     private Vector3 currentPosition;
     private float moveH;
     private float moveV;
@@ -19,6 +16,9 @@ public class PlayerController : MonoBehaviour
     private string attackType;
     private string world;
     private string zone;
+    private float updatesPerSecond = 10f;
+    private float baseMoveSpeed = 100f;
+    private float timer = 0f;
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
         currentPosition = transform.position;
         world = "test"; // TODO
         zone = "test"; // TODO
+        attackType = null;
         moveH = Input.GetAxisRaw("Horizontal");
         moveV = Input.GetAxisRaw("Vertical");
 
@@ -66,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
         if (moveH != 0f && moveV != 0f)
         {
-            moveSpeed = baseMoveSpeed * 1 / Mathf.Sqrt(2);
+            moveSpeed *= 1 / Mathf.Sqrt(2);
         }
 
         moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour
         #region Attacking
 
         var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        var attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
+        attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
 
         if (Input.GetAxisRaw("Fire1") > 0f)
@@ -85,11 +86,11 @@ public class PlayerController : MonoBehaviour
             skillsJSON = "test skill"; // TODO
             Debug.DrawLine(currentPosition, aimPosition, Color.blue);
 
-            var resource = Resources.Load("Attack1", typeof(GameObject));
+            var res = Resources.Load("Attack1", typeof(GameObject));
             var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
             var rot = Quaternion.Euler(0, 0, 0);
-            var attack = Instantiate(resource, pos, rot) as GameObject;
-            var ac = attack.GetComponent<AttackController>();
+            var obj = Instantiate(res, pos, rot) as GameObject;
+            var ac = obj.GetComponent<AttackController>();
             ac.Radian = attackRadian;
             ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
             ac.MaxDistance = baseMoveSpeed * 5;

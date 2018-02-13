@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 50710920968393118}
   - component: {fileID: 212585196452976034}
   - component: {fileID: 95638433068751260}
-  - component: {fileID: 114456635004140992}
-  - component: {fileID: 114744576075367940}
+  - component: {fileID: 114509015366339290}
+  - component: {fileID: 114217520829339344}
   m_Layer: 0
   m_Name: Avatar
   m_TagString: OtherPlayer
@@ -81,7 +81,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114456635004140992
+--- !u!114 &114217520829339344
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -89,10 +89,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1683353361364546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05ff5397b7cf83b448e1ea75d2038da9, type: 3}
+  m_Script: {fileID: 11500000, guid: d75648ea44d04604db6df939333bdc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114744576075367940
+--- !u!114 &114509015366339290
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1683353361364546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b71837a51f7ae6a4fa01a578d1136839, type: 3}
+  m_Script: {fileID: 11500000, guid: a68f04b1822d6b843bc76488779cf44d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212585196452976034

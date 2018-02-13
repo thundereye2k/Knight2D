@@ -86,7 +86,10 @@ public class NetworkPlay : MonoBehaviour
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, moveH, moveV, lastMove.x, lastMove.y, attackType, attackRadian, skillsJSON, world, zone, health, mana);
         var json = JsonUtility.ToJson(data);
         // SEND ENEMY HITS HERE
-        manager.Socket.Emit("player-move", json);
+        var arrayHits = new Array[1];
+        var jsonHits = JsonUtility.ToJson(arrayHits);
+
+        manager.Socket.Emit("player-move", json, jsonHits);
         ping = 0;
     }
 
@@ -217,10 +220,10 @@ public class NetworkPlay : MonoBehaviour
                 }
                 else
                 {
-                    var resource = Resources.Load("Enemy", typeof(GameObject));
+                    var res = Resources.Load("Enemy", typeof(GameObject));
                     var pos = new Vector3(position.x, position.y, 0);
                     var rot = Quaternion.Euler(0, 0, 0);
-                    obj = Instantiate(resource, pos, rot) as GameObject;
+                    obj = Instantiate(res, pos, rot) as GameObject;
                     obj.name = data.username;
                 }
             }
@@ -284,10 +287,10 @@ public class NetworkPlay : MonoBehaviour
         }
         else
         {
-            var resource = Resources.Load("Enemy", typeof(GameObject));
+            var res = Resources.Load("Enemy", typeof(GameObject));
             var pos = new Vector3(position.x, position.y, 0);
             var rot = Quaternion.Euler(0, 0, 0);
-            obj = Instantiate(resource, pos, rot) as GameObject;
+            obj = Instantiate(res, pos, rot) as GameObject;
             obj.name = data.username;
         }
 

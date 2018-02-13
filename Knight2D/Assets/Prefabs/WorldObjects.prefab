@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4628535425204902}
   - component: {fileID: 212983051378212722}
-  - component: {fileID: 114912030206974882}
+  - component: {fileID: 114277351596316240}
   m_Layer: 0
   m_Name: WB1
   m_TagString: Untagged
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4421227987900336}
   - component: {fileID: 212117596000849600}
-  - component: {fileID: 114691336881918916}
+  - component: {fileID: 114238842337120624}
   m_Layer: 0
   m_Name: YF1
   m_TagString: Player
@@ -101,7 +101,7 @@ Transform:
   m_Father: {fileID: 4358175984594768}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114691336881918916
+--- !u!114 &114238842337120624
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -109,10 +109,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1955969553457056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05ff5397b7cf83b448e1ea75d2038da9, type: 3}
+  m_Script: {fileID: 11500000, guid: d75648ea44d04604db6df939333bdc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114912030206974882
+--- !u!114 &114277351596316240
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1022107891279032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05ff5397b7cf83b448e1ea75d2038da9, type: 3}
+  m_Script: {fileID: 11500000, guid: d75648ea44d04604db6df939333bdc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212117596000849600

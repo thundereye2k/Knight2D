@@ -52,7 +52,7 @@ public class UpdateOtherPlayers : MonoBehaviour
 
         if (moveH != 0f && moveV != 0f)
         {
-            moveSpeed = baseMoveSpeed * 1 / Mathf.Sqrt(2);
+            moveSpeed *= 1 / Mathf.Sqrt(2);
         }
 
         moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
@@ -65,7 +65,16 @@ public class UpdateOtherPlayers : MonoBehaviour
 
         if (attackType == "basic")
         {
-            Debug.DrawLine(currentPosition, aimPosition, Color.green);
+            Debug.DrawLine(currentPosition, aimPosition, Color.blue);
+
+            var res = Resources.Load("Attack1", typeof(GameObject));
+            var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
+            var rot = Quaternion.Euler(0, 0, 0);
+            var obj = Instantiate(res, pos, rot) as GameObject;
+            var ac = obj.GetComponent<AttackController>();
+            ac.Radian = attackRadian;
+            ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
+            ac.MaxDistance = baseMoveSpeed * 5;
         }
 
         #endregion

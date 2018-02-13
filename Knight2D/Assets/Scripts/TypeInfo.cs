@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TypeInfo : MonoBehaviour
+public class TypeInfo
 {
     public float getEnemyMoveSpeed(string name)
     {
@@ -19,7 +19,7 @@ public class TypeInfo : MonoBehaviour
         return speed;
     }
 
-        public float getPlayerAttackSpeed(string name)
+    public float getPlayerAttackSpeed(string name)
     {
         var speed = 1f;
         switch (name)

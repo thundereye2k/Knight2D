@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224300008039791130}
-  - component: {fileID: 114504878384724846}
   m_Layer: 5
   m_Name: ChatterManager
   m_TagString: Untagged
@@ -27,22 +26,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114504878384724846
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1614170257367482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecd87aed57940f64eaaaec7ad8d454ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chatContent: {fileID: 0}
-  chatMessage: {fileID: 1110006098352384, guid: 21b0a30784fca8f4192c5ac46d1f9b7e,
-    type: 2}
-  net: {fileID: 0}
-  holder: {fileID: 0}
 --- !u!224 &224300008039791130
 RectTransform:
   m_ObjectHideFlags: 1
