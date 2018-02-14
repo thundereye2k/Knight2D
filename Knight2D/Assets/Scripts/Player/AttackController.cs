@@ -45,12 +45,12 @@ public class AttackController : MonoBehaviour
 
     public class EnemyHit
     {
-        public string name;
+        public string username;
         public float damage;
 
-        public EnemyHit(string name, float damage)
+        public EnemyHit(string username, float damage)
         {
-            this.name = name;
+            this.username = username;
             this.damage = damage;
         }
     }

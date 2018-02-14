@@ -78,6 +78,14 @@ public class EnemyMove : MonoBehaviour
         #endregion
     }
 
+    void LateUpdate()
+    {
+        if (health < 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     public void UpdatePosition(Vector3 position, string target, float health)
     {
         targetPosition = position;
