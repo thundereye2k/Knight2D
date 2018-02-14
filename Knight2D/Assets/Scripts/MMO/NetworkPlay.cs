@@ -221,6 +221,8 @@ public class NetworkPlay : MonoBehaviour
                     var rot = Quaternion.Euler(0, 0, 0);
                     obj = Instantiate(res, pos, rot) as GameObject;
                     obj.name = data.username;
+                    var em = obj.GetComponent<EnemyMove>();
+                    em.UpdatePosition(position, data.target, data.health);
                 }
             }
             else

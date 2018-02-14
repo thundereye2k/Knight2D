@@ -80,7 +80,11 @@ public class EnemyMove : MonoBehaviour
 
     void LateUpdate()
     {
-        if (health < 0)
+        if (health > 0f)
+        {
+
+        }
+        else
         {
             Destroy(gameObject);
         }
