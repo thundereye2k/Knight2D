@@ -1221,7 +1221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1366874531}
   m_Layer: 0
-  m_Name: Tracker
+  m_Name: TRACKER
   m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1631,7 +1631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2112118816
 MonoBehaviour:
   m_ObjectHideFlags: 0

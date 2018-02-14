@@ -45,8 +45,8 @@ public class AttackController : MonoBehaviour
 
     public class EnemyHit
     {
-        private string name;
-        private float damage;
+        public string name;
+        public float damage;
 
         public EnemyHit(string name, float damage)
         {

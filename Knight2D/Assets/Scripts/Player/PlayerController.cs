@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private float baseMoveSpeed = 100f;
     private float timer = 0f;
     private float attackTimer = 0f;
-    private List<string> jsonList;
+    private List<string> jsonList = new List<string>();
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
                 ac.Radian = attackRadian;
                 ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
                 ac.MaxDistance = baseMoveSpeed * 5;
+                ac.Damage = 10f;
             }
         }
 
@@ -129,6 +130,7 @@ public class PlayerController : MonoBehaviour
 
         timer += Time.deltaTime;
         var tick = 1f / updatesPerSecond;
+
         if (timer > tick)
         {
             timer = 0f;
