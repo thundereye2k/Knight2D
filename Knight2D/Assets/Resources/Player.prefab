@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 50838881928690666}
   - component: {fileID: 114638571144532008}
   - component: {fileID: 114041139689677082}
+  - component: {fileID: 114701991520229574}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -119,6 +120,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880c6a791284e8e44b5a4a8bdde11b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114701991520229574
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1454676635135098}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 816d23e599e9b754f9a3ed50147ad014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pixelsPerUnit: 1
 --- !u!212 &212743330809703720
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -152,7 +165,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: f058a6c285225c74aab8f565c667d739, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

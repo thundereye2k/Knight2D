@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cinemachine;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private float baseMoveSpeed = 100f;
     private float timer = 0f;
     private float attackTimer = 0f;
+    private List<string> jsonList;
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -95,7 +97,7 @@ public class PlayerController : MonoBehaviour
                 var res = Resources.Load("Attack1", typeof(GameObject));
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
-                var obj = Instantiate(res, pos, rot) as GameObject;
+                var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
                 var ac = obj.GetComponent<AttackController>();
                 ac.Radian = attackRadian;
                 ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
@@ -126,13 +128,21 @@ public class PlayerController : MonoBehaviour
         #region Network
 
         timer += Time.deltaTime;
-        var tick = 1f / updatesPerSecond;        
+        var tick = 1f / updatesPerSecond;
         if (timer > tick)
         {
             timer = 0f;
-            Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, world, zone, Health, Mana);
+            var jsonArray = jsonList.ToArray();
+            jsonList.Clear();
+            Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, world, zone, Health, Mana, jsonArray);
         }
 
         #endregion
+    }
+
+    public void enemyHit(AttackController.EnemyHit hit)
+    {
+        var json = JsonUtility.ToJson(hit);
+        jsonList.Add(json);
     }
 }

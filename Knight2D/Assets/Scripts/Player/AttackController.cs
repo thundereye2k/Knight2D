@@ -9,6 +9,7 @@ public class AttackController : MonoBehaviour
     public float Radian { get; set; }
     public float MaxDistance { get; set; }
     public float Speed { get; set; }
+    public float Damage { get; set; }
 
     void Start()
     {
@@ -31,13 +32,26 @@ public class AttackController : MonoBehaviour
     {
         if (coll.gameObject.tag == "Enemy")
         {
-            Debug.Log("Hit:" + coll.gameObject.name);
+            var pc = gameObject.GetComponentInParent<PlayerController>();
+            var eh = new EnemyHit(coll.gameObject.name, Damage);
+            pc.enemyHit(eh);
             Destroy(gameObject);
         }
         if (coll.gameObject.tag == "Objects")
         {
-            Debug.Log("Hit:" + coll.gameObject.name);
             Destroy(gameObject);
+        }
+    }
+
+    public class EnemyHit
+    {
+        private string name;
+        private float damage;
+
+        public EnemyHit(string name, float damage)
+        {
+            this.name = name;
+            this.damage = damage;
         }
     }
 }

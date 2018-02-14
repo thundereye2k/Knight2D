@@ -80,16 +80,12 @@ public class NetworkPlay : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
-    public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)
+    public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, string[] jsonArray)
     {
         var position = new Vector2(vec3.x, vec3.y);
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, moveH, moveV, lastMove.x, lastMove.y, attackType, attackRadian, skillsJSON, world, zone, health, mana);
         var json = JsonUtility.ToJson(data);
-        // SEND ENEMY HITS HERE
-        var arrayHits = new Array[1];
-        var jsonHits = JsonUtility.ToJson(arrayHits);
-
-        manager.Socket.Emit("player-move", json, jsonHits);
+        manager.Socket.Emit("player-move", json, jsonArray);
         ping = 0;
     }
 
