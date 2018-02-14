@@ -15,6 +15,7 @@ public class UpdateOtherPlayers : MonoBehaviour
     private string attackType;
     private float attackRadian;
     private float baseMoveSpeed = 100f;
+    private float attackTimer = 0f;
 
     void Start()
     {
@@ -61,20 +62,31 @@ public class UpdateOtherPlayers : MonoBehaviour
 
         #region Attacking
 
-        var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
+        attackTimer += Time.deltaTime;
+        var attackPerSecond = new TypeInfo().getPlayerAttacksPerSecond(attackType);
+        var tick = 1f / attackPerSecond;
 
-        if (attackType == "basic")
+        if (attackType != "null")
         {
-            Debug.DrawLine(currentPosition, aimPosition, Color.blue);
+            if (attackTimer > tick)
+            {
+                //var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
+                //Debug.DrawLine(currentPosition, aimPosition, Color.blue);
+                attackTimer = 0f;
+                var res = Resources.Load("Attack1", typeof(GameObject));
+                var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
+                var rot = Quaternion.Euler(0, 0, 0);
+                var obj = Instantiate(res, pos, rot) as GameObject;
+                var ac = obj.GetComponent<AttackController>();
+                ac.Radian = attackRadian;
+                ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
+                ac.MaxDistance = baseMoveSpeed * 5;
+            }
+        }
 
-            var res = Resources.Load("Attack1", typeof(GameObject));
-            var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
-            var rot = Quaternion.Euler(0, 0, 0);
-            var obj = Instantiate(res, pos, rot) as GameObject;
-            var ac = obj.GetComponent<AttackController>();
-            ac.Radian = attackRadian;
-            ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-            ac.MaxDistance = baseMoveSpeed * 5;
+        if (attackTimer > 1f)
+        {
+            attackTimer = 0;
         }
 
         #endregion
@@ -93,9 +105,10 @@ public class UpdateOtherPlayers : MonoBehaviour
     void LateUpdate()
     {
         var currentPosition = transform.position;
-        if (Vector3.Distance(currentPosition, targetPosition) > 20f)
+        //if (Vector3.Distance(currentPosition, targetPosition) > 20f)
+        if (currentPosition != targetPosition)
         {
-            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 1f);
+            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 0.001f);
         }
     }
 

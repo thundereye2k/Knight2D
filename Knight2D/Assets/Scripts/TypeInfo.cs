@@ -25,7 +25,21 @@ public class TypeInfo
         switch (name)
         {
             case "basic":
-                speed = 10f;
+                speed = 2f;
+                break;
+            default:
+                break;
+        }
+        return speed;
+    }
+
+    public float getPlayerAttacksPerSecond(string name)
+    {
+        var speed = 1f;
+        switch (name)
+        {
+            case "basic":
+                speed = 5f;
                 break;
             default:
                 break;
