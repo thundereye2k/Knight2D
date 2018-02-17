@@ -73,7 +73,11 @@ public class NetworkPlay : MonoBehaviour
 
         if (holder.PlayerToken != null)
         {
-            JoinGame();
+            CommandConnect();
+        }
+        else
+        {
+            Application.Quit();
         }
     }
 
@@ -91,19 +95,13 @@ public class NetworkPlay : MonoBehaviour
         }
     }
 
-    public void JoinGame()
-    {
-        StartCoroutine(ConnectToServer());
-    }
-
     #region Commands
 
-    IEnumerator ConnectToServer()
+    public void CommandConnect()
     {
         var data = new UserJSON(holder.PlayerToken, holder.PlayerUsername, 0, 0);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-start", json);
-        yield return new WaitForSeconds(1f);
+        manager.Socket.Emit("player-start", json, holder.secret);
     }
 
     public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, string[] jsonArray)
@@ -111,7 +109,7 @@ public class NetworkPlay : MonoBehaviour
         var position = new Vector2(vec3.x, vec3.y);
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, moveH, moveV, lastMove.x, lastMove.y, attackType, attackRadian, skillsJSON, world, zone, health, mana);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-move", json, jsonArray);
+        manager.Socket.Emit("player-move", json, jsonArray, holder.secret);
         ping = 0;
     }
 
@@ -119,7 +117,7 @@ public class NetworkPlay : MonoBehaviour
     {
         var data = new MessageJSON(holder.PlayerToken, holder.PlayerUsername, message);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-message", json);
+        manager.Socket.Emit("player-message", json, holder.secret);
     }
 
     /*
@@ -127,7 +125,7 @@ public class NetworkPlay : MonoBehaviour
     {
         var data = new AttackJSON(holder.PlayerToken, holder.PlayerUsername, attacking);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-attack", json);
+        manager.Socket.Emit("player-attack", json, holder.secret);
     }
     */
 

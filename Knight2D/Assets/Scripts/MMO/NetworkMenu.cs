@@ -10,9 +10,8 @@ public class NetworkMenu : MonoBehaviour
 {
     private NetworkMenu instance;
     private SocketManager manager;
+    private Holder holder;
     private string playerPassword;
-
-    private Holder Holder { get; set; }
 
     void Awake()
     {
@@ -36,27 +35,21 @@ public class NetworkMenu : MonoBehaviour
         manager.Socket.On("menu-player", OnCompleteMenu);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
-        Holder = GameObject.Find("Holder").GetComponent<Holder>();
-    }
+        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
 
-    public void JoinGame()
-    {
-        StartCoroutine(ConnectToServer());
+        if (!holder)
+        {
+            Application.Quit();
+        }
     }
 
     #region Commands
-
-    IEnumerator ConnectToServer()
-    {
-        manager.Socket.Emit("test");
-        yield return new WaitForSeconds(1f);
-    }
 
     public void CommandReg(string username, string email, string password)
     {
         byte[] salt;
         new RNGCryptoServiceProvider().GetNonZeroBytes(salt = new byte[16]);
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);        
+        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
         var hash = pbkdf2.GetBytes(20);
         var hashBytes = new byte[36];
         Array.Copy(salt, 0, hashBytes, 0, 16);
@@ -65,7 +58,7 @@ public class NetworkMenu : MonoBehaviour
 
         var userJSON = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), "[USER_REGISTER]", null);
         var json = userJSON.Jsonify();
-        manager.Socket.Emit("menu-register", json);
+        manager.Socket.Emit("menu-register", json, holder.secret);
     }
 
     public void CommandLogin(string username, string password)
@@ -75,7 +68,7 @@ public class NetworkMenu : MonoBehaviour
 
         var userJSON = new UserJSON(username, null, null, null, "[USER_LOGIN]", null);
         var json = JsonUtility.ToJson(userJSON);
-        manager.Socket.Emit("menu-login", json);
+        manager.Socket.Emit("menu-login", json, holder.secret);
     }
 
     public void CommandDisconnect()
@@ -200,9 +193,9 @@ public class NetworkMenu : MonoBehaviour
 
         if (log)
         {
-            Holder.PlayerToken = _token;
-            Holder.PlayerUsername = _username;
-            Holder.PlayerEmail = _email;
+            holder.PlayerToken = _token;
+            holder.PlayerUsername = _username;
+            holder.PlayerEmail = _email;
             CommandDisconnect();
             SceneManager.LoadScene("Test");
         }
