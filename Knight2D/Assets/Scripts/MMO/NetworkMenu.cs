@@ -56,7 +56,7 @@ public class NetworkMenu : MonoBehaviour
     {
         byte[] salt;
         new RNGCryptoServiceProvider().GetNonZeroBytes(salt = new byte[16]);
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
+        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);        
         var hash = pbkdf2.GetBytes(20);
         var hashBytes = new byte[36];
         Array.Copy(salt, 0, hashBytes, 0, 16);
