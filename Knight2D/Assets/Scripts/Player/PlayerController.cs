@@ -111,10 +111,10 @@ public class PlayerController : MonoBehaviour
             attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         }
 
-        if (CnInputManager.GetAxisRaw("Mouse X") != 0f || CnInputManager.GetAxisRaw("Mouse Y") != 0f)
+        if (CnInputManager.GetAxisRaw("Fire X") != 0f || CnInputManager.GetAxisRaw("Fire Y") != 0f)
         {
             isAttacking = true;
-            attackRadian = Mathf.Atan2(CnInputManager.GetAxisRaw("Mouse Y"), CnInputManager.GetAxisRaw("Mouse X"));
+            attackRadian = Mathf.Atan2(CnInputManager.GetAxisRaw("Fire Y"), CnInputManager.GetAxisRaw("Fire X"));
         }
 
         if (isAttacking)

@@ -12,7 +12,10 @@ public class NetworkPlay : MonoBehaviour
     private float ping;
     private GameObject[] allPlayers;
     private GameObject[] allEnemies;
+    bool isPaused = false;
     //public ChatterManager chat;
+
+    #region Moblie Support
 
     void Awake()
     {
@@ -22,6 +25,29 @@ public class NetworkPlay : MonoBehaviour
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
     }
+
+    void OnGUI()
+    {
+        if (isPaused)
+            GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        isPaused = !hasFocus;
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        isPaused = pauseStatus;
+    }
+
+    void OnApplicationQuit()
+    {
+        Debug.Log("Application ending after " + Time.time + " seconds");
+    }
+
+    #endregion
 
     void Start()
     {
