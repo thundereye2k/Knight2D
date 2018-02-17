@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Cinemachine;
 using System.Collections.Generic;
+using CnControls;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private float timer = 0f;
     private float attackTimer = 0f;
     private List<string> jsonList = new List<string>();
+    private CinemachineVirtualCamera vCamera;
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -28,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        CinemachineVirtualCamera vCamera = GameObject.FindGameObjectWithTag("vCamera").GetComponent<CinemachineVirtualCamera>();
+        vCamera = GameObject.FindGameObjectWithTag("vCamera").GetComponent<CinemachineVirtualCamera>();
         vCamera.Follow = transform;
 
         myRigidbody = GetComponent<Rigidbody2D>();
@@ -46,12 +48,31 @@ public class PlayerController : MonoBehaviour
 
         var moveSpeed = baseMoveSpeed;
         var playerMoving = false;
+        var xAxis = CnInputManager.GetAxisRaw("Horizontal");
+        var yAxis = CnInputManager.GetAxisRaw("Vertical");
 
         currentPosition = transform.position;
         world = "test"; // TODO
         zone = "test"; // TODO
-        moveH = Input.GetAxisRaw("Horizontal");
-        moveV = Input.GetAxisRaw("Vertical");
+        moveH = 0f;
+        moveV = 0f;
+
+        if (xAxis > 0.5f)
+        {
+            moveH = 1;
+        }
+        if (xAxis < -0.5f)
+        {
+            moveH = -1;
+        }
+        if (yAxis > 0.5f)
+        {
+            moveV = 1;
+        }
+        if (yAxis < -0.5f)
+        {
+            moveV = -1;
+        }
 
         if (moveH != 0f)
         {
@@ -77,13 +98,26 @@ public class PlayerController : MonoBehaviour
 
         #region Attacking
 
-        var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
+        var isAttacking = false;
         attackTimer += Time.deltaTime;
+        attackRadian = 0f;
         attackType = "null"; // TODO
         skillsJSON = "IDK"; // TODO
 
-        if (Input.GetAxisRaw("Fire1") != 0f)
+        if (CnInputManager.GetAxisRaw("Fire1") != 0f)
+        {
+            isAttacking = true;
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
+        }
+
+        if (CnInputManager.GetAxisRaw("Mouse X") != 0f || CnInputManager.GetAxisRaw("Mouse Y") != 0f)
+        {
+            isAttacking = true;
+            attackRadian = Mathf.Atan2(CnInputManager.GetAxisRaw("Mouse Y"), CnInputManager.GetAxisRaw("Mouse X"));
+        }
+
+        if (isAttacking)
         {
             attackType = "basic"; // TODO
             var attackPerSecond = new TypeInfo().getPlayerAttacksPerSecond(attackType);
