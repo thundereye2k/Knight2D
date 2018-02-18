@@ -10,10 +10,11 @@ public class NetworkPlay : MonoBehaviour
     private GameObject player;
     private Holder holder;
     private float ping;
-    private GameObject[] allPlayers;
-    private GameObject[] allEnemies;
-    bool isPaused = false;
+    private bool isPaused = false;
     //public ChatterManager chat;
+
+    public GameObject[] allPlayers;
+    public GameObject[] allEnemies;
 
     #region Moblie Support
 
@@ -101,7 +102,7 @@ public class NetworkPlay : MonoBehaviour
     {
         var data = new UserJSON(holder.PlayerToken, holder.PlayerUsername, 0, 0);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-start", json, holder.secret);
+        manager.Socket.Emit("player-start", json, holder.Secret);
     }
 
     public void CommandMove(Vector3 vec3, float moveH, float moveV, Vector2 lastMove, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, string[] jsonArray)
@@ -109,7 +110,7 @@ public class NetworkPlay : MonoBehaviour
         var position = new Vector2(vec3.x, vec3.y);
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, moveH, moveV, lastMove.x, lastMove.y, attackType, attackRadian, skillsJSON, world, zone, health, mana);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-move", json, jsonArray, holder.secret);
+        manager.Socket.Emit("player-move", json, jsonArray, holder.Secret);
         ping = 0;
     }
 
@@ -117,7 +118,7 @@ public class NetworkPlay : MonoBehaviour
     {
         var data = new MessageJSON(holder.PlayerToken, holder.PlayerUsername, message);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-message", json, holder.secret);
+        manager.Socket.Emit("player-message", json, holder.Secret);
     }
 
     /*
@@ -142,11 +143,11 @@ public class NetworkPlay : MonoBehaviour
 
         if (holder.PlayerUsername == data.username)
         {
-            var position = new Vector3(data.positionX, data.positionY, 0);
-            var rotation = new Quaternion(0, 0, 0, 0);
-            var resource = Resources.Load("Player", typeof(GameObject));
+            var pos = new Vector3(data.positionX, data.positionY, 0);
+            var rot = new Quaternion(0, 0, 0, 0);
+            var res = Resources.Load("Player", typeof(GameObject));
 
-            player = Instantiate(resource, position, rotation) as GameObject;
+            player = Instantiate(res, pos, rot) as GameObject;
             player.name = data.username;
 
             //var textmesh = avatar.GetComponentInChildren<TextMesh>();
@@ -183,7 +184,7 @@ public class NetworkPlay : MonoBehaviour
                 continue;
             }
 
-            if (Vector3.Distance(player.transform.position, position) < 1000.0f)
+            if (Vector3.Distance(player.transform.position, position) < 500.0f)
             {
                 //var obj = GameObject.Find(data.username) as GameObject; 
                 GameObject obj = null;
@@ -202,11 +203,11 @@ public class NetworkPlay : MonoBehaviour
                 }
                 else
                 {
-                    var resource = Resources.Load("Avatar", typeof(GameObject));
+                    var res = Resources.Load("Avatar", typeof(GameObject));
                     var pos = new Vector3(position.x, position.y, 0);
                     var rot = Quaternion.Euler(0, 0, 0);
-                    var other = Instantiate(resource, pos, rot) as GameObject;
-                    other.name = data.username;
+                    obj = Instantiate(res, pos, rot) as GameObject;
+                    obj.name = data.username;
                 }
             }
             else

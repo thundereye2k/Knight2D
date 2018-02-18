@@ -13,6 +13,9 @@ TagManager:
   - OtherPlayer
   - Attack
   - Objects
+  - UI
+  - Moblie
+  - GUI
   layers:
   - Default
   - TransparentFX

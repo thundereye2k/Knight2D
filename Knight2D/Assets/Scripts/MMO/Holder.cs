@@ -9,8 +9,7 @@ public class Holder : MonoBehaviour
     public string PlayerToken { get; set; }
     public string PlayerUsername { get; set; }
     public string PlayerEmail { get; set; }
-    public string secret = "THISISMYSECRETSTRING123456789UNITYMMOSWAG";
-
+    public string Secret { get; set; }
     void Awake()
     {
         if (instance == null)
@@ -25,7 +24,7 @@ public class Holder : MonoBehaviour
         PlayerToken = null;
         PlayerUsername = null;
         PlayerEmail = null;
-        secret = SHA256HexHashString(secret);
+        Secret = SHA256HexHashString("THISISMYSECRETSTRING123456789UNITYMMOSWAG");
     }
 
     private static string ToHex(byte[] bytes, bool upperCase)

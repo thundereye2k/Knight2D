@@ -45,7 +45,7 @@ public class NetworkMenu : MonoBehaviour
 
     #region Commands
 
-    public void CommandReg(string username, string email, string password)
+    public void CommandRegister(string username, string email, string password)
     {
         byte[] salt;
         new RNGCryptoServiceProvider().GetNonZeroBytes(salt = new byte[16]);
@@ -58,7 +58,7 @@ public class NetworkMenu : MonoBehaviour
 
         var userJSON = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), "[USER_REGISTER]", null);
         var json = userJSON.Jsonify();
-        manager.Socket.Emit("menu-register", json, holder.secret);
+        manager.Socket.Emit("menu-register", json, holder.Secret);
     }
 
     public void CommandLogin(string username, string password)
@@ -68,7 +68,7 @@ public class NetworkMenu : MonoBehaviour
 
         var userJSON = new UserJSON(username, null, null, null, "[USER_LOGIN]", null);
         var json = JsonUtility.ToJson(userJSON);
-        manager.Socket.Emit("menu-login", json, holder.secret);
+        manager.Socket.Emit("menu-login", json, holder.Secret);
     }
 
     public void CommandDisconnect()

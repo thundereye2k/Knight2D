@@ -7,6 +7,8 @@ public class EnemyMove : MonoBehaviour
     private Animator animator;
     private Vector3 targetPosition;
     private Vector2 lastMove;
+    private GameObject healthBar;
+    private RectTransform targetCanvas;
     private string target;
     private float health;
 
@@ -15,6 +17,25 @@ public class EnemyMove : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         targetPosition = transform.position;
+
+        var GUI = GameObject.FindGameObjectWithTag("GUI");
+        targetCanvas = GUI.GetComponent<RectTransform>();
+
+        var res = Resources.Load("EnemyHealthBar", typeof(GameObject));
+        var pos = new Vector3(0, 0, 0);
+        var rot = Quaternion.Euler(0, 0, 0);
+        healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+        healthBar.name = gameObject.name;
+    }
+
+    void OnGUI()
+    {
+        Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(gameObject.transform.position);
+        Vector2 WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
+        //now you can set the position of the ui element
+        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
     }
 
     // Update is called once per frame
@@ -67,6 +88,13 @@ public class EnemyMove : MonoBehaviour
 
         #endregion
 
+        #region Damage and Health
+
+        var shb = healthBar.GetComponentInChildren<SimpleHealthBar>();
+        shb.UpdateBar(health, 100);
+
+        #endregion
+
         #region Animation
 
         animator.SetFloat("MoveX", moveH);
@@ -86,6 +114,7 @@ public class EnemyMove : MonoBehaviour
         }
         else
         {
+            Destroy(healthBar);
             Destroy(gameObject);
         }
     }
