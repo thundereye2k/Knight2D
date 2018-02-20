@@ -25,11 +25,13 @@ public class EnemyMove : MonoBehaviour
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
         healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+        healthBar.SetActive(false);
         healthBar.name = gameObject.name;
     }
 
     void OnGUI()
     {
+        healthBar.SetActive(true);
         Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(gameObject.transform.position);
         Vector2 WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),

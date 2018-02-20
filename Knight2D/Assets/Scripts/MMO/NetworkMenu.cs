@@ -65,15 +65,11 @@ public class NetworkMenu : MonoBehaviour
     {
         // Store password to check later
         playerPassword = password;
-
+        Debug.Log(password);
+        Debug.Log(username);
         var userJSON = new UserJSON(username, null, null, null, "[USER_LOGIN]", null);
         var json = JsonUtility.ToJson(userJSON);
         manager.Socket.Emit("menu-login", json, holder.Secret);
-    }
-
-    public void CommandDisconnect()
-    {
-        manager.Socket.Emit("menu-disconnect");
     }
 
     #endregion
@@ -196,7 +192,7 @@ public class NetworkMenu : MonoBehaviour
             holder.PlayerToken = _token;
             holder.PlayerUsername = _username;
             holder.PlayerEmail = _email;
-            CommandDisconnect();
+            manager.Close();
             SceneManager.LoadScene("Test");
         }
     }

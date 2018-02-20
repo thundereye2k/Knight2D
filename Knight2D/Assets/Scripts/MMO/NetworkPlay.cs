@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using BestHTTP.SocketIO;
+using UnityEngine.SceneManagement;
 
 public class NetworkPlay : MonoBehaviour
 {
@@ -29,8 +30,7 @@ public class NetworkPlay : MonoBehaviour
 
     void OnGUI()
     {
-        if (isPaused)
-            GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -41,6 +41,11 @@ public class NetworkPlay : MonoBehaviour
     void OnApplicationPause(bool pauseStatus)
     {
         isPaused = pauseStatus;
+        if (isPaused)
+        {
+            manager.Close();
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     void OnApplicationQuit()
