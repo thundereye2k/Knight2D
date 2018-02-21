@@ -10,7 +10,7 @@ public class NetworkPlay : MonoBehaviour
     private NetworkPlay instance;
     private GameObject player;
     private Holder holder;
-    private float ping;
+    private float ping = 0;
     private bool isPaused = false;
     //public ChatterManager chat;
 
@@ -48,12 +48,9 @@ public class NetworkPlay : MonoBehaviour
 
     void Start()
     {
-        ping = 0;
-
         var options = new SocketOptions
         {
             ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
-            Reconnection = false,
         };
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
         //manager = new SocketManager(new Uri("localhost:5000/socket.io/"), options);

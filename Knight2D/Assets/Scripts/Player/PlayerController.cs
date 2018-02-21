@@ -46,33 +46,14 @@ public class PlayerController : MonoBehaviour
     {
         #region Movement
 
-        var moveSpeed = baseMoveSpeed;
+        var moveFactor = 1f;
         var playerMoving = false;
-        var xAxis = CnInputManager.GetAxisRaw("Horizontal");
-        var yAxis = CnInputManager.GetAxisRaw("Vertical");
 
+        moveH = CnInputManager.GetAxisRaw("Horizontal");
+        moveV = CnInputManager.GetAxisRaw("Vertical");
         currentPosition = transform.position;
         world = "test"; // TODO
-        zone = "test"; // TODO
-        moveH = 0f;
-        moveV = 0f;
-
-        if (xAxis > 0.5f)
-        {
-            moveH = 1;
-        }
-        if (xAxis < -0.5f)
-        {
-            moveH = -1;
-        }
-        if (yAxis > 0.5f)
-        {
-            moveV = 1;
-        }
-        if (yAxis < -0.5f)
-        {
-            moveV = -1;
-        }
+        zone = "test"; // TODO        
 
         if (moveH != 0f)
         {
@@ -89,9 +70,10 @@ public class PlayerController : MonoBehaviour
 
         if (moveH != 0f && moveV != 0f)
         {
-            moveSpeed *= 1 / Mathf.Sqrt(2);
+            moveFactor = Mathf.Sqrt(Mathf.Pow(moveH, 2) + Mathf.Pow(moveV, 2));
         }
 
+        var moveSpeed = baseMoveSpeed * (1 / moveFactor);
         moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
 
         #endregion
@@ -104,13 +86,15 @@ public class PlayerController : MonoBehaviour
         attackType = "null"; // TODO
         skillsJSON = "IDK"; // TODO
 
-#if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID || UNITY_XBOXONE || UNITY_PS4
         if (CnInputManager.GetAxisRaw("Fire X") != 0f || CnInputManager.GetAxisRaw("Fire Y") != 0f)
         {
             isAttacking = true;
             attackRadian = Mathf.Atan2(CnInputManager.GetAxisRaw("Fire Y"), CnInputManager.GetAxisRaw("Fire X"));
         }
-#else
+#endif
+
+#if UNITY_STANDALONE || UNITY_WEBGL
         if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
         {
             isAttacking = true;
