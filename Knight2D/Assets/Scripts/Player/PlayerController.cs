@@ -104,14 +104,13 @@ public class PlayerController : MonoBehaviour
         attackType = "null"; // TODO
         skillsJSON = "IDK"; // TODO
 
-        if (CnInputManager.GetAxisRaw("Fire1") != 0f)
+        if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
         {
             isAttacking = true;
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         }
-
-        if (CnInputManager.GetAxisRaw("Fire X") != 0f || CnInputManager.GetAxisRaw("Fire Y") != 0f)
+        else if (CnInputManager.GetAxisRaw("Fire X") != 0f || CnInputManager.GetAxisRaw("Fire Y") != 0f)
         {
             isAttacking = true;
             attackRadian = Mathf.Atan2(CnInputManager.GetAxisRaw("Fire Y"), CnInputManager.GetAxisRaw("Fire X"));
@@ -142,7 +141,7 @@ public class PlayerController : MonoBehaviour
 
         if (attackTimer > 1f)
         {
-            attackTimer = 0;
+            attackTimer = 1f;
         }
 
         #endregion
