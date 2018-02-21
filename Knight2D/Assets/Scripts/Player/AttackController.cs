@@ -5,6 +5,8 @@ using UnityEngine;
 public class AttackController : MonoBehaviour
 {
     private Vector3 targetPosition;
+    private float timer = 0f;
+    private bool hit = false;
 
     public float Radian { get; set; }
     public float MaxDistance { get; set; }
@@ -17,14 +19,16 @@ public class AttackController : MonoBehaviour
         targetPosition = new Vector3((Mathf.Cos(Radian) * MaxDistance) + currentPostion.x, (Mathf.Sin(Radian) * MaxDistance) + currentPostion.y, 0);
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        timer += Time.deltaTime;
+
         var currentPostion = transform.position;
         transform.position = Vector3.MoveTowards(currentPostion, targetPosition, Speed);
 
-        if (currentPostion == targetPosition)
+        if (currentPostion == targetPosition || timer > 5f)
         {
-            Destroy(gameObject);
+            hit = true;
         }
     }
 
@@ -35,9 +39,17 @@ public class AttackController : MonoBehaviour
             var pc = gameObject.GetComponentInParent<PlayerController>();
             var eh = new EnemyHit(coll.gameObject.name, Damage);
             pc.enemyHit(eh);
-            Destroy(gameObject);
+            hit = true;
         }
         if (coll.gameObject.tag == "Objects")
+        {
+            hit = true;
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (hit)
         {
             Destroy(gameObject);
         }

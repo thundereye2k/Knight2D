@@ -17,8 +17,6 @@ public class NetworkPlay : MonoBehaviour
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
 
-    #region Moblie Support
-
     void Awake()
     {
         if (instance == null)
@@ -26,11 +24,6 @@ public class NetworkPlay : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         //DontDestroyOnLoad(gameObject);
-    }
-
-    void OnGUI()
-    {
-
     }
 
     void OnApplicationFocus(bool hasFocus)
@@ -52,8 +45,6 @@ public class NetworkPlay : MonoBehaviour
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
     }
-
-    #endregion
 
     void Start()
     {

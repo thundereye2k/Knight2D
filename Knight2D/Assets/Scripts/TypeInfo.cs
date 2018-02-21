@@ -25,7 +25,7 @@ public class TypeInfo
         switch (name)
         {
             case "basic":
-                speed = 2f;
+                speed = 5f;
                 break;
             default:
                 break;

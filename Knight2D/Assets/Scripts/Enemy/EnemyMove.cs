@@ -11,8 +11,8 @@ public class EnemyMove : MonoBehaviour
     private RectTransform targetCanvas;
     private string target;
     private float health;
+    private float speed;
 
-    // Use this for initialization
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -20,6 +20,8 @@ public class EnemyMove : MonoBehaviour
 
         var GUI = GameObject.FindGameObjectWithTag("GUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
+
+        speed = new TypeInfo().getEnemyMoveSpeed(gameObject.name);
 
         var res = Resources.Load("EnemyHealthBar", typeof(GameObject));
         var pos = new Vector3(0, 0, 0);
@@ -36,11 +38,16 @@ public class EnemyMove : MonoBehaviour
         Vector2 WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
         ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
-        //now you can set the position of the ui element
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+        healthBar.GetComponentInChildren<SimpleHealthBar>().UpdateBar(health, 100);
     }
 
-    // Update is called once per frame
+    void FixedUpdate()
+    {
+        var currentPosition = transform.position;
+        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, speed);
+    }
+
     void Update()
     {
         #region Movement
@@ -71,9 +78,6 @@ public class EnemyMove : MonoBehaviour
                     moveV = -1f;
             }
 
-            var speed = new TypeInfo().getEnemyMoveSpeed(gameObject.name);
-            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, speed);
-
             if (moveH != 0f)
             {
                 lastMove.x = moveH;
@@ -87,13 +91,6 @@ public class EnemyMove : MonoBehaviour
         }
 
         Debug.DrawLine(currentPosition, targetPosition, Color.black);
-
-        #endregion
-
-        #region Damage and Health
-
-        var shb = healthBar.GetComponentInChildren<SimpleHealthBar>();
-        shb.UpdateBar(health, 100);
 
         #endregion
 
