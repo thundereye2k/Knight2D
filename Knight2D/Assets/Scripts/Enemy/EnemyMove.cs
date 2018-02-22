@@ -12,6 +12,7 @@ public class EnemyMove : MonoBehaviour
     private string target;
     private float health;
     private float speed;
+    private float timer = 0f;
 
     void Start()
     {
@@ -56,7 +57,7 @@ public class EnemyMove : MonoBehaviour
         var playerMoving = false;
         var moveH = 0f;
         var moveV = 0f;
-
+        timer += Time.deltaTime;
 
         if (currentPosition != targetPosition)
         {
@@ -107,20 +108,16 @@ public class EnemyMove : MonoBehaviour
 
     void LateUpdate()
     {
-        if (health > 0f)
-        {
-
-        }
-        else
+        if (health <= 0f || timer >= 5f)
         {
             Destroy(healthBar);
             Destroy(gameObject);
         }
     }
 
-    public void UpdatePosition(Vector3 position, string target, float health)
+    public void UpdatePosition(Vector3 targetPosition, string target, float health)
     {
-        targetPosition = position;
+        this.targetPosition = targetPosition;
         this.target = target;
         this.health = health;
     }

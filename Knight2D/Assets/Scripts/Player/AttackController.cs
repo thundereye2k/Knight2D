@@ -21,12 +21,15 @@ public class AttackController : MonoBehaviour
 
     void FixedUpdate()
     {
-        timer += Time.deltaTime;
-
         var currentPostion = transform.position;
         transform.position = Vector3.MoveTowards(currentPostion, targetPosition, Speed);
+    }
 
-        if (currentPostion == targetPosition || timer > 5f)
+    void Update()
+    {
+        var currentPostion = transform.position;
+        timer += Time.deltaTime;
+        if (currentPostion == targetPosition || timer >= 5f)
         {
             hit = true;
         }
