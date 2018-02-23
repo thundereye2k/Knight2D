@@ -29,6 +29,14 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    void OnGUI()
+    {
+        if (!Screen.fullScreen)
+        {
+            Screen.fullScreen = true;
+        }
+    }
+
     public void SubmitLogin()
     {
         var usernameLogin = GameObject.Find("LoginInputUsername").GetComponentInChildren<TMP_InputField>();

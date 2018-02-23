@@ -27,6 +27,7 @@ public class NetworkMenu : MonoBehaviour
         var options = new SocketOptions
         {
             ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
+            Reconnection = false
         };
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
         //manager = new SocketManager(new Uri("localhost:5000/socket.io/"), options);

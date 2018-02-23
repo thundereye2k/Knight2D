@@ -51,6 +51,7 @@ public class NetworkPlay : MonoBehaviour
         var options = new SocketOptions
         {
             ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
+            Reconnection = false
         };
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
         //manager = new SocketManager(new Uri("localhost:5000/socket.io/"), options);
@@ -453,4 +454,9 @@ public class NetworkPlay : MonoBehaviour
 
     #endregion
 
+    public void DisconnectFromServer()
+    {
+        manager.Close();
+        SceneManager.LoadScene("Menu");
+    }
 }

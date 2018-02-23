@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour
     private float attackRadian;
     private string skillsJSON;
     private string attackType;
-    private string world;
-    private string zone;
     private float updatesPerSecond = 10f;
     private float baseMoveSpeed = 100f;
     private float timer = 0f;
@@ -27,6 +25,8 @@ public class PlayerController : MonoBehaviour
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
     public float Mana { get; set; }
+    public string World { get; set; }
+    public string Zone { get; set; }
 
     void Start()
     {
@@ -35,6 +35,9 @@ public class PlayerController : MonoBehaviour
 
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
+
+        World = "test";
+        Zone = "safe";
     }
 
     void FixedUpdate()
@@ -52,8 +55,6 @@ public class PlayerController : MonoBehaviour
         moveH = CnInputManager.GetAxisRaw("Horizontal");
         moveV = CnInputManager.GetAxisRaw("Vertical");
         currentPosition = transform.position;
-        world = "test"; // TODO
-        zone = "test"; // TODO        
 
         if (moveH != 0f)
         {
@@ -156,7 +157,7 @@ public class PlayerController : MonoBehaviour
             timer = 0f;
             var jsonArray = jsonList.ToArray();
             jsonList.Clear();
-            Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, world, zone, Health, Mana, jsonArray);
+            Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, World, Zone, Health, Mana, jsonArray);
         }
 
         #endregion

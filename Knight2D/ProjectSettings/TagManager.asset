@@ -15,6 +15,7 @@ TagManager:
   - Objects
   - Moblie
   - GUI
+  - Zone
   layers:
   - Default
   - TransparentFX
