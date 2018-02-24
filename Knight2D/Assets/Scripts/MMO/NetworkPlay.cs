@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class NetworkPlay : MonoBehaviour
 {
     private SocketManager manager;
-    private NetworkPlay instance;
     private GameObject player;
     private Holder holder;
     private float ping = 0;
@@ -16,15 +15,6 @@ public class NetworkPlay : MonoBehaviour
 
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
-
-    void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-        //DontDestroyOnLoad(gameObject);
-    }
 
     void OnApplicationFocus(bool hasFocus)
     {
@@ -46,6 +36,16 @@ public class NetworkPlay : MonoBehaviour
         Debug.Log("Application ending after " + Time.time + " seconds");
     }
 
+    void Awake()
+    {
+        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
+
+        if (holder == null)
+        {
+            SceneManager.LoadScene("Menu");
+        }
+    }
+
     void Start()
     {
         var options = new SocketOptions
@@ -64,16 +64,7 @@ public class NetworkPlay : MonoBehaviour
         //manager.Socket.On("enemy-move", OnEnemyMove);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
-        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
-
-        if (holder.PlayerToken != null)
-        {
-            CommandConnect();
-        }
-        else
-        {
-            Application.Quit();
-        }
+        CommandConnect();
     }
 
     void Update()

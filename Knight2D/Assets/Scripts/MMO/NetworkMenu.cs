@@ -8,18 +8,19 @@ using System.Text.RegularExpressions;
 
 public class NetworkMenu : MonoBehaviour
 {
-    private NetworkMenu instance;
-    private SocketManager manager;
+    [SerializeField]
     private Holder holder;
+    private SocketManager manager;
     private string playerPassword;
 
     void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-        //DontDestroyOnLoad(gameObject);
+        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
+
+        if (holder == null)
+        {
+            Application.Quit();
+        }
     }
 
     void Start()
@@ -34,13 +35,6 @@ public class NetworkMenu : MonoBehaviour
 
         manager.Socket.On("menu-player", OnCompleteMenu);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
-
-        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
-
-        if (!holder)
-        {
-            Application.Quit();
-        }
     }
 
     #region Commands
@@ -169,7 +163,7 @@ public class NetworkMenu : MonoBehaviour
 
     private void CheckPassword(string _passhash, string _salt, string _token, string _username, string _email)
     {
-        var log = false;
+        var login = false;
         var salt = Convert.FromBase64String(_salt);
         var pbkdf2 = new Rfc2898DeriveBytes(playerPassword, salt, 10000);
         var hash = pbkdf2.GetBytes(20);
@@ -180,14 +174,14 @@ public class NetworkMenu : MonoBehaviour
 
         if (passhash.Equals(_passhash))
         {
-            log = true;
+            login = true;
         }
         else
         {
             Debug.Log("Password incorrect");
         }
 
-        if (log)
+        if (login)
         {
             holder.PlayerToken = _token;
             holder.PlayerUsername = _username;

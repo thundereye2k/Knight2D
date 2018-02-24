@@ -6,34 +6,27 @@ public class MainMenu : MonoBehaviour
 {
     private NetworkMenu network;
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         network = GameObject.FindGameObjectWithTag("NetworkMenu").GetComponent<NetworkMenu>();
+        
         if (!network)
         {
             Application.Quit();
         }
-        else
-        {
-            var usernameStored = PlayerPrefs.GetString("username");
-            var passwordStored = PlayerPrefs.GetString("password");
-
-            if (usernameStored != null && passwordStored != null)
-            {
-                var usernameLogin = GameObject.Find("LoginInputUsername").GetComponentInChildren<TMP_InputField>();
-                var passwordLogin = GameObject.Find("LoginInputPassword").GetComponentInChildren<TMP_InputField>();
-                usernameLogin.text = usernameStored;
-                passwordLogin.text = passwordStored;
-            }
-        }
     }
 
-    void OnGUI()
+    void Start()
     {
-        if (!Screen.fullScreen)
+        var usernameStored = PlayerPrefs.GetString("username");
+        var passwordStored = PlayerPrefs.GetString("password");
+
+        if (usernameStored != null && passwordStored != null)
         {
-            Screen.fullScreen = true;
+            var usernameLogin = GameObject.Find("LoginInputUsername").GetComponentInChildren<TMP_InputField>();
+            var passwordLogin = GameObject.Find("LoginInputPassword").GetComponentInChildren<TMP_InputField>();
+            usernameLogin.text = usernameStored;
+            passwordLogin.text = passwordStored;
         }
     }
 
