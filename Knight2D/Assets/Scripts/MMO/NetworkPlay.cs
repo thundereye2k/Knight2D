@@ -16,7 +16,8 @@ public class NetworkPlay : MonoBehaviour
     private int maxMessages = 25;
     private List<MessageObject> messageList = new List<MessageObject>();
 
-    public GameObject chatPanel;
+    public GameObject content;
+    public string ticker;
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
 
@@ -43,11 +44,15 @@ public class NetworkPlay : MonoBehaviour
 
     void Awake()
     {
-        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
+        var obj = GameObject.FindGameObjectWithTag("Holder");
 
-        if (holder == null)
+        if (obj == null)
         {
             SceneManager.LoadScene("Menu");
+        }
+        else
+        {
+            holder = obj.GetComponent<Holder>();
         }
     }
 
@@ -261,9 +266,10 @@ public class NetworkPlay : MonoBehaviour
         }
 
         var res = Resources.Load("Text", typeof(GameObject));
-        var obj = Instantiate(res, chatPanel.transform) as GameObject;
-        var tmp = obj.GetComponentInChildren<TMP_InputField>();
-        tmp.text = data.username + ": " + data.message;
+        var obj = Instantiate(res, content.transform) as GameObject;
+        var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
+        tmp.SetText(data.username + ": " + data.message);
+        ticker = tmp.text;
 
         var messageObject = new MessageObject(tmp.text, obj);
         messageList.Add(messageObject);

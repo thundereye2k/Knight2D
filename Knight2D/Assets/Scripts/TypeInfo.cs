@@ -11,7 +11,7 @@ public class TypeInfo
         switch (strArray[0])
         {
             case "golems":
-                speed = 0.2f;
+                speed = 0.8f;
                 break;
             default:
                 break;

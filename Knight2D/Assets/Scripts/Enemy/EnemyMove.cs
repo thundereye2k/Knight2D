@@ -107,7 +107,7 @@ public class EnemyMove : MonoBehaviour
 
     void LateUpdate()
     {
-        if (health <= 0f || timer >= 5f)
+        if (health <= 0f || timer >= 1f)
         {
             Destroy(healthBar);
             Destroy(gameObject);
