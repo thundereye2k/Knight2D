@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using BestHTTP.SocketIO;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using TMPro;
 
 public class NetworkPlay : MonoBehaviour
 {
@@ -11,10 +13,13 @@ public class NetworkPlay : MonoBehaviour
     private Holder holder;
     private float ping = 0;
     private bool isPaused = false;
-    //public ChatterManager chat;
+    private int maxMessages = 25;
+    private List<MessageObject> messageList = new List<MessageObject>();
 
+    public GameObject chatPanel;
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
+
 
     void OnApplicationFocus(bool hasFocus)
     {
@@ -249,7 +254,19 @@ public class NetworkPlay : MonoBehaviour
         var data = JsonUtility.FromJson<MessageJSON>(json);
         Debug.Log(json);
 
-        //chat.GetMessage(data.username, data.message);
+        if (messageList.Count >= maxMessages)
+        {
+            Destroy(messageList[0].textObject.gameObject);
+            messageList.Remove(messageList[0]);
+        }
+
+        var res = Resources.Load("Text", typeof(GameObject));
+        var obj = Instantiate(res, chatPanel.transform) as GameObject;
+        var tmp = obj.GetComponentInChildren<TMP_InputField>();
+        tmp.text = data.username + ": " + data.message;
+
+        var messageObject = new MessageObject(tmp.text, obj);
+        messageList.Add(messageObject);
     }
 
     /*
@@ -444,6 +461,18 @@ public class NetworkPlay : MonoBehaviour
     }
 
     #endregion
+
+    class MessageObject
+    {
+        public string text;
+        public GameObject textObject;
+
+        public MessageObject(string text, GameObject textObject)
+        {
+            this.text = text;
+            this.textObject = textObject;
+        }
+    }
 
     public void DisconnectFromServer()
     {

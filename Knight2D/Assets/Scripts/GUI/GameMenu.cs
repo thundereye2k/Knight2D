@@ -1,12 +1,15 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
+    [SerializeField]
     private NetworkPlay network;
-    public GameObject fullScreen;
+    [SerializeField]
+    private GameObject fullScreen, chatManager;
 
     void Awake()
     {
@@ -28,7 +31,7 @@ public class PauseMenu : MonoBehaviour
         fullScreen.SetActive(true);
 #endif
     }
-
+    
     public void QuitGame()
     {
         network.DisconnectFromServer();
