@@ -128,7 +128,7 @@ public class MainMenu : MonoBehaviour
         var passwordRegister = GameObject.Find("RegisterInputPassword").GetComponentInChildren<TMP_InputField>();
         var emailRegister = GameObject.Find("RegisterInputEmail").GetComponentInChildren<TMP_InputField>();
 
-        if (IsUsernameLong(usernameRegister.text) && IsPasswordLong(passwordRegister.text) && IsEmailValid(emailRegister.text) &&)
+        if (IsUsernameLong(usernameRegister.text) && IsPasswordLong(passwordRegister.text) && IsEmailValid(emailRegister.text))
         {
             var network = networkObject.GetComponent<NetworkMenu>();
             network.CommandRegister(usernameRegister.text, emailRegister.text, passwordRegister.text);
