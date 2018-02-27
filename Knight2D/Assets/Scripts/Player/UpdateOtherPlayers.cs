@@ -27,7 +27,7 @@ public class UpdateOtherPlayers : MonoBehaviour
 
     void FixedUpdate()
     {
-        myRigidbody.velocity = moveVelocity;
+
     }
 
     void Update()
@@ -55,8 +55,6 @@ public class UpdateOtherPlayers : MonoBehaviour
         {
             moveSpeed *= 1 / Mathf.Sqrt(2);
         }
-
-        moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
 
         #endregion
 
@@ -105,12 +103,13 @@ public class UpdateOtherPlayers : MonoBehaviour
 
     void LateUpdate()
     {
+
         var currentPosition = transform.position;
-        //if (Vector3.Distance(currentPosition, targetPosition) > 20f)
         if (currentPosition != targetPosition)
         {
-            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 0.001f);
+            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 0.1f);
         }
+
     }
 
     public void UpdateOtherPlayer(Vector3 targetPosition, Vector2 lastMove, float moveH, float moveV, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)

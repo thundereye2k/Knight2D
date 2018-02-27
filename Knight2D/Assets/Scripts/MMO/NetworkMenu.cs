@@ -13,6 +13,8 @@ public class NetworkMenu : MonoBehaviour
     private SocketManager manager;
     private string playerPassword;
 
+    public string Status { get; set; }
+
     void Awake()
     {
         holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
@@ -76,32 +78,9 @@ public class NetworkMenu : MonoBehaviour
         var userJSON = JsonUtility.FromJson<UserJSON>(json);
         Debug.Log(json);
 
+        Status = userJSON.status;
         switch (userJSON.status)
         {
-            case "registered":
-                Debug.Log("Registration successful");
-                break;
-            case "duplicate":
-                Debug.Log("Username or email already exsit");
-                break;
-            case "error":
-                Debug.Log("Something bad happened");
-                break;
-            case "password":
-                Debug.Log("Password needs to be between 8-24 characters");
-                break;
-            case "username":
-                Debug.Log("Username needs to be greater then 4 characters");
-                break;
-            case "email":
-                Debug.Log("Email address not valid");
-                break;
-            case "notfound":
-                Debug.Log("Username not found");
-                break;
-            case "logged":
-                Debug.Log("Already logged in");
-                break;
             case "login":
                 CheckPassword(userJSON.passhash, userJSON.salt, userJSON.token, userJSON.username, userJSON.email);
                 break;
@@ -179,10 +158,12 @@ public class NetworkMenu : MonoBehaviour
         else
         {
             Debug.Log("Password incorrect");
+            Status = "wrong";
         }
 
         if (login)
         {
+            Status = "play";
             holder.PlayerToken = _token;
             holder.PlayerUsername = _username;
             holder.PlayerEmail = _email;
