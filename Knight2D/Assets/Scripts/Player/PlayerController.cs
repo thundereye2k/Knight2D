@@ -49,47 +49,53 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!Menu)
+        #region Movement
+
+        var moveFactor = 1f;
+        var playerMoving = false;
+
+        moveH = CnInputManager.GetAxisRaw("Horizontal");
+        moveV = CnInputManager.GetAxisRaw("Vertical");
+        currentPosition = transform.position;
+
+        if (moveH != 0f)
         {
-            #region Movement
+            lastMove.x = moveH;
+            lastMove.y = 0f;
+            playerMoving = true;
+        }
+        else if (moveV != 0f)
+        {
+            lastMove.x = 0f;
+            lastMove.y = moveV;
+            playerMoving = true;
+        }
 
-            var moveFactor = 1f;
-            var playerMoving = false;
+        if (moveH != 0f && moveV != 0f)
+        {
+            moveFactor = Mathf.Sqrt(Mathf.Pow(moveH, 2) + Mathf.Pow(moveV, 2));
+        }
 
-            moveH = CnInputManager.GetAxisRaw("Horizontal");
-            moveV = CnInputManager.GetAxisRaw("Vertical");
-            currentPosition = transform.position;
+        if (Menu)
+        {
+            moveH = 0f;
+            moveV = 0f;
+            lastMove.x = 0f;
+            lastMove.y = 0f;
+        }
 
-            if (moveH != 0f)
-            {
-                lastMove.x = moveH;
-                lastMove.y = 0f;
-                playerMoving = true;
-            }
-            else if (moveV != 0f)
-            {
-                lastMove.x = 0f;
-                lastMove.y = moveV;
-                playerMoving = true;
-            }
+        var moveSpeed = baseMoveSpeed * (1 / moveFactor);
+        moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
 
-            if (moveH != 0f && moveV != 0f)
-            {
-                moveFactor = Mathf.Sqrt(Mathf.Pow(moveH, 2) + Mathf.Pow(moveV, 2));
-            }
+        #endregion
 
-            var moveSpeed = baseMoveSpeed * (1 / moveFactor);
-            moveVelocity = new Vector3(moveH * moveSpeed, moveV * moveSpeed, 0f);
+        #region Attacking
 
-            #endregion
-
-            #region Attacking
-
-            var isAttacking = false;
-            attackTimer += Time.deltaTime;
-            attackRadian = 0f;
-            attackType = "null"; // TODO
-            skillsJSON = "IDK"; // TODO
+        var isAttacking = false;
+        attackTimer += Time.deltaTime;
+        attackRadian = 0f;
+        attackType = "null"; // TODO
+        skillsJSON = "IDK"; // TODO
 
 #if UNITY_IOS || UNITY_ANDROID || UNITY_XBOXONE || UNITY_PS4
         if (CnInputManager.GetAxisRaw("Fire X") != 0f || CnInputManager.GetAxisRaw("Fire Y") != 0f)
@@ -100,54 +106,53 @@ public class PlayerController : MonoBehaviour
 #endif
 
 #if UNITY_STANDALONE || UNITY_WEBGL
-            if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
-            {
-                isAttacking = true;
-                var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
-            }
-#endif
-
-            if (isAttacking)
-            {
-                attackType = "basic"; // TODO
-                var attackPerSecond = new TypeInfo().getPlayerAttacksPerSecond(attackType);
-                var tick = 1f / attackPerSecond;
-
-                if (attackTimer > tick)
-                {
-                    //var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
-                    //Debug.DrawLine(currentPosition, aimPosition, Color.blue);
-                    attackTimer = 0f;
-                    var res = Resources.Load("Attack1", typeof(GameObject));
-                    var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
-                    var rot = Quaternion.Euler(0, 0, 0);
-                    var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
-                    var ac = obj.GetComponent<AttackController>();
-                    ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-                    ac.Radian = attackRadian;
-                    ac.MaxDistance = 300f;
-                    ac.Damage = 10f;
-                }
-            }
-
-            if (attackTimer > 1f)
-            {
-                attackTimer = 1f;
-            }
-
-            #endregion
-
-            #region Animation
-
-            myAnimator.SetFloat("MoveX", moveH);
-            myAnimator.SetFloat("MoveY", moveV);
-            myAnimator.SetBool("PlayerMoving", playerMoving);
-            myAnimator.SetFloat("LastMoveX", lastMove.x);
-            myAnimator.SetFloat("LastMoveY", lastMove.y);
-
-            #endregion
+        if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+        {
+            isAttacking = true;
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         }
+#endif   
+
+        if (isAttacking && !Menu)
+        {
+            attackType = "basic"; // TODO
+            var attackPerSecond = new TypeInfo().getPlayerAttacksPerSecond(attackType);
+            var tick = 1f / attackPerSecond;
+
+            if (attackTimer > tick)
+            {
+                //var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
+                //Debug.DrawLine(currentPosition, aimPosition, Color.blue);
+                attackTimer = 0f;
+                var res = Resources.Load("Attack1", typeof(GameObject));
+                var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
+                var rot = Quaternion.Euler(0, 0, 0);
+                var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
+                var ac = obj.GetComponent<AttackController>();
+                ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
+                ac.Radian = attackRadian;
+                ac.MaxDistance = 300f;
+                ac.Damage = 10f;
+            }
+        }
+
+        if (attackTimer > 1f)
+        {
+            attackTimer = 1f;
+        }
+
+        #endregion
+
+        #region Animation
+
+        myAnimator.SetFloat("MoveX", moveH);
+        myAnimator.SetFloat("MoveY", moveV);
+        myAnimator.SetBool("PlayerMoving", playerMoving);
+        myAnimator.SetFloat("LastMoveX", lastMove.x);
+        myAnimator.SetFloat("LastMoveY", lastMove.y);
+
+        #endregion
     }
 
     void LateUpdate()

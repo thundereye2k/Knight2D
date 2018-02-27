@@ -1816,6 +1816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content: {fileID: 759773995}
   ticker: 
+  ping: 0
   allPlayers: []
   allEnemies: []
 --- !u!4 &299912209
@@ -3006,9 +3007,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 93540138}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 699865527}
+        m_MethodName: sharderPanel
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
