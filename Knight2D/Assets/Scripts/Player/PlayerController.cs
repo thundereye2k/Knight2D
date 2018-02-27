@@ -5,6 +5,7 @@ using CnControls;
 
 public class PlayerController : MonoBehaviour
 {
+    private CinemachineVirtualCamera vCamera;
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector3 moveVelocity;
@@ -20,7 +21,6 @@ public class PlayerController : MonoBehaviour
     private float timer = 0f;
     private float attackTimer = 0f;
     private List<string> jsonList = new List<string>();
-    private CinemachineVirtualCamera vCamera;
 
     public NetworkPlay Net { get; set; }
     public float Health { get; set; }
@@ -124,9 +124,9 @@ public class PlayerController : MonoBehaviour
                     var rot = Quaternion.Euler(0, 0, 0);
                     var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
                     var ac = obj.GetComponent<AttackController>();
-                    ac.Radian = attackRadian;
                     ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-                    ac.MaxDistance = baseMoveSpeed * 5;
+                    ac.Radian = attackRadian;
+                    ac.MaxDistance = 300f;
                     ac.Damage = 10f;
                 }
             }
@@ -159,10 +159,10 @@ public class PlayerController : MonoBehaviour
 
         if (timer > tick)
         {
-            timer = 0f;
             var jsonArray = jsonList.ToArray();
-            jsonList.Clear();
             Net.CommandMove(currentPosition, moveH, moveV, lastMove, attackType, attackRadian, skillsJSON, World, Zone, Health, Mana, jsonArray);
+            jsonList.Clear();
+            timer = 0f;
         }
 
         #endregion

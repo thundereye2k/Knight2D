@@ -4,21 +4,6 @@ using UnityEngine;
 
 public class TypeInfo
 {
-    public float getEnemyMoveSpeed(string name)
-    {
-        var strArray = name.Split(' ');
-        var speed = 1f;
-        switch (strArray[0])
-        {
-            case "golems":
-                speed = 0.8f;
-                break;
-            default:
-                break;
-        }
-        return speed;
-    }
-
     public float getPlayerAttackSpeed(string name)
     {
         var speed = 1f;
@@ -39,7 +24,7 @@ public class TypeInfo
         switch (name)
         {
             case "basic":
-                speed = 5f;
+                speed = 10f;
                 break;
             default:
                 break;

@@ -11,16 +11,15 @@ public class NetworkPlay : MonoBehaviour
     private SocketManager manager;
     private GameObject player;
     private Holder holder;
-    private float ping = 0;
     private bool isPaused = false;
     private int maxMessages = 25;
     private List<MessageObject> messageList = new List<MessageObject>();
 
     public GameObject content;
     public string ticker;
+    public float ping = 0;
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
-
 
     void OnApplicationFocus(bool hasFocus)
     {
@@ -69,9 +68,7 @@ public class NetworkPlay : MonoBehaviour
         manager.Socket.On("player-start", OnStartUp);
         manager.Socket.On("player-disconnect", OnPlayerDisconnect);
         manager.Socket.On("player-message", OnMessage);
-        //manager.Socket.On("player-attack", OnAttack);
         manager.Socket.On("get-moves", OnPlayerMoves);
-        //manager.Socket.On("enemy-move", OnEnemyMove);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
         CommandConnect();
@@ -87,7 +84,7 @@ public class NetworkPlay : MonoBehaviour
         if (ping > 100f)
         {
             ping = 0f;
-            // Disconnect player
+            // TODO: timeout connection
         }
     }
 
@@ -115,15 +112,6 @@ public class NetworkPlay : MonoBehaviour
         var json = JsonUtility.ToJson(data);
         manager.Socket.Emit("player-message", json, holder.Secret);
     }
-
-    /*
-    public void CommandAttack(bool attacking)
-    {
-        var data = new AttackJSON(holder.PlayerToken, holder.PlayerUsername, attacking);
-        var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-attack", json, holder.secret);
-    }
-    */
 
     #endregion
 
@@ -158,7 +146,7 @@ public class NetworkPlay : MonoBehaviour
     void OnPlayerMoves(Socket socket, Packet packet, params object[] args)
     {
         // Player [{token, username, positionX, positionY, moveH, moveV, lastMoveX, lastMoveY, attackType, attackRadian, skillsJSON, world, zone, health, mana}]
-        // Enemy [{username, positionX, positionY, world, zone, target, health}]
+        // Enemy [{username, positionX, positionY, world, zone, target, health, speed}]
         var playerJSON = (string)args[0];
         var enemyJSON = (string)args[1];
         var playerN = SimpleJSON.JSONNode.Parse(playerJSON);
@@ -176,10 +164,8 @@ public class NetworkPlay : MonoBehaviour
             if (holder.PlayerUsername == data.username)
             {
                 //Debug.Log("Ping: " + ping * 1000);
-                continue;
             }
-
-            if (Vector3.Distance(player.transform.position, position) < 500.0f)
+            else if (Vector3.Distance(player.transform.position, position) < 500.0f)
             {
                 //var obj = GameObject.Find(data.username) as GameObject; 
                 GameObject obj = null;
@@ -217,22 +203,23 @@ public class NetworkPlay : MonoBehaviour
             var data = JsonUtility.FromJson<EnemyMoveJSON>(enemyN[i]);
             var position = new Vector3(data.positionX, data.positionY, 0);
 
-            if (Vector3.Distance(player.transform.position, position) < 1000.0f)
+            var pc = player.GetComponent<PlayerController>();
+            if (pc.World == data.world)
             {
-                //var obj = GameObject.Find(data.username) as GameObject;
                 GameObject obj = null;
                 for (var j = 0; j < allEnemies.Length; j++)
                 {
                     if (allEnemies[j].name == data.username)
                     {
                         obj = allEnemies[j];
+                        break;
                     }
                 }
 
                 if (obj != null)
                 {
                     var em = obj.GetComponent<EnemyMove>();
-                    em.UpdatePosition(position, data.target, data.health);
+                    em.UpdatePosition(position, data.target, data.health, data.speed);
                 }
                 else
                 {
@@ -242,7 +229,7 @@ public class NetworkPlay : MonoBehaviour
                     obj = Instantiate(res, pos, rot) as GameObject;
                     obj.name = data.username;
                     var em = obj.GetComponent<EnemyMove>();
-                    em.UpdatePosition(position, data.target, data.health);
+                    em.UpdatePosition(position, data.target, data.health, data.speed);
                 }
             }
             else
@@ -274,59 +261,6 @@ public class NetworkPlay : MonoBehaviour
         var messageObject = new MessageObject(tmp.text, obj);
         messageList.Add(messageObject);
     }
-
-    /*
-    void OnAttack(Socket socket, Packet packet, params object[] args)
-    {
-        // token, username, attacking
-        var json = (string)args[0];
-        var data = JsonUtility.FromJson<AttackJSON>(json);
-        Debug.Log(json);
-
-        if (holder.PlayerUsername == data.username)
-        {
-            return;
-        }
-
-        GameObject p = GameObject.Find(data.username);
-        if (p != null)
-        {
-            //UpdateOtherPlayers o = p.GetComponent<UpdateOtherPlayers>();
-            //o.UpdateAttack(true);
-        }
-    }
-    */
-
-    /*
-    void OnEnemyMove(Socket socket, Packet packet, params object[] args)
-    {       
-        var json = (string)args[0];
-        var data = JsonUtility.FromJson<EnemyMoveJSON>(json);
-        var position = new Vector3(data.positionX, data.positionY, 0);
-        //Debug.Log(json);
-
-        var obj = GameObject.Find(data.username) as GameObject;
-        if (obj != null)
-        {
-            var em = obj.GetComponent<EnemyMove>();
-            em.UpdatePos(position, data.target);
-
-            if (Vector3.Distance(player.transform.position, position) > 1000.0f)
-            {
-                Destroy(GameObject.Find(data.username));
-            }
-        }
-        else
-        {
-            var res = Resources.Load("Enemy", typeof(GameObject));
-            var pos = new Vector3(position.x, position.y, 0);
-            var rot = Quaternion.Euler(0, 0, 0);
-            obj = Instantiate(res, pos, rot) as GameObject;
-            obj.name = data.username;
-        }
-
-    }
-    */
 
     void OnPlayerDisconnect(Socket socket, Packet packet, params object[] args)
     {
@@ -428,22 +362,6 @@ public class NetworkPlay : MonoBehaviour
         }
     }
 
-    /*
-    class AttackJSON
-    {
-        public string token;
-        public string username;
-        public bool attacking;
-
-        public AttackJSON(string token, string username, bool attacking)
-        {
-            this.token = token;
-            this.username = username;
-            this.attacking = attacking;
-        }
-    }
-    */
-
     class EnemyMoveJSON
     {
         public string username;
@@ -453,8 +371,9 @@ public class NetworkPlay : MonoBehaviour
         public float positionX;
         public float positionY;
         public float health;
+        public float speed;
 
-        public EnemyMoveJSON(string username, float positionX, float positionY, string world, string zone, string target, float health)
+        public EnemyMoveJSON(string username, float positionX, float positionY, string world, string zone, string target, float health, float speed)
         {
             this.username = username;
             this.positionX = positionX;
@@ -463,6 +382,7 @@ public class NetworkPlay : MonoBehaviour
             this.zone = zone;
             this.target = target;
             this.health = health;
+            this.speed = speed;
         }
     }
 

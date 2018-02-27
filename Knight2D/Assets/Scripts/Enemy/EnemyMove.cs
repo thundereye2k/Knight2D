@@ -18,7 +18,6 @@ public class EnemyMove : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         targetPosition = transform.position;
-        speed = new TypeInfo().getEnemyMoveSpeed(gameObject.name);
 
         var GUI = GameObject.FindGameObjectWithTag("GUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
@@ -114,11 +113,12 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    public void UpdatePosition(Vector3 targetPosition, string target, float health)
+    public void UpdatePosition(Vector3 targetPosition, string target, float health, float speed)
     {
         this.targetPosition = targetPosition;
         this.target = target;
         this.health = health;
+        this.speed = speed / 100;
         timer = 0f;
     }
 }
