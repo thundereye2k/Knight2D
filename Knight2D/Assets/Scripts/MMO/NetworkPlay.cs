@@ -288,6 +288,8 @@ public class NetworkPlay : MonoBehaviour
         }
 
         Debug.Log(error.ToString());
+
+        SceneManager.LoadScene("Menu");
     }
 
     #endregion

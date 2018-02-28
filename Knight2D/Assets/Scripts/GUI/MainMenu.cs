@@ -43,19 +43,10 @@ public class MainMenu : MonoBehaviour
 
         switch (status)
         {
-            case "registered":
-                tmp.SetText("Registration successful");
-                tmp.color = new Color(0, 1, 0, 1);
-                break;
-
+            // Login
             case "play":
                 tmp.SetText("Login successful");
                 tmp.color = new Color(0, 1, 0, 1);
-                break;
-
-            case "login":
-                //tmp.SetText("Login successful");
-                //tmp.color = new Color(0, 1, 0, 1);
                 break;
 
             case "wrong":
@@ -64,17 +55,18 @@ public class MainMenu : MonoBehaviour
                 break;
 
             case "notfound":
-                tmp.SetText("Username or password are incorrect");
+                tmp.SetText("Username does not exist");
                 tmp.color = new Color(1, 0, 0, 1);
+                break;
+
+            // Register
+            case "register":
+                tmp.SetText("Registration successful");
+                tmp.color = new Color(0, 1, 0, 1);
                 break;
 
             case "duplicate":
-                tmp.SetText("Username or email already exsit");
-                tmp.color = new Color(1, 0, 0, 1);
-                break;
-
-            case "logged":
-                tmp.SetText("Already logged in");
+                tmp.SetText("Username or email already exist");
                 tmp.color = new Color(1, 0, 0, 1);
                 break;
 
@@ -94,10 +86,11 @@ public class MainMenu : MonoBehaviour
                 break;
 
             case "bad":
-                tmp.SetText("No");
+                tmp.SetText("No bad words :(");
                 tmp.color = new Color(1, 0, 0, 1);
                 break;
 
+            // Error
             case "error":
                 tmp.SetText("Something bad happened");
                 tmp.color = new Color(1, 0, 0, 1);

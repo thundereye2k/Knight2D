@@ -79,14 +79,11 @@ public class NetworkMenu : MonoBehaviour
         Debug.Log(json);
 
         Status = userJSON.status;
-        switch (userJSON.status)
+        if (Status == "login")
         {
-            case "login":
-                CheckPassword(userJSON.passhash, userJSON.salt, userJSON.token, userJSON.username, userJSON.email);
-                break;
-            default:
-                break;
+            CheckPassword(userJSON.passhash, userJSON.salt, userJSON.token, userJSON.username, userJSON.email);
         }
+
     }
 
     void OnError(Socket socket, Packet packet, params object[] args)
@@ -107,6 +104,8 @@ public class NetworkMenu : MonoBehaviour
         }
 
         Debug.Log(error.ToString());
+
+        Application.Quit();
     }
 
     #endregion
