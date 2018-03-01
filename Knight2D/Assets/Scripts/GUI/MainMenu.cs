@@ -92,7 +92,7 @@ public class MainMenu : MonoBehaviour
 
             // Error
             case "error":
-                tmp.SetText("Something bad happened");
+                tmp.SetText("Well this isn't good...");
                 tmp.color = new Color(1, 0, 0, 1);
                 break;
 

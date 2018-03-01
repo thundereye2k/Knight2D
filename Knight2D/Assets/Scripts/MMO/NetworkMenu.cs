@@ -53,7 +53,7 @@ public class NetworkMenu : MonoBehaviour
         var passhash = Convert.ToBase64String(hashBytes);
 
         var data = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), null, null);
-        var json = data.Jsonify();
+        var json = JsonUtility.ToJson(data);
         manager.Socket.Emit("menu-register", json, holder.Secret);
     }
 
@@ -79,11 +79,18 @@ public class NetworkMenu : MonoBehaviour
         Debug.Log(json);
 
         Status = data.status;
-        if (Status == "login")
+        switch (Status)
         {
-            CheckPassword(data.passhash, data.salt, data.token, data.username, data.email);
-        }
+            case "login":
+                CheckPassword(data.passhash, data.salt, data.token, data.username, data.email);
+                break;
+            case "register":
+                
+                break;
+            default:
+                break;
 
+        }
     }
 
     void OnError(Socket socket, Packet packet, params object[] args)
@@ -129,11 +136,6 @@ public class NetworkMenu : MonoBehaviour
             this.salt = salt;
             this.status = status;
             this.token = token;
-        }
-
-        public string Jsonify()
-        {
-            return JsonUtility.ToJson(this);
         }
     }
 
