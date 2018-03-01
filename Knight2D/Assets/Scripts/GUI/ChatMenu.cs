@@ -18,10 +18,6 @@ public class ChatMenu : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-    }
-
     public void SendChatMessage()
     {
         var input = inputObject.GetComponent<TMP_InputField>();

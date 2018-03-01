@@ -16,7 +16,7 @@ public class Holder : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
+        
         DontDestroyOnLoad(gameObject);
     }
 

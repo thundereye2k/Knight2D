@@ -52,8 +52,8 @@ public class NetworkMenu : MonoBehaviour
         Array.Copy(hash, 0, hashBytes, 16, 20);
         var passhash = Convert.ToBase64String(hashBytes);
 
-        var userJSON = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), "[USER_REGISTER]", null);
-        var json = userJSON.Jsonify();
+        var data = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), null, null);
+        var json = data.Jsonify();
         manager.Socket.Emit("menu-register", json, holder.Secret);
     }
 
@@ -63,8 +63,8 @@ public class NetworkMenu : MonoBehaviour
         playerPassword = password;
         Debug.Log(password);
         Debug.Log(username);
-        var userJSON = new UserJSON(username, null, null, null, "[USER_LOGIN]", null);
-        var json = JsonUtility.ToJson(userJSON);
+        var data = new UserJSON(username, null, null, null, null, null);
+        var json = JsonUtility.ToJson(data);
         manager.Socket.Emit("menu-login", json, holder.Secret);
     }
 
@@ -75,13 +75,13 @@ public class NetworkMenu : MonoBehaviour
     void OnCompleteMenu(Socket socket, Packet packet, params object[] args)
     {
         var json = (string)args[0];
-        var userJSON = JsonUtility.FromJson<UserJSON>(json);
+        var data = JsonUtility.FromJson<UserJSON>(json);
         Debug.Log(json);
 
-        Status = userJSON.status;
+        Status = data.status;
         if (Status == "login")
         {
-            CheckPassword(userJSON.passhash, userJSON.salt, userJSON.token, userJSON.username, userJSON.email);
+            CheckPassword(data.passhash, data.salt, data.token, data.username, data.email);
         }
 
     }
@@ -118,10 +118,10 @@ public class NetworkMenu : MonoBehaviour
         public string email;
         public string passhash;
         public string salt;
-        public string status;
         public string token;
+        public string status;
 
-        public UserJSON(string username, string email, string passhash, string salt, string status, string token)
+        public UserJSON(string username, string email, string passhash, string salt, string token, string status)
         {
             this.username = username;
             this.email = email;
