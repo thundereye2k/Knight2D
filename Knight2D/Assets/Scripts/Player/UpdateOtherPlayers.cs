@@ -4,7 +4,6 @@ public class UpdateOtherPlayers : MonoBehaviour
 {
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
-    private Vector3 moveVelocity;
     private Vector3 targetPosition;
     private Vector2 lastMove;
     private string skillsJSON;
@@ -14,7 +13,7 @@ public class UpdateOtherPlayers : MonoBehaviour
     private float mana;
     private string attackType;
     private float attackRadian;
-    private float baseMoveSpeed = 100f;
+    private float baseSpeed = 100f;
     private float attackTimer = 0f;
 
     void Start()
@@ -25,18 +24,15 @@ public class UpdateOtherPlayers : MonoBehaviour
         targetPosition = transform.position;
     }
 
-    void FixedUpdate()
-    {
-
-    }
-
     void Update()
     {
         #region Movement
 
         var currentPosition = transform.position;
-        var moveSpeed = baseMoveSpeed;
         var playerMoving = false;
+        var fps = 1f / Time.deltaTime;
+
+        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, baseSpeed / fps);
 
         if (moveH != 0f)
         {
@@ -49,11 +45,6 @@ public class UpdateOtherPlayers : MonoBehaviour
             lastMove.x = 0f;
             lastMove.y = moveV;
             playerMoving = true;
-        }
-
-        if (moveH != 0f && moveV != 0f)
-        {
-            moveSpeed *= 1 / Mathf.Sqrt(2);
         }
 
         #endregion
@@ -75,10 +66,10 @@ public class UpdateOtherPlayers : MonoBehaviour
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
                 var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
-                var ac = obj.GetComponent<AttackController>();
+                var ac = obj.GetComponent<AttackObject>();
                 ac.Radian = attackRadian;
                 ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-                ac.MaxDistance = baseMoveSpeed * 5;
+                ac.MaxDistance = 500;
                 ac.Damage = 10f;
             }
         }
@@ -99,17 +90,6 @@ public class UpdateOtherPlayers : MonoBehaviour
         myAnimator.SetFloat("LastMoveY", lastMove.y);
 
         #endregion
-    }
-
-    void LateUpdate()
-    {
-
-        var currentPosition = transform.position;
-        if (currentPosition != targetPosition)
-        {
-            transform.position = Vector3.MoveTowards(currentPosition, targetPosition, 0.1f);
-        }
-
     }
 
     public void UpdateOtherPlayer(Vector3 targetPosition, Vector2 lastMove, float moveH, float moveV, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana)

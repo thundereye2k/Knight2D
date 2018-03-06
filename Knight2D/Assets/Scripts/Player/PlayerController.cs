@@ -6,6 +6,7 @@ using CnControls;
 public class PlayerController : MonoBehaviour
 {
     private CinemachineVirtualCamera vCamera;
+    private AttackController attackController;
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector3 moveVelocity;
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        attackController = gameObject.GetComponent<AttackController>();
+
         vCamera = GameObject.FindGameObjectWithTag("vCamera").GetComponent<CinemachineVirtualCamera>();
         vCamera.Follow = transform;
 
@@ -122,18 +125,10 @@ public class PlayerController : MonoBehaviour
 
             if (attackTimer > tick)
             {
+                attackTimer = 0f;
+                attackController.CreateAttack(attackRadian, attackType);
                 //var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
                 //Debug.DrawLine(currentPosition, aimPosition, Color.blue);
-                attackTimer = 0f;
-                var res = Resources.Load("Attack1", typeof(GameObject));
-                var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
-                var rot = Quaternion.Euler(0, 0, 0);
-                var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
-                var ac = obj.GetComponent<AttackController>();
-                ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-                ac.Radian = attackRadian;
-                ac.MaxDistance = 300f;
-                ac.Damage = 10f;
             }
         }
 
@@ -173,7 +168,7 @@ public class PlayerController : MonoBehaviour
         #endregion
     }
 
-    public void enemyHit(AttackController.EnemyHit hit)
+    public void enemyHit(AttackObject.EnemyHit hit)
     {
         var json = JsonUtility.ToJson(hit);
         jsonList.Add(json);

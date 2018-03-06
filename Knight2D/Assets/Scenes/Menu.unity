@@ -2161,8 +2161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f456460808f130a4fb2b27c5eebbff6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkObject: {fileID: 1667254872}
-  warnObject: {fileID: 1568469500}
+  network: {fileID: 1667254873}
+  warn: {fileID: 1568469502}
 --- !u!1 &1398490627
 GameObject:
   m_ObjectHideFlags: 0
@@ -3409,7 +3409,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holder: {fileID: 790154002}
-  status: 
 --- !u!4 &1667254874
 Transform:
   m_ObjectHideFlags: 0

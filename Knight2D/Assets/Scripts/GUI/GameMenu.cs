@@ -6,34 +6,27 @@ using UnityEngine.UI;
 
 public class GameMenu : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject fullScreenObject, networkObject, tickerObject, chatObject, sharderObject;
-    private bool shouldPause = false;
+    public NetworkPlay network;
+    public TextMeshProUGUI ticker;
+    public Canvas chat;
+    public GameObject sharder;
+    public GameObject fullScreen;
 
-    void Awake()
-    {
-        var network = networkObject.GetComponent<NetworkPlay>();
-        if (!network)
-        {
-            Application.Quit();
-        }
-    }
+    private bool shouldPause = false;
 
     void Start()
     {
 #if UNITY_IOS || UNITY_ANDROID || UNITY_XBOXONE || UNITY_PS4
-        fullScreenObject.SetActive(false);        
+        fullScreen.SetActive(false);
 #endif
 
 #if UNITY_STANDALONE || UNITY_WEBGL
-        fullScreenObject.SetActive(true);
+        fullScreen.SetActive(true);
 #endif
     }
 
-    void Update()
+    void OnGUI()
     {
-        var network = networkObject.GetComponent<NetworkPlay>();
-        var ticker = tickerObject.GetComponent<TextMeshProUGUI>();
         ticker.SetText(network.ticker);
 
         var player = GameObject.FindGameObjectWithTag("Player");
@@ -53,7 +46,6 @@ public class GameMenu : MonoBehaviour
 
     public void QuitGame()
     {
-        var network = networkObject.GetComponent<NetworkPlay>();
         network.DisconnectFromServer();
     }
 
@@ -64,29 +56,28 @@ public class GameMenu : MonoBehaviour
 
     public void ShowChat()
     {
-        var canvas = chatObject.GetComponent<Canvas>();
-        if (canvas.enabled)
+        if (chat.enabled)
         {
-            canvas.enabled = false;
+            chat.enabled = false;
             shouldPause = false;
         }
         else
         {
-            canvas.enabled = true;
+            chat.enabled = true;
             shouldPause = true;
         }
     }
 
     public void sharderPanel()
     {
-        if (sharderObject.activeSelf)
+        if (sharder.activeSelf)
         {
-            sharderObject.SetActive(false);
+            sharder.SetActive(false);
             shouldPause = false;
         }
         else
         {
-            sharderObject.SetActive(true);
+            sharder.SetActive(true);
             shouldPause = true;
         }
     }

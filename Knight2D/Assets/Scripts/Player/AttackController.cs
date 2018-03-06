@@ -4,69 +4,30 @@ using UnityEngine;
 
 public class AttackController : MonoBehaviour
 {
-    private Vector3 targetPosition;
-    private float timer = 0f;
-    private bool hit = false;
 
-    public float Radian { get; set; }
-    public float MaxDistance { get; set; }
-    public float Speed { get; set; }
-    public float Damage { get; set; }
-
+    // Use this for initialization
     void Start()
     {
-        var currentPostion = transform.position;
-        targetPosition = new Vector3((Mathf.Cos(Radian) * MaxDistance) + currentPostion.x, (Mathf.Sin(Radian) * MaxDistance) + currentPostion.y, 0);
+
     }
 
-    void FixedUpdate()
-    {
-        var currentPostion = transform.position;
-        transform.position = Vector3.MoveTowards(currentPostion, targetPosition, Speed);
-    }
-
+    // Update is called once per frame
     void Update()
     {
-        var currentPostion = transform.position;
-        timer += Time.deltaTime;
-        if (currentPostion == targetPosition || timer >= 5f)
-        {
-            hit = true;
-        }
+
     }
 
-    void OnTriggerEnter2D(Collider2D coll)
+    public void CreateAttack(float attackRadian, string attackType)
     {
-        if (coll.gameObject.tag == "Enemy")
-        {
-            var pc = gameObject.GetComponentInParent<PlayerController>();
-            var eh = new EnemyHit(coll.gameObject.name, Damage);
-            pc.enemyHit(eh);
-            hit = true;
-        }
-        if (coll.gameObject.tag == "Objects")
-        {
-            hit = true;
-        }
-    }
-
-    void LateUpdate()
-    {
-        if (hit)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public class EnemyHit
-    {
-        public string username;
-        public float damage;
-
-        public EnemyHit(string username, float damage)
-        {
-            this.username = username;
-            this.damage = damage;
-        }
+        var currentPosition = gameObject.transform.position;
+        var res = Resources.Load("Attack1", typeof(GameObject));
+        var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
+        var rot = Quaternion.Euler(0, 0, 0);
+        var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
+        var ac = obj.GetComponent<AttackObject>();
+        ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
+        ac.Radian = attackRadian;
+        ac.MaxDistance = 500f;
+        ac.Damage = 10f;
     }
 }

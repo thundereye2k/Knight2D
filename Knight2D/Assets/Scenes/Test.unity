@@ -2043,8 +2043,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1881840594}
   m_HandleRect: {fileID: 1881840593}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2595,11 +2595,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcd6e74a109711e48a1ad704da763555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullScreenObject: {fileID: 1227748255}
-  networkObject: {fileID: 299912207}
-  tickerObject: {fileID: 1496751938}
-  chatObject: {fileID: 788333637}
-  sharderObject: {fileID: 93540138}
+  network: {fileID: 299912208}
+  ticker: {fileID: 1496751940}
+  chat: {fileID: 788333641}
+  sharder: {fileID: 93540138}
+  fullScreen: {fileID: 1227748255}
 --- !u!114 &699865528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2862,8 +2862,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae3b69a36e4157b4c8e0723cb12b9564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkObject: {fileID: 299912207}
-  inputObject: {fileID: 976503747}
+  network: {fileID: 299912208}
+  input: {fileID: 976503749}
 --- !u!1 &805586095
 GameObject:
   m_ObjectHideFlags: 0

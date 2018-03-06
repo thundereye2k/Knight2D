@@ -6,19 +6,9 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject networkObject, warnObject;
+    public NetworkMenu network;
+    public TextMeshProUGUI warn;
     private string status;
-    private float timer = 0f;
-
-    void Awake()
-    {
-        var network = networkObject.GetComponent<NetworkMenu>();
-        if (!network)
-        {
-            Application.Quit();
-        }
-    }
 
     void Start()
     {
@@ -37,68 +27,66 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        var tmp = warnObject.GetComponent<TextMeshProUGUI>();
-        var network = networkObject.GetComponent<NetworkMenu>();
         status = network.Status;
 
         switch (status)
         {
             // Login
             case "play":
-                tmp.SetText("Login successful");
-                tmp.color = new Color(0, 1, 0, 1);
+                warn.SetText("Login successful");
+                warn.color = new Color(0, 1, 0, 1);
                 break;
 
             case "wrong":
-                tmp.SetText("Username or password are incorrect");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Username or password are incorrect");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             case "notfound":
-                tmp.SetText("Username does not exist");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Username does not exist");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             // Register
             case "register":
-                tmp.SetText("Registration successful");
-                tmp.color = new Color(0, 1, 0, 1);
+                warn.SetText("Registration successful");
+                warn.color = new Color(0, 1, 0, 1);
                 break;
 
             case "duplicate":
-                tmp.SetText("Username or email already exist");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Username or email already exist");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             case "password":
-                tmp.SetText("Password needs to be between 8-24 characters");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Password needs to be between 8-24 characters");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             case "username":
-                tmp.SetText("Username needs to be between 3-16 characters");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Username needs to be between 3-16 characters");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             case "email":
-                tmp.SetText("Email address is not valid");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Email address is not valid");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             case "bad":
-                tmp.SetText("No bad words :(");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("No bad words :(");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             // Error
             case "error":
-                tmp.SetText("Well this isn't good...");
-                tmp.color = new Color(1, 0, 0, 1);
+                warn.SetText("Well this isn't good...");
+                warn.color = new Color(1, 0, 0, 1);
                 break;
 
             default:
-                tmp.SetText("");
-                tmp.color = new Color(0, 0, 0, 0);
+                warn.SetText("");
+                warn.color = new Color(0, 0, 0, 0);
                 break;
         }
     }
@@ -111,7 +99,6 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString("username", usernameLogin.text);
         PlayerPrefs.SetString("password", passwordLogin.text);
 
-        var network = networkObject.GetComponent<NetworkMenu>();
         network.CommandLogin(usernameLogin.text, passwordLogin.text);
     }
 
@@ -123,7 +110,6 @@ public class MainMenu : MonoBehaviour
 
         if (IsUsernameLong(usernameRegister.text) && IsPasswordLong(passwordRegister.text) && IsEmailValid(emailRegister.text))
         {
-            var network = networkObject.GetComponent<NetworkMenu>();
             network.CommandRegister(usernameRegister.text, emailRegister.text, passwordRegister.text);
         }
     }
@@ -141,7 +127,6 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            var network = networkObject.GetComponent<NetworkMenu>();
             network.Status = "email";
             return false;
         }
@@ -155,7 +140,6 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            var network = networkObject.GetComponent<NetworkMenu>();
             network.Status = "password";
             return false;
         }
@@ -169,7 +153,6 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            var network = networkObject.GetComponent<NetworkMenu>();
             network.Status = "username";
             return false;
         }
