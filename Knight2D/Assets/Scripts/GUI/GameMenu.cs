@@ -27,7 +27,7 @@ public class GameMenu : MonoBehaviour
 
     void OnGUI()
     {
-        ticker.SetText(network.ticker);
+        ticker.text = network.Ticker;
 
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player)

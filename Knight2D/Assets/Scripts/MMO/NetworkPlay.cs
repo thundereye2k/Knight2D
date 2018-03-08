@@ -14,12 +14,27 @@ public class NetworkPlay : MonoBehaviour
     private bool isPaused = false;
     private int maxMessages = 25;
     private List<MessageObject> messageList = new List<MessageObject>();
+    private float ping = 0;
 
     public GameObject content;
-    public string ticker;
-    public float ping = 0;
     public GameObject[] allPlayers;
     public GameObject[] allEnemies;
+
+    public string Ticker { get; set; }
+
+    void Awake()
+    {
+        var obj = GameObject.FindGameObjectWithTag("Holder");
+
+        if (obj == null)
+        {
+            SceneManager.LoadScene("Menu");
+        }
+        else
+        {
+            holder = obj.GetComponent<Holder>();
+        }
+    }
 
     void OnApplicationFocus(bool hasFocus)
     {
@@ -38,21 +53,8 @@ public class NetworkPlay : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        manager.Close();
         Debug.Log("Application ending after " + Time.time + " seconds");
-    }
-
-    void Awake()
-    {
-        var obj = GameObject.FindGameObjectWithTag("Holder");
-
-        if (obj == null)
-        {
-            SceneManager.LoadScene("Menu");
-        }
-        else
-        {
-            holder = obj.GetComponent<Holder>();
-        }
     }
 
     void Start()
@@ -81,10 +83,10 @@ public class NetworkPlay : MonoBehaviour
 
         ping = +Time.deltaTime;
 
-        if (ping > 100f)
+        if (ping > 1000f)
         {
-            ping = 0f;
-            // TODO: timeout connection
+            manager.Close();
+            SceneManager.LoadScene("Menu");
         }
     }
 
@@ -255,8 +257,8 @@ public class NetworkPlay : MonoBehaviour
         var res = Resources.Load("Text", typeof(GameObject));
         var obj = Instantiate(res, content.transform) as GameObject;
         var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
-        tmp.SetText(data.username + ": " + data.message);
-        ticker = tmp.text;
+        tmp.text = data.username + ": " + data.message;
+        Ticker = tmp.text;
 
         var messageObject = new MessageObject(tmp.text, obj);
         messageList.Add(messageObject);

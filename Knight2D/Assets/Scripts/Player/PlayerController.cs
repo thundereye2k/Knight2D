@@ -141,12 +141,15 @@ public class PlayerController : MonoBehaviour
 
         #region Animation
 
-        myAnimator.SetFloat("MoveX", moveH);
-        myAnimator.SetFloat("MoveY", moveV);
-        myAnimator.SetBool("PlayerMoving", playerMoving);
-        myAnimator.SetFloat("LastMoveX", lastMove.x);
-        myAnimator.SetFloat("LastMoveY", lastMove.y);
-
+        if (!Menu)
+        {
+            myAnimator.SetFloat("MoveX", moveH);
+            myAnimator.SetFloat("MoveY", moveV);
+            myAnimator.SetBool("PlayerMoving", playerMoving);
+            myAnimator.SetFloat("LastMoveX", lastMove.x);
+            myAnimator.SetFloat("LastMoveY", lastMove.y);
+        }
+        
         #endregion
     }
 

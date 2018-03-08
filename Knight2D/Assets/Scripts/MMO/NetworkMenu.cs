@@ -17,7 +17,7 @@ public class NetworkMenu : MonoBehaviour
 
     void Awake()
     {
-        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>();
+        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>() ?? null;
 
         if (holder == null)
         {
@@ -85,7 +85,7 @@ public class NetworkMenu : MonoBehaviour
                 CheckPassword(data.passhash, data.salt, data.token, data.username, data.email);
                 break;
             case "register":
-                
+
                 break;
             default:
                 break;

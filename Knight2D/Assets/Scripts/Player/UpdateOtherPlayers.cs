@@ -2,6 +2,7 @@
 
 public class UpdateOtherPlayers : MonoBehaviour
 {
+    private AttackController attackController;
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector3 targetPosition;
@@ -18,10 +19,19 @@ public class UpdateOtherPlayers : MonoBehaviour
 
     void Start()
     {
-        myRigidbody = GetComponent<Rigidbody2D>();
-        myAnimator = GetComponent<Animator>();
+        attackController = gameObject.GetComponent<AttackController>();
+
+        myRigidbody = gameObject.GetComponent<Rigidbody2D>();
+        myAnimator = gameObject.GetComponent<Animator>();
 
         targetPosition = transform.position;
+    }
+
+    void FixedUpdate()
+    {
+        var currentPosition = transform.position;
+        var fps = 1f / Time.deltaTime;
+        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, baseSpeed / fps);
     }
 
     void Update()
@@ -31,8 +41,6 @@ public class UpdateOtherPlayers : MonoBehaviour
         var currentPosition = transform.position;
         var playerMoving = false;
         var fps = 1f / Time.deltaTime;
-
-        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, baseSpeed / fps);
 
         if (moveH != 0f)
         {
@@ -59,24 +67,16 @@ public class UpdateOtherPlayers : MonoBehaviour
         {
             if (attackTimer > tick)
             {
+                attackTimer = 0f;
+                attackController.CreateAttack(attackRadian, attackType);
                 //var aimPosition = new Vector3(currentPosition.x + Mathf.Cos(attackRadian) * 100, currentPosition.y + Mathf.Sin(attackRadian) * 100, 0f);
                 //Debug.DrawLine(currentPosition, aimPosition, Color.blue);
-                attackTimer = 0f;
-                var res = Resources.Load("Attack1", typeof(GameObject));
-                var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
-                var rot = Quaternion.Euler(0, 0, 0);
-                var obj = Instantiate(res, pos, rot, gameObject.transform) as GameObject;
-                var ac = obj.GetComponent<AttackObject>();
-                ac.Radian = attackRadian;
-                ac.Speed = new TypeInfo().getPlayerAttackSpeed(attackType);
-                ac.MaxDistance = 500;
-                ac.Damage = 10f;
             }
         }
 
         if (attackTimer > 1f)
         {
-            attackTimer = 0;
+            attackTimer = 1f;
         }
 
         #endregion

@@ -8,7 +8,6 @@ public class MainMenu : MonoBehaviour
 {
     public NetworkMenu network;
     public TextMeshProUGUI warn;
-    private string status;
 
     void Start()
     {
@@ -25,11 +24,9 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void Update()
+    void OnGUI()
     {
-        status = network.Status;
-
-        switch (status)
+        switch (network.Status)
         {
             // Login
             case "play":
