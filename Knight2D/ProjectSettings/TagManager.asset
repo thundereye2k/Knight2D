@@ -16,6 +16,9 @@ TagManager:
   - Moblie
   - GUI
   - Zone
+  - TestTag1
+  - TestTag2
+  - TestTag3
   layers:
   - Default
   - TransparentFX

@@ -85,8 +85,8 @@ public class NetworkPlay : MonoBehaviour
 
         if (ping > 1000f)
         {
-            manager.Close();
-            SceneManager.LoadScene("Menu");
+            //manager.Close();
+            //SceneManager.LoadScene("Menu");
         }
     }
 
@@ -130,7 +130,7 @@ public class NetworkPlay : MonoBehaviour
         {
             var pos = new Vector3(data.positionX, data.positionY, 0);
             var rot = new Quaternion(0, 0, 0, 0);
-            var res = Resources.Load("Player", typeof(GameObject));
+            var res = Resources.Load("Hero", typeof(GameObject));
 
             player = Instantiate(res, pos, rot) as GameObject;
             player.name = data.username;
