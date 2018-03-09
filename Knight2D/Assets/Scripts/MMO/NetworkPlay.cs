@@ -130,7 +130,7 @@ public class NetworkPlay : MonoBehaviour
         {
             var pos = new Vector3(data.positionX, data.positionY, 0);
             var rot = new Quaternion(0, 0, 0, 0);
-            var res = Resources.Load("Hero", typeof(GameObject));
+            var res = Resources.Load("Player", typeof(GameObject));
 
             player = Instantiate(res, pos, rot) as GameObject;
             player.name = data.username;
