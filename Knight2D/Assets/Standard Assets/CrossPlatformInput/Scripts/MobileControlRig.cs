@@ -79,7 +79,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 #if MOBILE_INPUT
 		EnableControlRig(true);
 #else
-        EnableControlRig(false);
+            EnableControlRig(false);
 #endif
         }
 
