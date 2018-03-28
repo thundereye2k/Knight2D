@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 224263881871895608}
   - component: {fileID: 222662656467336682}
   - component: {fileID: 114891297277584032}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: EnemyHealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 222079903527074458}
   - component: {fileID: 114053716179204378}
   - component: {fileID: 114353686040254324}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Status Fill 01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

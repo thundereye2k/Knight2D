@@ -7,7 +7,10 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public NetworkMenu network;
-    public TextMeshProUGUI warn;
+    public TMP_InputField loginUsername, loginPassword, registerUsername, registerEmail, registerPassword, registerVerify;
+    public TextMeshProUGUI warnLogin, warnRegister;
+    public Button loginSubmit, loginRegister, registerBack, registerSubmit, popupAccept;
+    public GameObject Login, Regsiter, Popup;
 
     void Start()
     {
@@ -16,98 +19,129 @@ public class MainMenu : MonoBehaviour
 
         if (usernameStored != null && passwordStored != null)
         {
-            var usernameLogin = GameObject.Find("LoginInputUsername").GetComponentInChildren<TMP_InputField>();
-            var passwordLogin = GameObject.Find("LoginInputPassword").GetComponentInChildren<TMP_InputField>();
-
-            usernameLogin.text = usernameStored;
-            passwordLogin.text = passwordStored;
+            loginUsername.text = usernameStored;
+            loginPassword.text = passwordStored;
         }
+
+        loginSubmit.onClick.AddListener(SubmitLogin);
+        loginRegister.onClick.AddListener(ToRegister);
+        registerBack.onClick.AddListener(ToLogin);
+        registerSubmit.onClick.AddListener(SubmitRegister);
+        popupAccept.onClick.AddListener(AcceptPopup);
     }
 
     void OnGUI()
     {
+        if (network.Status == "warn")
+        {
+            if (!Popup.activeSelf)
+            {
+                Popup.SetActive(true);
+            }
+        }
+
         switch (network.Status)
         {
             // Login
             case "play":
-                warn.SetText("Login successful");
-                warn.color = new Color(0, 1, 0, 1);
+                warnLogin.SetText("Login successful");
+                warnLogin.color = new Color(0, 1, 0, 1);
                 break;
 
             case "wrong":
-                warn.SetText("Username or password are incorrect");
-                warn.color = new Color(1, 0, 0, 1);
+                warnLogin.SetText("Username or password are incorrect");
+                warnLogin.color = new Color(1, 0, 0, 1);
                 break;
 
             case "notfound":
-                warn.SetText("Username does not exist");
-                warn.color = new Color(1, 0, 0, 1);
+                warnLogin.SetText("Username does not exist");
+                warnLogin.color = new Color(1, 0, 0, 1);
                 break;
 
             // Register
             case "register":
-                warn.SetText("Registration successful");
-                warn.color = new Color(0, 1, 0, 1);
+                warnRegister.SetText("Registration successful");
+                warnRegister.color = new Color(0, 1, 0, 1);
                 break;
 
             case "duplicate":
-                warn.SetText("Username or email already exist");
-                warn.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("Username or email already exist");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             case "password":
-                warn.SetText("Password needs to be between 8-24 characters");
-                warn.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("Password needs to be greater then 8 characters");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             case "username":
-                warn.SetText("Username needs to be between 3-16 characters");
-                warn.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("Username needs to be between 3-16 characters");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             case "email":
-                warn.SetText("Email address is not valid");
-                warn.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("Email address is not valid");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             case "bad":
-                warn.SetText("No bad words :(");
-                warn.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("This is why we can't have nice things :(");
+                warnRegister.color = new Color(1, 0, 0, 1);
+                break;
+
+            case "nomatch":
+                warnRegister.SetText("Passwords do not match");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             // Error
             case "error":
-                warn.SetText("Well this isn't good...");
-                warn.color = new Color(1, 0, 0, 1);
+                warnLogin.SetText("Well this isn't good... it broke :(");
+                warnLogin.color = new Color(1, 0, 0, 1);
+                warnRegister.SetText("Well this isn't good... it broke :(");
+                warnRegister.color = new Color(1, 0, 0, 1);
                 break;
 
             default:
-                warn.SetText("");
-                warn.color = new Color(0, 0, 0, 0);
+                warnLogin.SetText("");
+                warnLogin.color = new Color(0, 0, 0, 0);
+                warnRegister.SetText("");
+                warnRegister.color = new Color(0, 0, 0, 0);
                 break;
         }
     }
 
-    public void SubmitLogin()
+    private void AcceptPopup()
     {
-        var usernameLogin = GameObject.Find("LoginInputUsername").GetComponentInChildren<TMP_InputField>();
-        var passwordLogin = GameObject.Find("LoginInputPassword").GetComponentInChildren<TMP_InputField>();
-
-        PlayerPrefs.SetString("username", usernameLogin.text);
-        PlayerPrefs.SetString("password", passwordLogin.text);
-
-        network.CommandLogin(usernameLogin.text, passwordLogin.text);
+        network.Status = "";
+        Popup.SetActive(false);
     }
 
-    public void SubmitRegister()
+    private void ToRegister()
     {
-        var usernameRegister = GameObject.Find("RegisterInputUsername").GetComponentInChildren<TMP_InputField>();
-        var passwordRegister = GameObject.Find("RegisterInputPassword").GetComponentInChildren<TMP_InputField>();
-        var emailRegister = GameObject.Find("RegisterInputEmail").GetComponentInChildren<TMP_InputField>();
+        Login.SetActive(false);
+        Regsiter.SetActive(true);
+    }
 
-        if (IsUsernameLong(usernameRegister.text) && IsPasswordLong(passwordRegister.text) && IsEmailValid(emailRegister.text))
+    private void ToLogin()
+    {
+        Regsiter.SetActive(false);
+        Login.SetActive(true);
+    }
+
+    private void SubmitLogin()
+    {
+        PlayerPrefs.SetString("username", loginUsername.text);
+        PlayerPrefs.SetString("password", loginPassword.text);
+
+        network.CommandLogin(loginUsername.text, loginPassword.text);
+    }
+
+    private void SubmitRegister()
+    {
+        if (IsProfanity(registerUsername.text) && IsUsernameLong(registerUsername.text) && IsPasswordLong(registerPassword.text) && IsEmailValid(registerEmail.text) && IsPasswordMatch(registerPassword.text, registerVerify.text))
         {
-            network.CommandRegister(usernameRegister.text, emailRegister.text, passwordRegister.text);
+            network.CommandRegister(registerUsername.text, registerEmail.text, registerPassword.text);
         }
     }
 
@@ -131,13 +165,26 @@ public class MainMenu : MonoBehaviour
 
     private bool IsPasswordLong(string password)
     {
-        if (password.Length >= 8 && password.Length <= 24)
+        if (password.Length >= 8)
         {
             return true;
         }
         else
         {
             network.Status = "password";
+            return false;
+        }
+    }
+
+    private bool IsPasswordMatch(string password, string verify)
+    {
+        if (password == verify)
+        {
+            return true;
+        }
+        else
+        {
+            network.Status = "nomatch";
             return false;
         }
     }
@@ -151,6 +198,20 @@ public class MainMenu : MonoBehaviour
         else
         {
             network.Status = "username";
+            return false;
+        }
+    }
+
+    private bool IsProfanity(string username)
+    {
+        var input = new BadWords().FilterProfanity(username);
+        if (input == username)
+        {
+            return true;
+        }
+        else
+        {
+            network.Status = "bad";
             return false;
         }
     }

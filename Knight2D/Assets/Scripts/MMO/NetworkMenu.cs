@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 public class NetworkMenu : MonoBehaviour
 {
-    [SerializeField]
     private Holder holder;
     private SocketManager manager;
     private string playerPassword;
@@ -17,11 +16,15 @@ public class NetworkMenu : MonoBehaviour
 
     void Awake()
     {
-        holder = GameObject.FindGameObjectWithTag("Holder").GetComponent<Holder>() ?? null;
+        var obj = GameObject.FindGameObjectWithTag("Holder");
 
-        if (holder == null)
+        if (obj == null)
         {
             Application.Quit();
+        }
+        else
+        {
+            holder = obj.GetComponent<Holder>();
         }
     }
 
@@ -33,10 +36,14 @@ public class NetworkMenu : MonoBehaviour
             Reconnection = false
         };
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
-        //manager = new SocketManager(new Uri("localhost:5000/socket.io/"), options);
-
+    
         manager.Socket.On("menu-player", OnCompleteMenu);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
+
+        if (holder.Warn)
+        {
+            Status = "warn";
+        }
     }
 
     #region Commands

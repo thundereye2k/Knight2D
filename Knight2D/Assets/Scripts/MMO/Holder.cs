@@ -8,6 +8,7 @@ public class Holder : MonoBehaviour
     public string PlayerUsername { get; set; }
     public string PlayerEmail { get; set; }
     public string Secret { get; set; }
+    public bool Warn { get; set; }
 
     void Awake()
     {
@@ -16,7 +17,7 @@ public class Holder : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+
         DontDestroyOnLoad(gameObject);
     }
 
@@ -26,6 +27,7 @@ public class Holder : MonoBehaviour
         PlayerUsername = null;
         PlayerEmail = null;
         Secret = SHA256HexHashString("THISISMYSECRETSTRING123456789UNITYMMOSWAG");
+        Warn = false;
     }
 
     private static string ToHex(byte[] bytes, bool upperCase)

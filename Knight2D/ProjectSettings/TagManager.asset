@@ -5,20 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - vCamera
-  - Hitbox
   - Holder
-  - NetworkMenu
-  - NetworkPlay
   - OtherPlayer
   - Attack
   - Objects
-  - Moblie
-  - GUI
   - Zone
-  - TestTag1
-  - TestTag2
-  - TestTag3
+  - HealthBars
+  - World
+  - CMCamera
   layers:
   - Default
   - TransparentFX
