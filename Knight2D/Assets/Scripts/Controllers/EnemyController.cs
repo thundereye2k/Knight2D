@@ -7,7 +7,6 @@ using System.Linq;
 public class EnemyController : MonoBehaviour
 {
     private Animator myAnimator;
-    private Rigidbody2D myRigidbody;
     private Vector2 lastMove;
     private GameObject healthBar;
     private RectTransform targetCanvas;
@@ -25,7 +24,6 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
         targetPosition = transform.position;
 

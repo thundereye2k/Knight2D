@@ -5,7 +5,6 @@ using UnityEngine;
 public class ObjectController : MonoBehaviour
 {
     private Vector3 targetPosition;
-    private float timer = 0f;
     private bool hit = false;
 
     public float Radian { get; set; }

@@ -481,6 +481,7 @@ public class NetworkPlay : MonoBehaviour
         manager.Close();
         SceneManager.LoadScene("Menu");
     }
+    
     public float GetAverage(List<float> list)
     {
         float total = 0f;

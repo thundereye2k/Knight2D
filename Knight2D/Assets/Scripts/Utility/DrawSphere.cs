@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DrawSphere : MonoBehaviour {
+public class DrawSphere : MonoBehaviour
+{
+    public float radius;
 
-	public float radius;
-
-    void OnDrawGizmos() {
+    void OnDrawGizmos()
+    {
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, radius);
     }

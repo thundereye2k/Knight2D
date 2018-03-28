@@ -2,10 +2,9 @@
 
 public class OtherPlayerController : MonoBehaviour
 {
-    private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector2 lastMove, moveVelocity;
-    private float attackTimer = 0f, baseSpeed = 100f, lastRadian;
+    private float attackTimer = 0f, baseSpeed = 100f;
 
     public NetworkPlay network { get; set; }
     public Vector3 targetPosition { get; set; }
@@ -16,21 +15,14 @@ public class OtherPlayerController : MonoBehaviour
 
     void Start()
     {
-        myRigidbody = gameObject.GetComponent<Rigidbody2D>();
         myAnimator = gameObject.GetComponent<Animator>();
-
         targetPosition = transform.position;
     }
 
     void FixedUpdate()
     {
         var currentPosition = transform.position;
-        var ping = 0f;
         speed = speed != 0f ? speed : baseSpeed;
-
-        if (network)
-            ping = network.avgPing;
-
         var perc = 1f / (1f + network.avgPing);
         var step = speed * Time.fixedDeltaTime * perc;
         transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
