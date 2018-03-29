@@ -263,7 +263,7 @@ public class NetworkPlay : MonoBehaviour
         foreach (GameObject enemy in allEnemies)
         {
             var em = enemy.GetComponent<EnemyController>();
-            em.DestroyObjects();
+            em.DestroyObject();
         }
     }
 

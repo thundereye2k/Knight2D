@@ -11,10 +11,10 @@ using UnityStandardAssets.CrossPlatformInput;
 public class GameMenu : MonoBehaviour
 {
     public NetworkPlay network;
-    public TextMeshProUGUI tickerText, pingText, dpsText, playerName, playerHealthText, playerManaText;
+    public TextMeshProUGUI tickerText, pingText, dpsText, playerNameText, playerHealthText, playerManaText, playerLevelText;
     public TMP_InputField input;
     public GameObject chat, pause, move, shoot;
-    public Image playerHealth, playerMana;
+    public Image playerHealthBar, playerManaBar;
 
     private float colorTime = 0.5f, colorLerpTime = 0f;
     private bool shouldPause = false, chatMouseOver = false;
@@ -39,9 +39,10 @@ public class GameMenu : MonoBehaviour
             var pc = player.GetComponent<PlayerController>();
             dpsText.text = pc.dps == 0f ? "DPS: 0" : "DPS: " + pc.dps.ToString();
 
-            playerHealthText.text = Mathf.Floor(pc.health) + "/" + Mathf.Floor(pc.maxHealth);
-            playerHealth.fillAmount = pc.health / pc.maxHealth;
-            playerName.text = pc.gameObject.name;
+            playerHealthBar.fillAmount = pc.health / pc.maxHealth;
+            playerHealthText.text = pc.health + " / " + pc.maxHealth;
+            playerNameText.text = pc.gameObject.name;
+            playerLevelText.text = Mathf.Floor(pc.exp / 1000f).ToString();
 
             if (shouldPause)
             {
