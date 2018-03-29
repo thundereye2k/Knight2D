@@ -116,7 +116,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void DestroyObjects()
+    public void DestroyObject()
     {
         health = 0f;
     }

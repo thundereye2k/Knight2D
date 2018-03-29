@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
+    private List<float> expList = new List<float>();
 
     public float dps;
     public bool wasHit = false, canHit = true;
@@ -29,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
 
 #if MOBILE_INPUT
-    private FloatingJoystick joystickMovement, joystickAttack;
+    //private FloatingJoystick joystickMovement, joystickAttack;
 #endif
 
     void Start()
@@ -43,8 +44,8 @@ public class PlayerController : MonoBehaviour
         pause = false;
 
 #if MOBILE_INPUT
-        joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove").GetComponent<FloatingJoystick>();
-        joystickAttack = GameObject.FindGameObjectWithTag("JoystickShoot").GetComponent<FloatingJoystick>();
+        //joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove").GetComponent<FloatingJoystick>();
+        //joystickAttack = GameObject.FindGameObjectWithTag("JoystickShoot").GetComponent<FloatingJoystick>();
 #endif
     }
 
@@ -67,8 +68,8 @@ public class PlayerController : MonoBehaviour
         world = "test";
 
 #if MOBILE_INPUT
-        moveH = joystickMovement.Horizontal;
-        moveV = joystickMovement.Vertical;
+        //moveH = joystickMovement.Horizontal;
+        //moveV = joystickMovement.Vertical;
 #else
         moveH = CrossPlatformInputManager.GetAxisRaw("Horizontal");
         moveV = CrossPlatformInputManager.GetAxisRaw("Vertical");
@@ -103,12 +104,12 @@ public class PlayerController : MonoBehaviour
         var attackType = "null"; // TODO: attack filter
 
 #if MOBILE_INPUT
-        isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
-        if (isAttacking)
-        {
-            attackType = "fireball";
-            attackRadian = Mathf.Atan2(joystickAttack.Vertical, joystickAttack.Horizontal);
-        }
+        //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
+        //if (isAttacking)
+        //{
+        //    attackType = "fireball";
+        //    attackRadian = Mathf.Atan2(joystickAttack.Vertical, joystickAttack.Horizontal);
+        //}
 #else
         isAttacking = CrossPlatformInputManager.GetAxisRaw("Fire1") != 0f;
         if (isAttacking)
@@ -215,6 +216,12 @@ public class PlayerController : MonoBehaviour
             network.CommandMove(currentPosition, attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
             jsonList.Clear();
             networkTimer = 0f;
+
+            foreach (float e in expList)
+            {
+                exp += e;
+            }
+            expList.Clear();
         }
 
         #endregion
@@ -225,6 +232,7 @@ public class PlayerController : MonoBehaviour
         var json = JsonUtility.ToJson(hit);
         jsonList.Add(json);
         dpsList.Add(hit.damage);
+        expList.Add(hit.damage);
     }
 
     private float getTotal(List<float> list)
