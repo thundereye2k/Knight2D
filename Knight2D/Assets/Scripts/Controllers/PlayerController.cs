@@ -145,7 +145,7 @@ public class PlayerController : MonoBehaviour
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;
-                var oc = obj.GetComponent<ObjectController>();
+                var oc = obj.GetComponent<AttackController>();
                 oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 oc.Speed = attack.attackSpeed;
                 oc.MaxDistance = attack.attackDistance;
@@ -248,7 +248,7 @@ public class PlayerController : MonoBehaviour
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
     }
 
-    public void enemyHit(ObjectController.EnemyHit hit)
+    public void enemyHit(AttackController.EnemyHit hit)
     {
         var json = JsonUtility.ToJson(hit);
         jsonList.Add(json);

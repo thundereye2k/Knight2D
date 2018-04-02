@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectController : MonoBehaviour
+public class AttackController : MonoBehaviour
 {
     private Vector3 targetPosition;
     private bool hit = false;

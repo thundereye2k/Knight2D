@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class DamageController : MonoBehaviour
 {
+    private float takeDamage;
+
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if (coll.gameObject.tag == "Enemy")
         {
-            var pc = coll.gameObject.GetComponent<PlayerController>();
+            var pc = gameObject.GetComponent<PlayerController>();
             if (pc.canHit)
                 pc.wasHit = true;
         }
@@ -16,9 +18,9 @@ public class DamageController : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if (coll.gameObject.tag == "Enemy")
         {
-            var pc = coll.gameObject.GetComponent<PlayerController>();
+            var pc = gameObject.GetComponent<PlayerController>();
             if (pc.canHit)
                 pc.wasHit = true;
         }

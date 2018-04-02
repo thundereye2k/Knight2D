@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 212430763320502530}
   - component: {fileID: 61458527898998320}
   - component: {fileID: 50863139494610514}
-  - component: {fileID: 114070765623882532}
   - component: {fileID: 114350887038746216}
+  - component: {fileID: 114827157582670882}
   m_Layer: 8
   m_Name: fireball
   m_TagString: Attack
@@ -89,17 +89,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 13, y: 14}
   m_EdgeRadius: 0
---- !u!114 &114070765623882532
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1155516893642940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c99eac6c0fbd7148a10f19ce2ec40ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114350887038746216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -109,6 +98,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d75648ea44d04604db6df939333bdc64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114827157582670882
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1155516893642940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99e0ea47f9bc1b4ca798a1a193690be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212430763320502530

@@ -77,7 +77,7 @@ public class OtherPlayerController : MonoBehaviour
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;
-                var oc = obj.GetComponent<ObjectController>();
+                var oc = obj.GetComponent<AttackController>();
                 oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 oc.Speed = attack.attackSpeed;
                 oc.MaxDistance = attack.attackDistance;
