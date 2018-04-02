@@ -30,7 +30,7 @@ public class MainMenu : MonoBehaviour
         popupAccept.onClick.AddListener(AcceptPopup);
     }
 
-    void OnGUI()
+    void LateUpdate()
     {
         if (network.Status == "warn")
         {

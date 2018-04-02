@@ -10,9 +10,9 @@ TagManager:
   - Attack
   - Objects
   - Zone
-  - HealthBars
   - World
   - CMCamera
+  - HealthGUI
   layers:
   - Default
   - TransparentFX
@@ -22,8 +22,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Objects
+  - Minimap
   - 
   - 
   - 

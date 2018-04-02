@@ -107,7 +107,7 @@ public class NetworkPlay : MonoBehaviour
         manager.Socket.Emit("player-start", json, holder.Secret);
     }
 
-    public void CommandMove(Vector3 position, string attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, float exp, string itemsJSON, float speed, string[] jsonArray)
+    public void CommandMove(Vector3 position, int attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, float exp, string itemsJSON, float speed, string[] jsonArray)
     {
         var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, attackType, attackRadian, skillsJSON, health, mana, itemsJSON, exp, world, zone, speed);
         var json = JsonUtility.ToJson(data);
@@ -362,7 +362,7 @@ public class NetworkPlay : MonoBehaviour
         public string itemsJSON;
         public float positionX;
         public float positionY;
-        public string attackType;
+        public int attackType;
         public float attackRadian;
         public float health;
         public float mana;
@@ -371,7 +371,7 @@ public class NetworkPlay : MonoBehaviour
         public string zone;
         public float speed;
 
-        public PlayerJSON(string token, string username, float positionX, float positionY, string attackType, float attackRadian, string skillsJSON, float health, float mana, string itemsJSON, float exp, string world, string zone, float speed)
+        public PlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string skillsJSON, float health, float mana, string itemsJSON, float exp, string world, string zone, float speed)
         {
             this.token = token;
             this.username = username;
@@ -398,12 +398,12 @@ public class NetworkPlay : MonoBehaviour
         public string world;
         public float positionX;
         public float positionY;
-        public string attackType;
+        public int attackType;
         public float attackRadian;
         public string itemsJSON;
         public float speed;
 
-        public OtherPlayerJSON(string token, string username, float positionX, float positionY, string attackType, float attackRadian, string world, string zone, string itemsJSON, float speed)
+        public OtherPlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string world, string zone, string itemsJSON, float speed)
         {
             this.token = token;
             this.username = username;
@@ -481,7 +481,7 @@ public class NetworkPlay : MonoBehaviour
         manager.Close();
         SceneManager.LoadScene("Menu");
     }
-    
+
     public float GetAverage(List<float> list)
     {
         float total = 0f;

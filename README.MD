@@ -11,7 +11,3 @@ Credits:
 https://opengameart.org/content/2d-lost-garden-zelda-style-tiles-resized-to-32x32-with-additions
 
 https://opengameart.org/content/bosses-and-monsters-spritesheets-ars-notoria
-
-https://opengameart.org/content/zrpg-tiles
-
-https://opengameart.org/content/2d-shooter-effects-alpha-version

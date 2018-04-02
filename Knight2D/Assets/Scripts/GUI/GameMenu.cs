@@ -13,19 +13,18 @@ public class GameMenu : MonoBehaviour
     public NetworkPlay network;
     public TextMeshProUGUI tickerText, pingText, dpsText, playerNameText, playerHealthText, playerManaText, playerLevelText;
     public TMP_InputField input;
-    public GameObject chat, pause, move, shoot;
-    public Image playerHealthBar, playerManaBar;
+    public GameObject chatObject, pauseObject, moveJoystick, shootJoystick;
+    public Image playerHealthBar, playerManaBar, playerExpBar;
 
     private float colorTime = 0.5f, colorLerpTime = 0f;
     private bool shouldPause = false, chatMouseOver = false;
 
     void Start()
     {
-        chat.SetActive(false);
-        //chat.SetActive(true);
+        chatObject.SetActive(false);
     }
 
-    void OnGUI()
+    void LateUpdate()
     {
         tickerText.text = network.ticker;
         //var time = DateTime.Now.ToString("h:mm tt");
@@ -43,6 +42,7 @@ public class GameMenu : MonoBehaviour
             playerHealthText.text = pc.health + " / " + pc.maxHealth;
             playerNameText.text = pc.gameObject.name;
             playerLevelText.text = Mathf.Floor(pc.exp / 1000f).ToString();
+            playerExpBar.fillAmount = (pc.exp % 1000f) / 1000f;
 
             if (shouldPause)
             {
@@ -52,7 +52,6 @@ public class GameMenu : MonoBehaviour
             {
                 pc.pause = false;
             }
-
         }
 
         if (chatMouseOver)
@@ -64,7 +63,7 @@ public class GameMenu : MonoBehaviour
             }
             var percent = colorLerpTime / colorTime;
 
-            var images = chat.GetComponentsInChildren<Image>();
+            var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
                 switch (image.gameObject.name)
@@ -98,7 +97,7 @@ public class GameMenu : MonoBehaviour
             }
             var percent = colorLerpTime / colorTime;
 
-            var images = chat.GetComponentsInChildren<Image>();
+            var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
                 switch (image.gameObject.name)
@@ -137,14 +136,14 @@ public class GameMenu : MonoBehaviour
 
     public void ShowPasueMenu()
     {
-        if (pause.activeSelf)
+        if (pauseObject.activeSelf)
         {
-            pause.SetActive(false);
+            pauseObject.SetActive(false);
             shouldPause = false;
         }
         else
         {
-            pause.SetActive(true);
+            pauseObject.SetActive(true);
             shouldPause = true;
         }
     }
@@ -153,13 +152,13 @@ public class GameMenu : MonoBehaviour
 
     public void ShowChat()
     {
-        if (chat.activeSelf)
+        if (chatObject.activeSelf)
         {
-            chat.SetActive(false);
+            chatObject.SetActive(false);
         }
         else
         {
-            chat.SetActive(true);
+            chatObject.SetActive(true);
         }
     }
 

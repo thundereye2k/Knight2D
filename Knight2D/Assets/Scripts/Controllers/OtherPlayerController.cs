@@ -8,7 +8,7 @@ public class OtherPlayerController : MonoBehaviour
 
     public NetworkPlay network { get; set; }
     public Vector3 targetPosition { get; set; }
-    public string attackType { get; set; }
+    public int attackType { get; set; }
     public float attackRadian { get; set; }
     public float speed { get; set; }
     public string itemsJSON { get; set; }
@@ -64,16 +64,16 @@ public class OtherPlayerController : MonoBehaviour
 
         #region Attacking
 
-        if (attackType != "null")
+        if (attackType != 0)
         {
-            var attack = new TypeInfo().getPlayerAttackInfo(attackType);
+            var attack = AttackTypes.getAttackType((AttackTypes.EnumAttacks)attackType);
             var tick = 1f / attack.attacksPerSecond;
             if (attackTimer > tick)
             {
                 attackTimer = 0f;
                 currentPosition.x = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
                 currentPosition.y = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
-                var res = Resources.Load(attackType, typeof(GameObject));
+                var res = Resources.Load(attackType.ToString(), typeof(GameObject));
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;

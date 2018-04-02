@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector2 lastMove, moveVelocity;
+    private GameObject healthBar;
+    private RectTransform targetCanvas;
     private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
@@ -42,6 +44,15 @@ public class PlayerController : MonoBehaviour
         myAnimator = GetComponent<Animator>();
 
         pause = false;
+
+        var GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        targetCanvas = GUI.GetComponent<RectTransform>();
+
+        var res = Resources.Load("HealthBar", typeof(GameObject));
+        var pos = new Vector3(0, 0, 0);
+        var rot = Quaternion.Euler(0, 0, 0);
+        healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+        healthBar.name = gameObject.name;
 
 #if MOBILE_INPUT
         //joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove").GetComponent<FloatingJoystick>();
@@ -101,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
         var isAttacking = false;
         var attackRadian = 0f;
-        var attackType = "null"; // TODO: attack filter
+        AttackTypes.EnumAttacks attackType = 0; // TODO: attack filter
 
 #if MOBILE_INPUT
         //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
@@ -114,15 +125,15 @@ public class PlayerController : MonoBehaviour
         isAttacking = CrossPlatformInputManager.GetAxisRaw("Fire1") != 0f;
         if (isAttacking)
         {
-            attackType = "fireball";
+            attackType = AttackTypes.EnumAttacks.fireball;
             var mousePosition = Camera.main.ScreenToWorldPoint(CrossPlatformInputManager.mousePosition);
             attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         }
 #endif
         // TODO: Get attacks
-        if (attackType != "null")
+        if (attackType != 0)
         {
-            var attack = new TypeInfo().getPlayerAttackInfo(attackType);
+            var attack = AttackTypes.getAttackType(AttackTypes.EnumAttacks.fireball);
             var tick = 1f / attack.attacksPerSecond;
 
             if (attackTimer > tick)
@@ -130,7 +141,7 @@ public class PlayerController : MonoBehaviour
                 attackTimer = 0f;
                 currentPosition.x = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
                 currentPosition.y = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
-                var res = Resources.Load(attackType, typeof(GameObject));
+                var res = Resources.Load(attackType.ToString(), typeof(GameObject));
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;
@@ -213,7 +224,7 @@ public class PlayerController : MonoBehaviour
         if (networkTimer > networkTick)
         {
             var jsonArray = jsonList.ToArray();
-            network.CommandMove(currentPosition, attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
+            network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
             jsonList.Clear();
             networkTimer = 0f;
 
@@ -225,6 +236,16 @@ public class PlayerController : MonoBehaviour
         }
 
         #endregion
+    }
+
+    void LateUpdate()
+    {
+        var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+        var WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 48f);
+        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
     }
 
     public void enemyHit(ObjectController.EnemyHit hit)

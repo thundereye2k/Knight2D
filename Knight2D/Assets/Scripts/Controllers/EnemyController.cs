@@ -27,30 +27,18 @@ public class EnemyController : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         targetPosition = transform.position;
 
-        var GUI = GameObject.FindGameObjectWithTag("HealthBars");
+        var GUI = GameObject.FindGameObjectWithTag("HealthGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
-        var res = Resources.Load("EnemyHealthBar", typeof(GameObject));
+        var res = Resources.Load("HealthBar", typeof(GameObject));
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
         healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
-        healthBar.SetActive(false);
+        //healthBar.SetActive(false);
         healthBar.name = gameObject.name;
 
-        height = new TypeInfo().getHealthBarHeight(gameObject.name);
-    }
-
-    void OnGUI()
-    {
-        if (!healthBar.activeSelf)
-            healthBar.SetActive(true);
-
-        Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
-        Vector2 WorldObject_ScreenPosition = new Vector2(
-        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + height);
-        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-        healthBar.GetComponentInChildren<SimpleHealthBar>().UpdateBar(health, maxHealth);
+        var enemy = EnemyTypes.getEnemyEnum(gameObject.name);
+        height = EnemyTypes.getEnemyType(enemy).height;
     }
 
     void FixedUpdate()
@@ -61,7 +49,6 @@ public class EnemyController : MonoBehaviour
 
         if (currentPosition == targetPosition)
             transform.position = new Vector3(currentPosition.x + 0.0001f, currentPosition.y + 0.0001f, 0f);
-
     }
 
     void Update()
@@ -114,6 +101,19 @@ public class EnemyController : MonoBehaviour
             Destroy(healthBar);
             Destroy(gameObject);
         }
+    }
+
+    void LateUpdate()
+    {
+        //if (!healthBar.activeSelf)
+        //    healthBar.SetActive(true);
+
+        Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+        Vector2 WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + height);
+        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
     }
 
     public void DestroyObject()
