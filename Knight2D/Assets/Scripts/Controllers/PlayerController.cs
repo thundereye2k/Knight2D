@@ -9,12 +9,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
     private Vector2 lastMove, moveVelocity;
-    private GameObject healthBar;
+    private GameObject healthBar, GUI;
     private RectTransform targetCanvas;
     private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
-    private List<float> expList = new List<float>();
+    private List<GameObject> objList = new List<GameObject>();
 
     public float dps;
     public bool wasHit = false, canHit = true;
@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         pause = false;
 
-        var GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        GUI = GameObject.FindGameObjectWithTag("HealthGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
         var res = Resources.Load("HealthBar", typeof(GameObject));
@@ -227,12 +227,6 @@ public class PlayerController : MonoBehaviour
             network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
             jsonList.Clear();
             networkTimer = 0f;
-
-            foreach (float e in expList)
-            {
-                exp += e;
-            }
-            expList.Clear();
         }
 
         #endregion
@@ -241,11 +235,14 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+
         var WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 48f);
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
+
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
+
     }
 
     public void enemyHit(AttackController.EnemyHit hit)
@@ -253,7 +250,30 @@ public class PlayerController : MonoBehaviour
         var json = JsonUtility.ToJson(hit);
         jsonList.Add(json);
         dpsList.Add(hit.damage);
-        expList.Add(hit.damage);
+    }
+
+    public void addExp(GameObject o)
+    {
+        var distance = Vector3.Distance(o.transform.position, transform.position);
+        if (distance < 500f)
+        {
+            var enemy = EnemyTypes.getEnemyEnum(o.name);
+            var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
+            exp += expToAdd;
+
+            var res = Resources.Load("PopupText", typeof(GameObject));
+            var pos = new Vector3(0, 0, 0);
+            var rot = Quaternion.Euler(0, 0, 0);
+            var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+
+            var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+            var WorldObject_ScreenPosition = new Vector2(
+            ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f) + Random.Range(-16f, 16f)),
+            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 48f);
+
+            obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+            obj.GetComponent<PopupTextController>().setText(expToAdd.ToString(), PopupTextController.EnumPopupText.exp);
+        }
     }
 
     private float getTotal(List<float> list)

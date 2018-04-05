@@ -21,7 +21,7 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        chatObject.SetActive(false);
+        //chatObject.SetActive(false);
     }
 
     void LateUpdate()
@@ -61,71 +61,28 @@ public class GameMenu : MonoBehaviour
             {
                 colorLerpTime = colorTime;
             }
-            var percent = colorLerpTime / colorTime;
+            //var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
-                switch (image.gameObject.name)
-                {
-                    case "Panel":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
-                        break;
-                    case "Scrollbar Vertical":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(1f, 1f, 1f, 1f), percent);
-                        break;
-                    case "Bottom Bar":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(1f, 1f, 1f, 1f), percent);
-                        break;
-                    case "Input":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(1f, 1f, 1f, 1f), percent);
-                        break;
-                    case "Handle":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(1f, 1f, 1f, 1f), percent);
-                        break;
-                    default:
-                        break;
-                }
+                //image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
             }
         }
-        else if (!chatMouseOver)
+        else
         {
             colorLerpTime += Time.deltaTime;
             if (colorLerpTime > colorTime)
             {
                 colorLerpTime = colorTime;
             }
-            var percent = colorLerpTime / colorTime;
+            //var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
-                switch (image.gameObject.name)
-                {
-                    case "Panel":
-                        image.color = Color.Lerp(new Color(0f, 0f, 0f, 0.25f), new Color(0f, 0f, 0f, 0f), percent);
-                        break;
-                    case "Scrollbar Vertical":
-                        image.color = Color.Lerp(new Color(1f, 1f, 1f, 1f), new Color(0f, 0f, 0f, 0f), percent);
-                        break;
-                    case "Bottom Bar":
-                        image.color = Color.Lerp(new Color(1f, 1f, 1f, 1f), new Color(0f, 0f, 0f, 0f), percent);
-                        break;
-                    case "Input":
-                        image.color = Color.Lerp(new Color(1f, 1f, 1f, 1f), new Color(0f, 0f, 0f, 0f), percent);
-                        break;
-                    case "Handle":
-                        image.color = Color.Lerp(new Color(1f, 1f, 1f, 1f), new Color(0f, 0f, 0f, 0f), percent);
-                        break;
-                    default:
-                        break;
-                }
+                //image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
             }
-        }
-        else
-        {
-            colorLerpTime = 1f;
-            chatMouseOver = false;
         }
     }
 
@@ -152,14 +109,7 @@ public class GameMenu : MonoBehaviour
 
     public void ShowChat()
     {
-        if (chatObject.activeSelf)
-        {
-            chatObject.SetActive(false);
-        }
-        else
-        {
-            chatObject.SetActive(true);
-        }
+        chatObject.SetActive(!chatObject.activeSelf);
     }
 
     public void ChatSelected()

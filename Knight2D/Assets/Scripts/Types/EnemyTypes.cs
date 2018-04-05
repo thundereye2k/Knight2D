@@ -7,23 +7,28 @@ public class EnemyTypes
 {
     public enum EnumEnemies { basic, golems }
 
-    public float height;
-
-    public EnemyTypes(float height)
+    public class Enemy
     {
-        height = this.height;
+        public float height;
+        public float exp;
+
+        public Enemy(float height, float exp)
+        {
+            this.height = height;
+            this.exp = exp;
+        }
     }
 
-    public static EnemyTypes getEnemyType(EnumEnemies enemyType)
+    public static Enemy getEnemyType(EnumEnemies enemyType)
     {
-        EnemyTypes enemy;
+        Enemy enemy;
         switch (enemyType)
         {
             case EnumEnemies.golems:
-                enemy = new EnemyTypes(48f);
+                enemy = new Enemy(48f, 100f);
                 break;
             default:
-                enemy = new EnemyTypes(64f);
+                enemy = new Enemy(0f, 0f);
                 break;
         }
         return enemy;

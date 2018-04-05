@@ -20,8 +20,6 @@ public class NetworkPlay : MonoBehaviour
     public string ticker;
     public float avgPing;
     public GameObject content;
-    public List<GameObject> allPlayers = new List<GameObject>();
-    public List<GameObject> allEnemies = new List<GameObject>();
 
     void Awake()
     {
@@ -167,11 +165,10 @@ public class NetworkPlay : MonoBehaviour
         var enemyJSON = (string)args[1];
         var playerN = SimpleJSON.JSONNode.Parse(playerJSON);
         var enemyN = SimpleJSON.JSONNode.Parse(enemyJSON);
+        var allPlayers = new List<GameObject>(GameObject.FindGameObjectsWithTag("OtherPlayer"));
+        var allEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
         Debug.Log(playerN);
         Debug.Log(enemyN);
-
-        allPlayers = new List<GameObject>(GameObject.FindGameObjectsWithTag("OtherPlayer"));
-        allEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
 
         // Players
         foreach (SimpleJSON.JSONNode n in playerN)
@@ -194,29 +191,22 @@ public class NetworkPlay : MonoBehaviour
                 }
             }
 
-            if (obj)
-            {
-                var op = obj.GetComponent<OtherPlayerController>();
-                op.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
-                op.attackRadian = data.attackRadian;
-                op.attackType = data.attackType;
-                op.itemsJSON = data.itemsJSON;
-                op.speed = data.speed;
-            }
-            else
+            if (!obj)
             {
                 var res = Resources.Load("Avatar", typeof(GameObject));
                 var pos = new Vector3(data.positionX, data.positionY, 0f);
                 var rot = Quaternion.Euler(0, 0, 0);
                 obj = Instantiate(res, pos, rot) as GameObject;
                 obj.name = data.username;
-                var op = obj.GetComponent<OtherPlayerController>();
-                op.network = gameObject.GetComponent<NetworkPlay>();
-                op.attackRadian = data.attackRadian;
-                op.attackType = data.attackType;
-                op.itemsJSON = data.itemsJSON;
-                op.speed = data.speed;
             }
+
+            var op = obj.GetComponent<OtherPlayerController>();
+            op.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
+            op.attackRadian = data.attackRadian;
+            op.attackType = data.attackType;
+            op.itemsJSON = data.itemsJSON;
+            op.speed = data.speed;
+            op.avgPing = avgPing;
         }
 
         // Enemies
@@ -263,6 +253,7 @@ public class NetworkPlay : MonoBehaviour
         foreach (GameObject enemy in allEnemies)
         {
             var em = enemy.GetComponent<EnemyController>();
+            player.GetComponent<PlayerController>().addExp(enemy);
             em.DestroyObject();
         }
     }

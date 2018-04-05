@@ -6,11 +6,11 @@ public class OtherPlayerController : MonoBehaviour
     private Vector2 lastMove, moveVelocity;
     private float attackTimer = 0f, baseSpeed = 100f;
 
-    public NetworkPlay network { get; set; }
     public Vector3 targetPosition { get; set; }
     public int attackType { get; set; }
     public float attackRadian { get; set; }
     public float speed { get; set; }
+    public float avgPing { get; set; }
     public string itemsJSON { get; set; }
 
     void Start()
@@ -23,7 +23,7 @@ public class OtherPlayerController : MonoBehaviour
     {
         var currentPosition = transform.position;
         speed = speed != 0f ? speed : baseSpeed;
-        var perc = 1f / (1f + network.avgPing);
+        var perc = 1f / (1f + avgPing);
         var step = speed * Time.fixedDeltaTime * perc;
         transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
     }

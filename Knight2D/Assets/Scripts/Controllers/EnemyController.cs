@@ -34,7 +34,6 @@ public class EnemyController : MonoBehaviour
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
         healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
-        //healthBar.SetActive(false);
         healthBar.name = gameObject.name;
 
         var enemy = EnemyTypes.getEnemyEnum(gameObject.name);
@@ -105,9 +104,6 @@ public class EnemyController : MonoBehaviour
 
     void LateUpdate()
     {
-        //if (!healthBar.activeSelf)
-        //    healthBar.SetActive(true);
-
         Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
         Vector2 WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),

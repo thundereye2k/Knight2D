@@ -13,6 +13,7 @@ TagManager:
   - World
   - CMCamera
   - HealthGUI
+  - Item
   layers:
   - Default
   - TransparentFX
