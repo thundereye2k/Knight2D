@@ -24,7 +24,7 @@ public class GameMenu : MonoBehaviour
         //chatObject.SetActive(false);
     }
 
-    void LateUpdate()
+    void Update()
     {
         tickerText.text = network.ticker;
         //var time = DateTime.Now.ToString("h:mm tt");
@@ -41,8 +41,11 @@ public class GameMenu : MonoBehaviour
             playerHealthBar.fillAmount = pc.health / pc.maxHealth;
             playerHealthText.text = pc.health + " / " + pc.maxHealth;
             playerNameText.text = pc.gameObject.name;
-            playerLevelText.text = Mathf.Floor(pc.exp / 1000f).ToString();
-            playerExpBar.fillAmount = (pc.exp % 1000f) / 1000f;
+
+            var level = ExpScale.FindLevel(pc.exp);
+            var percent = ExpScale.FindPercent(pc.exp);
+            playerLevelText.text = level.ToString();
+            playerExpBar.fillAmount = percent;
 
             if (shouldPause)
             {
@@ -61,12 +64,12 @@ public class GameMenu : MonoBehaviour
             {
                 colorLerpTime = colorTime;
             }
-            //var percent = colorLerpTime / colorTime;
+            var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
-                //image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
+                image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
             }
         }
         else
@@ -76,12 +79,12 @@ public class GameMenu : MonoBehaviour
             {
                 colorLerpTime = colorTime;
             }
-            //var percent = colorLerpTime / colorTime;
+            var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
             {
-                //image.color = Color.Lerp(new Color(0f, 0f, 0f, 0f), new Color(0f, 0f, 0f, 0.25f), percent);
+                image.color = Color.Lerp(new Color(0f, 0f, 0f, 0.25f), new Color(0f, 0f, 0f, 0f), percent);
             }
         }
     }
@@ -116,30 +119,16 @@ public class GameMenu : MonoBehaviour
     {
         shouldPause = true;
         input.text = "";
+        colorLerpTime = 0f;
+        chatMouseOver = true;
     }
 
     public void ChatDeselected()
     {
         shouldPause = false;
         input.text = "";
-    }
-
-    public void ChatPointerEnter()
-    {
-        if (CrossPlatformInputManager.GetAxisRaw("Fire1") == 0f)
-        {
-            colorLerpTime = 0f;
-            chatMouseOver = true;
-        }
-    }
-
-    public void ChatPointerExit()
-    {
-        if (CrossPlatformInputManager.GetAxisRaw("Fire1") == 0f)
-        {
-            colorLerpTime = 0f;
-            chatMouseOver = false;
-        }
+        colorLerpTime = 0f;
+        chatMouseOver = false;
     }
 
     public void ChatSendMessage()

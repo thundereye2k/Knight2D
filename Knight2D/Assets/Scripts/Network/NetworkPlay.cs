@@ -10,7 +10,7 @@ public class NetworkPlay : MonoBehaviour
 {
     private Holder holder;
     private SocketManager manager;
-    private GameObject player;
+    private GameObject myPlayer;
     private bool isPaused = false;
     private int maxMessages = 100;
     private float pingTimer = 0f, ping = 0f;
@@ -65,10 +65,10 @@ public class NetworkPlay : MonoBehaviour
 
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
 
-        manager.Socket.On("player-start", OnStartUp);
-        manager.Socket.On("player-disconnect", OnPlayerDisconnect);
+        manager.Socket.On("player-start", OnPlayerStart);
         manager.Socket.On("player-message", OnMessage);
-        manager.Socket.On("get-moves", OnPlayerMoves);
+        manager.Socket.On("get-moves", OnGetMoves);
+        manager.Socket.On("get-token", OnGetToken);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
         CommandConnect();
@@ -80,8 +80,7 @@ public class NetworkPlay : MonoBehaviour
         pingTimer += Time.deltaTime;
 
         pingList.Add(ping);
-        var tick = 1f;
-        if (pingTimer > tick)
+        if (pingTimer > 1f)
         {
             avgPing = GetAverage(pingList);
             pingList.Clear();
@@ -90,7 +89,7 @@ public class NetworkPlay : MonoBehaviour
 
         if (ping > 10f)
         {
-            holder.Warn = true;
+            holder.warn = true;
             manager.Close();
             SceneManager.LoadScene("Menu");
         }
@@ -100,46 +99,46 @@ public class NetworkPlay : MonoBehaviour
 
     public void CommandConnect()
     {
-        var data = new UserJSON(holder.PlayerUsername, null, null, null, holder.PlayerToken, null);
+        var data = new UserJSON(holder.username, null, null, null, holder.token, null);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-start", json, holder.Secret);
+        manager.Socket.Emit("player-start", json);
     }
 
     public void CommandMove(Vector3 position, int attackType, float attackRadian, string skillsJSON, string world, string zone, float health, float mana, float exp, string itemsJSON, float speed, string[] jsonArray)
     {
-        var data = new PlayerJSON(holder.PlayerToken, holder.PlayerUsername, position.x, position.y, attackType, attackRadian, skillsJSON, health, mana, itemsJSON, exp, world, zone, speed);
+        var data = new PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsJSON, health, mana, itemsJSON, exp, world, zone, speed);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-move", json, jsonArray, holder.Secret);
+        manager.Socket.Emit("player-move", json, jsonArray);
     }
 
     public void CommandMessage(string message)
     {
-        var data = new MessageJSON(holder.PlayerToken, holder.PlayerUsername, message);
+        var data = new MessageJSON(holder.token, holder.username, message);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("player-message", json, holder.Secret);
+        manager.Socket.Emit("player-message", json);
     }
 
     #endregion
 
     #region Listening
 
-    void OnStartUp(Socket socket, Packet packet, params object[] args)
+    void OnPlayerStart(Socket socket, Packet packet, params object[] args)
     {
         // token, username, positionX, positionY, moveH, moveV, lastMoveX, lastMoveY, attackType, attackRadian, skillsJSON world, zone, health, mana
         var json = (string)args[0];
         var data = JsonUtility.FromJson<PlayerJSON>(json);
         Debug.Log(json);
 
-        if (holder.PlayerUsername == data.username)
+        if (holder.username == data.username)
         {
             var pos = new Vector3(data.positionX, data.positionY, 0);
             var rot = new Quaternion(0, 0, 0, 0);
             var res = Resources.Load("Player", typeof(GameObject));
 
-            player = Instantiate(res, pos, rot) as GameObject;
-            player.name = data.username;
+            myPlayer = Instantiate(res, pos, rot) as GameObject;
+            myPlayer.name = data.username;
 
-            var pc = player.GetComponent<PlayerController>();
+            var pc = myPlayer.GetComponent<PlayerController>();
             pc.network = gameObject.GetComponent<NetworkPlay>();
             pc.health = data.health;
             pc.mana = data.mana;
@@ -151,13 +150,13 @@ public class NetworkPlay : MonoBehaviour
         }
         else
         {
-            holder.Warn = true;
+            holder.warn = true;
             manager.Close();
             SceneManager.LoadScene("Menu");
         }
     }
 
-    void OnPlayerMoves(Socket socket, Packet packet, params object[] args)
+    void OnGetMoves(Socket socket, Packet packet, params object[] args)
     {
         // Player [{token, username, positionX, positionY, moveH, moveV, lastMoveX, lastMoveY, attackType, attackRadian, skillsJSON, world, zone, health, mana}]
         // Enemy [{username, positionX, positionY, world, zone, target, health, speed}]
@@ -167,6 +166,8 @@ public class NetworkPlay : MonoBehaviour
         var enemyN = SimpleJSON.JSONNode.Parse(enemyJSON);
         var allPlayers = new List<GameObject>(GameObject.FindGameObjectsWithTag("OtherPlayer"));
         var allEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
+        var foundPlayers = new List<GameObject>();
+        var foundEnemies = new List<GameObject>();
         Debug.Log(playerN);
         Debug.Log(enemyN);
 
@@ -174,7 +175,7 @@ public class NetworkPlay : MonoBehaviour
         foreach (SimpleJSON.JSONNode n in playerN)
         {
             var data = JsonUtility.FromJson<OtherPlayerJSON>(n);
-            if (holder.PlayerUsername == data.username)
+            if (holder.username == data.username)
             {
                 ping = 0;
                 continue;
@@ -186,7 +187,7 @@ public class NetworkPlay : MonoBehaviour
                 if (player.name == data.username)
                 {
                     obj = player;
-                    allPlayers.Remove(player);
+                    foundPlayers.Add(obj);
                     break;
                 }
             }
@@ -198,6 +199,7 @@ public class NetworkPlay : MonoBehaviour
                 var rot = Quaternion.Euler(0, 0, 0);
                 obj = Instantiate(res, pos, rot) as GameObject;
                 obj.name = data.username;
+                foundPlayers.Add(obj);
             }
 
             var op = obj.GetComponent<OtherPlayerController>();
@@ -219,7 +221,7 @@ public class NetworkPlay : MonoBehaviour
                 if (enemy.name == data.username)
                 {
                     obj = enemy;
-                    allEnemies.Remove(enemy);
+                    foundEnemies.Add(obj);
                     break;
                 }
             }
@@ -231,6 +233,7 @@ public class NetworkPlay : MonoBehaviour
                 var rot = Quaternion.Euler(0, 0, 0);
                 obj = Instantiate(res, pos, rot) as GameObject;
                 obj.name = data.username;
+                foundEnemies.Add(obj);
             }
 
             var em = obj.GetComponent<EnemyController>();
@@ -244,18 +247,32 @@ public class NetworkPlay : MonoBehaviour
             em.attack = data.attack;
         }
 
+        allPlayers.RemoveAll(player => foundPlayers.Contains(player));
+        allEnemies.RemoveAll(enemy => foundEnemies.Contains(enemy));
+
         foreach (GameObject player in allPlayers)
         {
-            var op = player.GetComponent<OtherPlayerController>();
-            op.DestroyObject();
+            player.GetComponent<OtherPlayerController>().DestroyObject();
         }
 
         foreach (GameObject enemy in allEnemies)
         {
-            var em = enemy.GetComponent<EnemyController>();
-            player.GetComponent<PlayerController>().addExp(enemy);
-            em.DestroyObject();
+            enemy.GetComponent<EnemyController>().DestroyObject();
+            myPlayer.GetComponent<PlayerController>().addExp(enemy);
+            foreach (GameObject otherPlayer in foundPlayers)
+            {
+                otherPlayer.GetComponent<OtherPlayerController>().addExp(enemy);
+            }
         }
+
+        if (myPlayer)
+            myPlayer.GetComponent<PlayerController>().NetworkMove();
+    }
+
+    void OnGetToken(Socket socket, Packet packet, params object[] args)
+    {
+        var token = (string)args[0];
+        holder.token = token;
     }
 
     void OnMessage(Socket socket, Packet packet, params object[] args)
@@ -267,7 +284,7 @@ public class NetworkPlay : MonoBehaviour
 
         var source = "[Global] ";
         var author = "<b>" + data.username + "</b>: ";
-        var text = new BadWords().FilterProfanity(data.message);
+        var text = BadWords.FilterProfanity(data.message);
 
         if (data.username == "")
         {
@@ -292,12 +309,6 @@ public class NetworkPlay : MonoBehaviour
         }
     }
 
-    void OnPlayerDisconnect(Socket socket, Packet packet, params object[] args)
-    {
-        var json = (string)args[0];
-        Debug.Log(json);
-    }
-
     void OnError(Socket socket, Packet packet, params object[] args)
     {
         Error error = args[0] as Error;
@@ -316,7 +327,7 @@ public class NetworkPlay : MonoBehaviour
         }
 
         Debug.Log(error.ToString());
-        holder.Warn = true;
+        holder.warn = true;
         manager.Close();
         SceneManager.LoadScene("Menu");
     }

@@ -100,10 +100,7 @@ public class EnemyController : MonoBehaviour
             Destroy(healthBar);
             Destroy(gameObject);
         }
-    }
 
-    void LateUpdate()
-    {
         Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
         Vector2 WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),

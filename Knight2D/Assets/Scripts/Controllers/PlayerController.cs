@@ -11,10 +11,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 lastMove, moveVelocity;
     private GameObject healthBar, GUI;
     private RectTransform targetCanvas;
-    private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f;
+    private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f, speed, attackRadian;
+    private AttackTypes.EnumAttacks attackType;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
-    private List<GameObject> objList = new List<GameObject>();
 
     public float dps;
     public bool wasHit = false, canHit = true;
@@ -62,8 +62,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (myRigidbody)
-            myRigidbody.velocity = moveVelocity;
+        if (myRigidbody) myRigidbody.velocity = moveVelocity;
     }
 
     void Update()
@@ -73,9 +72,9 @@ public class PlayerController : MonoBehaviour
         var moveH = 0f;
         var moveV = 0f;
         var playerMoving = false;
-        var speed = baseSpeed; // TODO: Check items
         var currentPosition = transform.position;
 
+        speed = baseSpeed; // TODO: Check items
         world = "test";
 
 #if MOBILE_INPUT
@@ -111,8 +110,8 @@ public class PlayerController : MonoBehaviour
         #region Attacking
 
         var isAttacking = false;
-        var attackRadian = 0f;
-        AttackTypes.EnumAttacks attackType = 0; // TODO: attack filter
+        attackRadian = 0f;
+        attackType = 0; // TODO: attack filter
 
 #if MOBILE_INPUT
         //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
@@ -212,12 +211,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
 
+        var WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
+
+        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
 
         #endregion
 
         #region Network
-
+        /* 
         networkTimer += Time.deltaTime;
         var networkTick = 1f / updatesPerSecond;
 
@@ -228,21 +234,8 @@ public class PlayerController : MonoBehaviour
             jsonList.Clear();
             networkTimer = 0f;
         }
-
+        */
         #endregion
-    }
-
-    void LateUpdate()
-    {
-        var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
-
-        var WorldObject_ScreenPosition = new Vector2(
-        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
-
-        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
-
     }
 
     public void enemyHit(AttackController.EnemyHit hit)
@@ -259,7 +252,7 @@ public class PlayerController : MonoBehaviour
         {
             var enemy = EnemyTypes.getEnemyEnum(o.name);
             var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
-            exp += expToAdd;
+            //exp += expToAdd;
 
             var res = Resources.Load("PopupText", typeof(GameObject));
             var pos = new Vector3(0, 0, 0);
@@ -268,8 +261,8 @@ public class PlayerController : MonoBehaviour
 
             var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
             var WorldObject_ScreenPosition = new Vector2(
-            ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f) + Random.Range(-16f, 16f)),
-            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 48f);
+            ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f) + Random.Range(-8, 8f)),
+            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
 
             obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
             obj.GetComponent<PopupTextController>().setText(expToAdd.ToString(), PopupTextController.EnumPopupText.exp);
@@ -284,5 +277,14 @@ public class PlayerController : MonoBehaviour
             total += f;
         }
         return total;
+    }
+
+    public void NetworkMove()
+    {
+        var currentPosition = transform.position;
+        var jsonArray = jsonList.ToArray();
+        network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
+        jsonList.Clear();
+        networkTimer = 0f;
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BestHTTP.SocketIO;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 
 public class NetworkMenu : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class NetworkMenu : MonoBehaviour
     private SocketManager manager;
     private string playerPassword;
 
-    public string Status { get; set; }
+    public string status { get; set; }
 
     void Awake()
     {
@@ -33,16 +31,16 @@ public class NetworkMenu : MonoBehaviour
         var options = new SocketOptions
         {
             ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
-            Reconnection = false
+            Reconnection = false,
         };
         manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
-    
-        manager.Socket.On("menu-player", OnCompleteMenu);
+
+        manager.Socket.On("menu-player", OnMenuResponse);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
-        if (holder.Warn)
+        if (holder.warn)
         {
-            Status = "warn";
+            status = "warn";
         }
     }
 
@@ -50,50 +48,62 @@ public class NetworkMenu : MonoBehaviour
 
     public void CommandRegister(string username, string email, string password)
     {
-        byte[] salt;
-        new RNGCryptoServiceProvider().GetNonZeroBytes(salt = new byte[16]);
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
-        var hash = pbkdf2.GetBytes(20);
-        var hashBytes = new byte[36];
-        Array.Copy(salt, 0, hashBytes, 0, 16);
-        Array.Copy(hash, 0, hashBytes, 16, 20);
-        var passhash = Convert.ToBase64String(hashBytes);
+        byte[] bytes;
+        new RNGCryptoServiceProvider().GetNonZeroBytes(bytes = new byte[16]);
+        var salt = Convert.ToBase64String(bytes);
+        var passhash = GeneratePassHash(salt, password);
 
-        var data = new UserJSON(username, email, passhash, Convert.ToBase64String(salt), null, null);
+        var data = new UserJSON(username, email, passhash, salt, null, null);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("menu-register", json, holder.Secret);
+        manager.Socket.Emit("menu-register", json);
     }
 
-    public void CommandLogin(string username, string password)
+    public void CommandSalt(string username, string password)
     {
-        // Store password to check later
         playerPassword = password;
-        Debug.Log(password);
-        Debug.Log(username);
         var data = new UserJSON(username, null, null, null, null, null);
         var json = JsonUtility.ToJson(data);
-        manager.Socket.Emit("menu-login", json, holder.Secret);
+        manager.Socket.Emit("menu-salt", json);
     }
+
+
+    public void CommandLogin(string username, string passhash)
+    {
+        var data = new UserJSON(username, null, passhash, null, null, null);
+        var json = JsonUtility.ToJson(data);
+        manager.Socket.Emit("menu-login", json);
+    }
+
 
     #endregion
 
     #region Listening
 
-    void OnCompleteMenu(Socket socket, Packet packet, params object[] args)
+    void OnMenuResponse(Socket socket, Packet packet, params object[] args)
     {
         var json = (string)args[0];
         var data = JsonUtility.FromJson<UserJSON>(json);
         Debug.Log(json);
 
-        Status = data.status;
-        switch (Status)
+        status = data.status;
+        switch (status)
         {
-            case "login":
-                CheckPassword(data.passhash, data.salt, data.token, data.username, data.email);
+            case "salt":
+                holder.username = data.username;
+                var passhash = GeneratePassHash(data.salt, playerPassword);
+                CommandLogin(data.username, passhash);
                 break;
-            case "register":
 
+            case "login":
+                holder.token = data.token;
+                manager.Close();
+                SceneManager.LoadScene(1);
                 break;
+
+            case "register":
+                // Gets username and email
+                break;
+
             default:
                 break;
 
@@ -148,35 +158,14 @@ public class NetworkMenu : MonoBehaviour
 
     #endregion
 
-    private void CheckPassword(string _passhash, string _salt, string _token, string _username, string _email)
+    private string GeneratePassHash(string salt, string password)
     {
-        var login = false;
-        var salt = Convert.FromBase64String(_salt);
-        var pbkdf2 = new Rfc2898DeriveBytes(playerPassword, salt, 10000);
+        var bytes = Convert.FromBase64String(salt);
+        var pbkdf2 = new Rfc2898DeriveBytes(password, bytes, 10000);
         var hash = pbkdf2.GetBytes(20);
         var hashBytes = new byte[36];
-        Array.Copy(salt, 0, hashBytes, 0, 16);
+        Array.Copy(bytes, 0, hashBytes, 0, 16);
         Array.Copy(hash, 0, hashBytes, 16, 20);
-        var passhash = Convert.ToBase64String(hashBytes);
-
-        if (passhash.Equals(_passhash))
-        {
-            login = true;
-        }
-        else
-        {
-            Debug.Log("Password incorrect");
-            Status = "wrong";
-        }
-
-        if (login)
-        {
-            Status = "play";
-            holder.PlayerToken = _token;
-            holder.PlayerUsername = _username;
-            holder.PlayerEmail = _email;
-            manager.Close();
-            SceneManager.LoadScene("Test");
-        }
+        return Convert.ToBase64String(hashBytes);
     }
 }

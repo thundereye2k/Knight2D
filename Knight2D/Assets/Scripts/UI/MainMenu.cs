@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour
 
     void LateUpdate()
     {
-        if (network.Status == "warn")
+        if (network.status == "warn")
         {
             if (!Popup.activeSelf)
             {
@@ -40,10 +40,10 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        switch (network.Status)
+        switch (network.status)
         {
             // Login
-            case "play":
+            case "login":
                 warnLogin.SetText("Login successful");
                 warnLogin.color = new Color(0, 1, 0, 1);
                 break;
@@ -113,7 +113,7 @@ public class MainMenu : MonoBehaviour
 
     private void AcceptPopup()
     {
-        network.Status = "";
+        network.status = "";
         Popup.SetActive(false);
     }
 
@@ -134,7 +134,7 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetString("username", loginUsername.text);
         PlayerPrefs.SetString("password", loginPassword.text);
 
-        network.CommandLogin(loginUsername.text, loginPassword.text);
+        network.CommandSalt(loginUsername.text, loginPassword.text);
     }
 
     private void SubmitRegister()
@@ -158,7 +158,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            network.Status = "email";
+            network.status = "email";
             return false;
         }
     }
@@ -171,7 +171,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            network.Status = "password";
+            network.status = "password";
             return false;
         }
     }
@@ -184,7 +184,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            network.Status = "nomatch";
+            network.status = "nomatch";
             return false;
         }
     }
@@ -197,21 +197,21 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            network.Status = "username";
+            network.status = "username";
             return false;
         }
     }
 
     private bool IsProfanity(string username)
     {
-        var input = new BadWords().FilterProfanity(username);
+        var input = BadWords.FilterProfanity(username);
         if (input == username)
         {
             return true;
         }
         else
         {
-            network.Status = "bad";
+            network.status = "bad";
             return false;
         }
     }

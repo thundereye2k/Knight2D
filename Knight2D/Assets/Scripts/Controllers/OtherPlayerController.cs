@@ -4,6 +4,8 @@ public class OtherPlayerController : MonoBehaviour
 {
     private Animator myAnimator;
     private Vector2 lastMove, moveVelocity;
+    private GameObject GUI;
+    private RectTransform targetCanvas;
     private float attackTimer = 0f, baseSpeed = 100f;
 
     public Vector3 targetPosition { get; set; }
@@ -17,6 +19,9 @@ public class OtherPlayerController : MonoBehaviour
     {
         myAnimator = gameObject.GetComponent<Animator>();
         targetPosition = transform.position;
+
+        GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        targetCanvas = GUI.GetComponent<RectTransform>();
     }
 
     void FixedUpdate()
@@ -71,14 +76,14 @@ public class OtherPlayerController : MonoBehaviour
             if (attackTimer > tick)
             {
                 attackTimer = 0f;
-                currentPosition.x = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
-                currentPosition.y = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
+                var offsetX = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
+                var offsetY = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
                 var res = Resources.Load(attackType.ToString(), typeof(GameObject));
-                var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
-                var rot = Quaternion.Euler(0, 0, 0);
+                var pos = new Vector3(offsetX, offsetY, 0f);
+                var rot = Quaternion.Euler(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;
                 var oc = obj.GetComponent<AttackController>();
-                oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
+                //oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 oc.Speed = attack.attackSpeed;
                 oc.MaxDistance = attack.attackDistance;
                 oc.Damage = attack.attackDamage;
@@ -99,6 +104,30 @@ public class OtherPlayerController : MonoBehaviour
         myAnimator.SetFloat("LastMoveY", lastMove.y);
 
         #endregion
+    }
+
+    public void addExp(GameObject o)
+    {
+        var distance = Vector3.Distance(o.transform.position, transform.position);
+        if (distance < 500f)
+        {
+            var enemy = EnemyTypes.getEnemyEnum(o.name);
+            var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
+            //exp += expToAdd;
+
+            var res = Resources.Load("PopupText", typeof(GameObject));
+            var pos = new Vector3(0, 0, 0);
+            var rot = Quaternion.Euler(0, 0, 0);
+            var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+
+            var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+            var WorldObject_ScreenPosition = new Vector2(
+            ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f) + Random.Range(-8, 8f)),
+            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
+
+            obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
+            obj.GetComponent<PopupTextController>().setText(expToAdd.ToString(), PopupTextController.EnumPopupText.exp);
+        }
     }
 
     public void DestroyObject()
