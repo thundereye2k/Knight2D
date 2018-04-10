@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
-public class PopupTextController : MonoBehaviour
+public class FloatingTextController : MonoBehaviour
 {
-    public enum EnumPopupText { exp, damage, item, boost }
+    public enum EnumFloatingText { exp, damage, item, boost }
 
     private Animator myAnimator;
 
@@ -16,12 +14,12 @@ public class PopupTextController : MonoBehaviour
         Destroy(gameObject, clipInfo[0].clip.length);
     }
 
-    public void setText(string number, EnumPopupText type)
+    public void setText(string number, EnumFloatingText type)
     {
         var tmp = GetComponentInChildren<TextMeshProUGUI>();
         switch (type)
         {
-            case EnumPopupText.exp:
+            case EnumFloatingText.exp:
                 tmp.text = "+" + number + " EXP";
                 tmp.color = Color.green;
                 break;

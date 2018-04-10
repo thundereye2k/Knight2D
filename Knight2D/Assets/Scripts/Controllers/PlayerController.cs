@@ -8,16 +8,19 @@ public class PlayerController : MonoBehaviour
     private CinemachineVirtualCamera myCamera;
     private Rigidbody2D myRigidbody;
     private Animator myAnimator;
-    private Vector2 lastMove, moveVelocity;
-    private GameObject healthBar, GUI;
+    private Vector2 lastMove;
+    private Vector2 moveVelocity;
+    private GameObject healthBar;
+    private GameObject GUI;
     private RectTransform targetCanvas;
-    private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 3f, baseMaxMana = 3f, speed, attackRadian;
-    private AttackTypes.EnumAttacks attackType;
+    private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 100f, baseMaxMana = 100f;
+    private float lastdps = 0f;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
 
     public float dps;
-    public bool wasHit = false, canHit = true;
+    public bool wasHit = false;
+    public bool canHit = true;
     public float maxHealth, maxMana;
 
     public NetworkPlay network { get; set; }
@@ -27,8 +30,8 @@ public class PlayerController : MonoBehaviour
     public string world { get; set; }
     public string zone { get; set; }
     public bool pause { get; set; }
-    public string itemsJSON { get; set; }
-    public string skillsJSON { get; set; }
+    public string[] itemsArray { get; set; }
+    public string[] skillsArray { get; set; }
 
 
 #if MOBILE_INPUT
@@ -74,7 +77,7 @@ public class PlayerController : MonoBehaviour
         var playerMoving = false;
         var currentPosition = transform.position;
 
-        speed = baseSpeed; // TODO: Check items
+        var speed = baseSpeed; // TODO: Check items
         world = "test";
 
 #if MOBILE_INPUT
@@ -110,8 +113,8 @@ public class PlayerController : MonoBehaviour
         #region Attacking
 
         var isAttacking = false;
-        attackRadian = 0f;
-        attackType = 0; // TODO: attack filter
+        var attackRadian = 0f;
+        AttackTypes.EnumAttacks attackType = 0; // TODO: attack filter
 
 #if MOBILE_INPUT
         //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
@@ -159,7 +162,9 @@ public class PlayerController : MonoBehaviour
         var dpsTick = 1f;
         if (dpsTimer > dpsTick)
         {
-            dps = getTotal(dpsList);
+            var totaldps = getTotal(dpsList);
+            dps = (totaldps + lastdps) / 2;
+            lastdps = dps < 1 ? 0 : dps;
             dpsList.Clear();
             dpsTimer = 0f;
         }
@@ -223,18 +228,18 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Network
-        /* 
+
         networkTimer += Time.deltaTime;
         var networkTick = 1f / updatesPerSecond;
 
         if (networkTimer > networkTick)
         {
             var jsonArray = jsonList.ToArray();
-            network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
+            network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsArray, world, zone, health, mana, exp, itemsArray, speed, jsonArray);
             jsonList.Clear();
             networkTimer = 0f;
         }
-        */
+
         #endregion
     }
 
@@ -265,7 +270,7 @@ public class PlayerController : MonoBehaviour
             ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
 
             obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-            obj.GetComponent<PopupTextController>().setText(expToAdd.ToString(), PopupTextController.EnumPopupText.exp);
+            obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
         }
     }
 
@@ -277,14 +282,5 @@ public class PlayerController : MonoBehaviour
             total += f;
         }
         return total;
-    }
-
-    public void NetworkMove()
-    {
-        var currentPosition = transform.position;
-        var jsonArray = jsonList.ToArray();
-        network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsJSON, world, zone, health, mana, exp, itemsJSON, speed, jsonArray);
-        jsonList.Clear();
-        networkTimer = 0f;
     }
 }

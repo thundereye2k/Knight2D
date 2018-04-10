@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Sorting : MonoBehaviour
+public class SpriteSorting : MonoBehaviour
 {
 
     private SpriteRenderer objectSR;

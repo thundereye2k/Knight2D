@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class AttackTypes
+﻿public class AttackTypes
 {
     public enum EnumAttacks { basic, fireball }
 

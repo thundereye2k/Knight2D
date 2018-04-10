@@ -74,7 +74,6 @@ public class NetworkMenu : MonoBehaviour
         manager.Socket.Emit("menu-login", json);
     }
 
-
     #endregion
 
     #region Listening
@@ -106,7 +105,6 @@ public class NetworkMenu : MonoBehaviour
 
             default:
                 break;
-
         }
     }
 

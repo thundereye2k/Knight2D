@@ -13,7 +13,7 @@ public class OtherPlayerController : MonoBehaviour
     public float attackRadian { get; set; }
     public float speed { get; set; }
     public float avgPing { get; set; }
-    public string itemsJSON { get; set; }
+    public string[] itemsArray { get; set; }
 
     void Start()
     {
@@ -126,7 +126,7 @@ public class OtherPlayerController : MonoBehaviour
             ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
 
             obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-            obj.GetComponent<PopupTextController>().setText(expToAdd.ToString(), PopupTextController.EnumPopupText.exp);
+            obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
         }
     }
 
