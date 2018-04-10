@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameMenu : MonoBehaviour
+public class OverlayGUI : MonoBehaviour
 {
     public NetworkPlay network;
     public TextMeshProUGUI tickerText, pingText, dpsText, playerNameText, playerHealthText, playerManaText, playerLevelText;

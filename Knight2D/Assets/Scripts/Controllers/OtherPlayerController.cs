@@ -20,7 +20,7 @@ public class OtherPlayerController : MonoBehaviour
         myAnimator = gameObject.GetComponent<Animator>();
         targetPosition = transform.position;
 
-        GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        GUI = GameObject.FindGameObjectWithTag("GameGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
     }
 
@@ -115,7 +115,7 @@ public class OtherPlayerController : MonoBehaviour
             var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
             //exp += expToAdd;
 
-            var res = Resources.Load("PopupText", typeof(GameObject));
+            var res = Resources.Load("FloatingText", typeof(GameObject));
             var pos = new Vector3(0, 0, 0);
             var rot = Quaternion.Euler(0, 0, 0);
             var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;

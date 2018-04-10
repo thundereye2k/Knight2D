@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
         pause = false;
 
-        GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        GUI = GameObject.FindGameObjectWithTag("GameGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
         var res = Resources.Load("HealthBar", typeof(GameObject));
@@ -259,7 +259,7 @@ public class PlayerController : MonoBehaviour
             var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
             //exp += expToAdd;
 
-            var res = Resources.Load("PopupText", typeof(GameObject));
+            var res = Resources.Load("FloatingText", typeof(GameObject));
             var pos = new Vector3(0, 0, 0);
             var rot = Quaternion.Euler(0, 0, 0);
             var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;

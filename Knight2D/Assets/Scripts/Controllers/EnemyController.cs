@@ -23,7 +23,7 @@ public class EnemyController : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         targetPosition = transform.position;
 
-        var GUI = GameObject.FindGameObjectWithTag("HealthGUI");
+        var GUI = GameObject.FindGameObjectWithTag("GameGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
         var res = Resources.Load("HealthBar", typeof(GameObject));

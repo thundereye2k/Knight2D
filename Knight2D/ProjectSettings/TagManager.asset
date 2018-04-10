@@ -8,12 +8,9 @@ TagManager:
   - Holder
   - OtherPlayer
   - Attack
-  - Objects
-  - Zone
-  - World
   - CMCamera
-  - HealthGUI
   - Item
+  - GameGUI
   layers:
   - Default
   - TransparentFX
