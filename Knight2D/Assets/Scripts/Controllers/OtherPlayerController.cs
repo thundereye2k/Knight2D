@@ -6,7 +6,8 @@ public class OtherPlayerController : MonoBehaviour
     private Vector2 lastMove, moveVelocity;
     private GameObject GUI;
     private RectTransform targetCanvas;
-    private float attackTimer = 0f, baseSpeed = 100f;
+    private float attackTimer = 0f;
+    private float baseSpeed = 100f;
 
     public Vector3 targetPosition { get; set; }
     public int attackType { get; set; }
@@ -28,8 +29,9 @@ public class OtherPlayerController : MonoBehaviour
     {
         var currentPosition = transform.position;
         speed = speed != 0f ? speed : baseSpeed;
-        var perc = 1f / (1f + avgPing);
-        var step = speed * Time.fixedDeltaTime * perc;
+        //var perc = 1f / (1f + avgPing);
+        //var step = speed * Time.fixedDeltaTime * perc;
+        var step = speed * Time.fixedDeltaTime;
         transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
     }
 
@@ -83,7 +85,6 @@ public class OtherPlayerController : MonoBehaviour
                 var rot = Quaternion.Euler(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 var obj = Instantiate(res, pos, rot, transform) as GameObject;
                 var oc = obj.GetComponent<AttackController>();
-                //oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 oc.Speed = attack.attackSpeed;
                 oc.MaxDistance = attack.attackDistance;
                 oc.Damage = attack.attackDamage;
@@ -109,7 +110,7 @@ public class OtherPlayerController : MonoBehaviour
     public void addExp(GameObject o)
     {
         var distance = Vector3.Distance(o.transform.position, transform.position);
-        if (distance < 500f)
+        if (distance < 250f)
         {
             var enemy = EnemyTypes.getEnemyEnum(o.name);
             var expToAdd = EnemyTypes.getEnemyType(enemy).exp;

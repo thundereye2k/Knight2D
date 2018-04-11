@@ -12,7 +12,8 @@ public class NetworkPlay : MonoBehaviour
     private GameObject myPlayer;
     private bool isPaused = false;
     private int maxMessages = 100;
-    private float pingTimer = 0f, ping = 0f;
+    private float pingTimer = 0f; 
+    private float ping = 0f;
     private List<MessageObject> messageList = new List<MessageObject>();
     private List<float> pingList = new List<float>();
 
@@ -85,11 +86,11 @@ public class NetworkPlay : MonoBehaviour
             pingTimer = 0f;
         }
 
-        if (ping > 10f)
+        if (ping > 1f)
         {
-            //holder.warn = true;
-            //manager.Close();
-            //SceneManager.LoadScene("Menu");
+            holder.warn = true;
+            manager.Close();
+            SceneManager.LoadScene("Menu");
         }
     }
 

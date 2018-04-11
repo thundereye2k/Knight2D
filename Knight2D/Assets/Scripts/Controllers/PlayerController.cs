@@ -13,7 +13,14 @@ public class PlayerController : MonoBehaviour
     private GameObject healthBar;
     private GameObject GUI;
     private RectTransform targetCanvas;
-    private float dpsTimer = 0f, attackTimer = 0f, networkTimer = 0f, baseSpeed = 100f, updatesPerSecond = 10f, hitTimer = 0f, baseMaxHealth = 100f, baseMaxMana = 100f;
+    private float dpsTimer = 0f;
+    private float attackTimer = 0f;
+    private float networkTimer = 0f;
+    private float baseSpeed = 100f;
+    private float updatesPerSecond = 10f;
+    private float hitTimer = 0f;
+    private float baseMaxHealth = 100f;
+    private float baseMaxMana = 100f;
     private float lastdps = 0f;
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
@@ -21,7 +28,8 @@ public class PlayerController : MonoBehaviour
     public float dps;
     public bool wasHit = false;
     public bool canHit = true;
-    public float maxHealth, maxMana;
+    public float maxHealth;
+    public float maxMana;
 
     public NetworkPlay network { get; set; }
     public float health { get; set; }
@@ -253,11 +261,11 @@ public class PlayerController : MonoBehaviour
     public void addExp(GameObject o)
     {
         var distance = Vector3.Distance(o.transform.position, transform.position);
-        if (distance < 500f)
+        if (distance < 250f)
         {
             var enemy = EnemyTypes.getEnemyEnum(o.name);
             var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
-            //exp += expToAdd;
+            exp += expToAdd;
 
             var res = Resources.Load("FloatingText", typeof(GameObject));
             var pos = new Vector3(0, 0, 0);

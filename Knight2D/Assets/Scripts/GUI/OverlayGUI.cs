@@ -5,17 +5,30 @@ using UnityEngine.UI;
 public class OverlayGUI : MonoBehaviour
 {
     public NetworkPlay network;
-    public TextMeshProUGUI tickerText, pingText, dpsText, playerNameText, playerHealthText, playerManaText, playerLevelText;
+    public TextMeshProUGUI tickerText;
+    public TextMeshProUGUI pingText;
+    public TextMeshProUGUI playerNameText;
+    public TextMeshProUGUI playerHealthText;
+    public TextMeshProUGUI playerManaText;
+    public TextMeshProUGUI playerLevelText;
+    public TextMeshProUGUI dpsText;
     public TMP_InputField input;
-    public GameObject chatObject, pauseObject, moveJoystick, shootJoystick;
-    public Image playerHealthBar, playerManaBar, playerExpBar;
-
-    private float colorTime = 0.5f, colorLerpTime = 0f;
-    private bool shouldPause = false, chatMouseOver = false;
+    public GameObject chatObject;
+    public GameObject pauseObject;
+    public GameObject moveJoystick;
+    public GameObject shootJoystick;
+    public GameObject player;
+    public Image playerHealthBar;
+    public Image playerManaBar;
+    public Image playerExpBar;
+    private float colorTime = 0.5f;
+    private float colorLerpTime = 0f;
+    private bool shouldPause = false;
+    private bool chatMouseOver = false;
 
     void Start()
     {
-        //chatObject.SetActive(false);
+
     }
 
     void Update()
@@ -26,7 +39,6 @@ public class OverlayGUI : MonoBehaviour
         var str = (Mathf.Floor((network.avgPing) * 1000f) - 100f).ToString();
         pingText.text = "Ping: " + str + "ms";
 
-        var player = GameObject.FindGameObjectWithTag("Player");
         if (player)
         {
             var pc = player.GetComponent<PlayerController>();
@@ -50,6 +62,10 @@ public class OverlayGUI : MonoBehaviour
                 pc.pause = false;
             }
         }
+        else
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
 
         if (chatMouseOver)
         {
@@ -58,7 +74,7 @@ public class OverlayGUI : MonoBehaviour
             {
                 colorLerpTime = colorTime;
             }
-            var percent = colorLerpTime / colorTime;
+            //var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
@@ -73,7 +89,7 @@ public class OverlayGUI : MonoBehaviour
             {
                 colorLerpTime = colorTime;
             }
-            var percent = colorLerpTime / colorTime;
+            //var percent = colorLerpTime / colorTime;
 
             var images = chatObject.GetComponentsInChildren<Image>();
             foreach (Image image in images)
