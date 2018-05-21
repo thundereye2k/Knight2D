@@ -1,16 +1,38 @@
-Starting in v1.9.0 there are many defines that can be used to disable a feature. These defines can be combined, even all can be set. Disabled features will not compile, so build size can be reduced by disabling unused features.
-These defines are the following:
--BESTHTTP_DISABLE_COOKIES: With this define all cookie releated code can be disabled. No cookie parsing, saving and sending will occur.
--BESTHTTP_DISABLE_CACHING: With this define all cache releated code can be disabled. No caching, or cache validation will be done.
--BESTHTTP_DISABLE_SERVERSENT_EVENTS: Server-Sent Events can be disabled with this. SignalR will not fallback to this.
--BESTHTTP_DISABLE_WEBSOCKET: Websocket can be disable with this. SignalR and Socket.IO will not use this protocol.
--BESTHTTP_DISABLE_SIGNALR: The entire SignalR implementation will be disabled.
--BESTHTTP_DISABLE_SOCKETIO: The entire Socket.IO implementation will be disabled.
--BESTHTTP_DISABLE_ALTERNATE_SSL: If you are not using HTTPS or WSS for WebSocket, or you are happy with the default implementation, you can disable the alretnate ssl handler.
--BESTHTTP_DISABLE_UNITY_FORM: You can remove the dependency on Unity's WWWForm.
+1.10.6 (2018.05.20)
+General
+-[Bugfix] Fixed a case where aborting a request throw and exception
+SocketIO
+-[Bugfix] Will not send a ping packet while waiting for a pong
+WebSocket
+-[Bugfix] OnError OnErrorDesc events not called when the websocket's State > Connecting
+SignalRCore
+-[Improvement] New BESTHTTP_DISABLE_SIGNALR_CORE symbol to disable SignalR Core
+-[Bugfix] The SignalR Core implementation has no dependency on SignalR classes now
 
-Upgrading to 1.9.x:
-In v1.9.0 all DLL dependencies are removed, and some of the files from the source too. So a clean install is advised: Before you install v1.9.x you have to remove the /Assets/Best HTTP (Pro)/ folder and TcpClientImplementation.dll from the /Assets/Plugins/, /Assets/Plugins/Metro and /Assets/Plugins/WP8 folders.
+1.10.5 (2018.04.17)
+SignalR Core
+-[Bugfix] Removed compile warnings
+
+1.10.4 (2018.04.15)
+General
+-[Improvement] csproj files added to the package to genereate dlls
+-[Improvement] Improved compatibilty with other packages that are have theirs own Utility class in the root namespace.
+-[Improvement] Improved compatibility with the Experimental (.NET 4.6) runtime
+-[Improvement] Using the HTTPRequest's CustomTLSServerNameList property now it's possible to add custom SNIs
+-[Bugfix] Decompressor used during streaming will buffer up data if necessary to avoid a GZip exception.
+-[Bugfix] Removed unnecessary logging in the HTTPUpdateDelegator
+-[Bugfix] TLS SNIs will not be sent if the host is an IPv4 or IPv6 address
+-[Bugfix] Digest authentication failed with the proxy
+WebSocket
+-[Improvement] Now it's possible to close the websocket before it connects
+-[Improvement] New State property to access the websocket's state
+-[Bugfix] [WebGL] HTTPManager.Setup() isn't called when only the WebSocket protocol is used
+SocketIO
+-[Bugfix] proper pingTimeout implementation (thanks @carsanlop for the code!)
+SignalR
+-[Bugfix] It will not try to reconnect after leaving Unity's play mode.
+SignalR Core
+-[New Feature] New SignalR Core implementation for SignalRCore 1.0.0-alpha2
 
 1.10.3 (2017.11.11)
 General

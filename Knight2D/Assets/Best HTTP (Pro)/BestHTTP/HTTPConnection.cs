@@ -484,6 +484,14 @@ namespace BestHTTP
                 if (HTTPManager.Logger.Level == Logger.Loglevels.All)
                     HTTPManager.Logger.Verbose("HTTPConnection", string.Format("'{0}' - Connecting to {1}:{2}", this.CurrentRequest.CurrentUri.ToString(), uri.Host, uri.Port.ToString()));
 
+#if !NETFX_CORE && (!UNITY_WEBGL || UNITY_EDITOR)
+                Client.SendBufferSize = HTTPManager.SendBufferSize;
+                Client.ReceiveBufferSize = HTTPManager.ReceiveBufferSize;
+
+                if (HTTPManager.Logger.Level == Logger.Loglevels.All)
+                    HTTPManager.Logger.Verbose("HTTPConnection", string.Format("'{0}' - Buffer sizes - Send: {1} Receive: {2} Blocking: {3}", this.CurrentRequest.CurrentUri.ToString(), Client.SendBufferSize.ToString(), Client.ReceiveBufferSize.ToString(), Client.Client.Blocking.ToString()));
+#endif
+
                 Client.Connect(uri.Host, uri.Port);
 
                 if (HTTPManager.Logger.Level <= Logger.Loglevels.Information)
@@ -550,10 +558,14 @@ namespace BestHTTP
                                     var digest = DigestStore.Get(Proxy.Address);
                                     if (digest != null)
                                     {
-                                        string authentication = digest.GenerateResponseHeader(CurrentRequest, Proxy.Credentials);
+                                        string authentication = digest.GenerateResponseHeader(CurrentRequest, Proxy.Credentials, true);
                                         if (!string.IsNullOrEmpty(authentication))
                                         {
-                                            outStream.Write(string.Format("Proxy-Authorization: {0}", authentication).GetASCIIBytes());
+                                            string auth = string.Format("Proxy-Authorization: {0}", authentication);
+                                            if (HTTPManager.Logger.Level <= Logger.Loglevels.Information)
+                                                HTTPManager.Logger.Information("HTTPConnection", "Sending proxy authorization header: " + auth);
+
+                                            outStream.Write(auth.GetASCIIBytes());
                                             outStream.Write(HTTPRequest.EOL);
                                         }
                                     }
@@ -574,7 +586,7 @@ namespace BestHTTP
                             throw new Exception("Connection to the Proxy Server failed!");
 
                         if (HTTPManager.Logger.Level <= Logger.Loglevels.Information)
-                            HTTPManager.Logger.Information("HTTPConnection", "Proxy returned - status code: " + CurrentRequest.ProxyResponse.StatusCode + " message: " + CurrentRequest.ProxyResponse.Message);
+                            HTTPManager.Logger.Information("HTTPConnection", "Proxy returned - status code: " + CurrentRequest.ProxyResponse.StatusCode + " message: " + CurrentRequest.ProxyResponse.Message + " Body: " + CurrentRequest.ProxyResponse.DataAsText);
 
                         switch(CurrentRequest.ProxyResponse.StatusCode)
                         {
@@ -608,7 +620,13 @@ namespace BestHTTP
                 // We have to use CurrentRequest.CurrentUri here, because uri can be a proxy uri with a different protocol
                 if (isSecure)
                 {
-                    #region SSL Upgrade
+                    // Under the new experimental runtime there's a bug in the Socket.Send implementation that can cause a 
+                    //  connection when the TLS protocol is used.
+#if !NETFX_CORE && (!UNITY_WEBGL || UNITY_EDITOR) && NET_4_6
+                    //Client.SendBufferSize = 0;
+#endif
+
+#region SSL Upgrade
 
 #if !BESTHTTP_DISABLE_ALTERNATE_SSL && (!UNITY_WEBGL || UNITY_EDITOR)
                     if (CurrentRequest.UseAlternateSSL)
@@ -616,9 +634,18 @@ namespace BestHTTP
                         var handler = new TlsClientProtocol(Client.GetStream(), new Org.BouncyCastle.Security.SecureRandom());
 
                         // http://tools.ietf.org/html/rfc3546#section-3.1
-                        // It is RECOMMENDED that clients include an extension of type "server_name" in the client hello whenever they locate a server by a supported name type.
-                        List<string> hostNames = new List<string>(1);
-                        hostNames.Add(CurrentRequest.CurrentUri.Host);
+                        // -It is RECOMMENDED that clients include an extension of type "server_name" in the client hello whenever they locate a server by a supported name type.
+                        // -Literal IPv4 and IPv6 addresses are not permitted in "HostName".
+
+                        // User-defined list has a higher priority
+                        List<string> hostNames = CurrentRequest.CustomTLSServerNameList;
+
+                        // If there's no user defined one and the host isn't an IP address, add the default one
+                        if ((hostNames == null || hostNames.Count == 0) && !CurrentRequest.CurrentUri.IsHostIsAnIPAddress())
+                        {
+                            hostNames = new List<string>(1);
+                            hostNames.Add(CurrentRequest.CurrentUri.Host);
+                        }
 
                         handler.Connect(new LegacyTlsClient(CurrentRequest.CurrentUri,
                                                             CurrentRequest.CustomCertificateVerifyer == null ? new AlwaysValidVerifyer() : CurrentRequest.CustomCertificateVerifyer,
@@ -644,7 +671,7 @@ namespace BestHTTP
 #endif
                     }
 
-                    #endregion
+#endregion
                 }
             }
         }
@@ -691,9 +718,9 @@ namespace BestHTTP
             return true;
         }
 
-        #endregion
+#endregion
 
-        #region Helper Functions
+#region Helper Functions
 
 #if !BESTHTTP_DISABLE_CACHING && (!UNITY_WEBGL || UNITY_EDITOR)
 
@@ -818,7 +845,14 @@ namespace BestHTTP
             }
 
             if (Stream != null)
-                Stream.Dispose();
+            {
+                try
+                {
+                    Stream.Dispose();
+                }
+                catch
+                { }
+            }
         }
 
         private void Close()
@@ -843,7 +877,7 @@ namespace BestHTTP
             }
         }
 
-        #endregion
+#endregion
 
         protected override void Dispose(bool disposing)
         {

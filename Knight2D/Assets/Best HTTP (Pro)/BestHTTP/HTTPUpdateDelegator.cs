@@ -94,8 +94,8 @@ namespace BestHTTP
                     UnityEditor.EditorApplication.playmodeStateChanged += Instance.OnPlayModeStateChanged;
 #endif
 #endif
+                    HTTPManager.Logger.Information("HTTPUpdateDelegator", "Instance Created!");
                 }
-                HTTPManager.Logger.Information("HTTPUpdateDelegator", "Instance Created!");
             }
             catch
             {
@@ -133,9 +133,7 @@ namespace BestHTTP
 
             // Unity doesn't tolerate well if the DontDestroyOnLoad called when purely in editor mode. So, we will set the flag
             //  only when we are playing, or not in the editor.
-#if UNITY_EDITOR
-            if (UnityEditor.EditorApplication.isPlaying)
-#endif
+            if (!Application.isEditor || Application.isPlaying)
                 GameObject.DontDestroyOnLoad(this.gameObject);
 
             HTTPManager.Logger.Information("HTTPUpdateDelegator", "Setup done!");

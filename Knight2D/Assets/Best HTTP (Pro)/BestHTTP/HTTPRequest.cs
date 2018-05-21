@@ -208,6 +208,8 @@ namespace BestHTTP
             }
         }
 
+        public int MaxFragmentQueueLength { get; set; }
+
         /// <summary>
         /// The callback function that will be called when a request is fully processed or when any downloaded fragment is available if UseStreaming is true. Can be null for fire-and-forget requests.
         /// </summary>
@@ -380,6 +382,14 @@ namespace BestHTTP
         /// The IClientCredentialsProvider implementation that the plugin will use to send client certificates when the request's UseAlternateSSL property is set to true.
         /// </summary>
         public Org.BouncyCastle.Crypto.Tls.IClientCredentialsProvider CustomClientCredentialsProvider { get; set; }
+
+        /// <summary>
+        /// With this property custom Server Name Indication entries can be sent to the server while negotiating TLS. 
+        /// All added entries must conform to the rules defined in the RFC (https://tools.ietf.org/html/rfc3546#section-3.1), the plugin will not check the entries' validity!
+        /// <remarks>This list will be sent to every server that the plugin must connect to while it tries to finish the request.
+        /// So for example if redirected to an another server, that new server will receive this list too!</remarks>
+        /// </summary>
+        public List<string> CustomTLSServerNameList { get; set; }
 #endif
 
         /// <summary>
@@ -586,6 +596,7 @@ namespace BestHTTP
 #endif
             this.Callback = callback;
             this.StreamFragmentSize = 4 * 1024;
+            this.MaxFragmentQueueLength = 10;
 
             this.DisableRetry = !(methodType == HTTPMethods.Get);
             this.MaxRedirects = int.MaxValue;
@@ -674,16 +685,16 @@ namespace BestHTTP
             FieldCollector.AddBinaryData(fieldName, content, fileName, mimeType);
         }
 
+#if !BESTHTTP_DISABLE_UNITY_FORM
         /// <summary>
         /// Set or overwrite the internal form. Remarks: on WP8 it doesn't supported!
         /// </summary>
         public void SetFields(UnityEngine.WWWForm wwwForm)
         {
-#if !BESTHTTP_DISABLE_UNITY_FORM
             FormUsage = HTTPFormUsage.Unity;
             FormImpl = new UnityForm(wwwForm);
-#endif
         }
+#endif
 
         /// <summary>
         /// Manually set a HTTP Form.

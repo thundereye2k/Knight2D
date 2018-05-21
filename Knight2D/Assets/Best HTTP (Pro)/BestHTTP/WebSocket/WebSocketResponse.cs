@@ -631,7 +631,7 @@ namespace BestHTTP.WebSocket
 
             if (now - (lastMessage + this.PingFrequnecy) > this.WebSocket.CloseAfterNoMesssage)
             {
-                HTTPManager.Logger.Information("WebSocketResponse", 
+                HTTPManager.Logger.Warning("WebSocketResponse", 
                     string.Format("No message received in the given time! Closing WebSocket. LastMessage: {0}, PingFrequency: {1}, Close After: {2}, Now: {3}", 
                     this.lastMessage, this.PingFrequnecy, this.WebSocket.CloseAfterNoMesssage, now));
 

@@ -97,7 +97,7 @@ namespace BestHTTP.Logger
                         int counter = 1;
                         while (exception != null)
                         {
-                            sb.AppendFormat("{0}: {1} {2}", counter++.ToString(), ex.Message, ex.StackTrace);
+                            sb.AppendFormat("{0}: {1} {2}", counter++.ToString(), exception.Message, exception.StackTrace);
 
                             exception = exception.InnerException;
 

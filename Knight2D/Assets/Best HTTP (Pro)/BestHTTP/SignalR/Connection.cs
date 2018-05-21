@@ -468,6 +468,7 @@ namespace BestHTTP.SignalR
         private void OnAuthenticationSucceded(IAuthenticationProvider provider)
         {
             provider.OnAuthenticationSucceded -= OnAuthenticationSucceded;
+            provider.OnAuthenticationFailed -= OnAuthenticationFailed;
 
             StartImpl();
         }
@@ -477,6 +478,7 @@ namespace BestHTTP.SignalR
         /// </summary>
         private void OnAuthenticationFailed(IAuthenticationProvider provider, string reason)
         {
+            provider.OnAuthenticationSucceded -= OnAuthenticationSucceded;
             provider.OnAuthenticationFailed -= OnAuthenticationFailed;
 
             (this as IConnection).Error(reason);
@@ -862,6 +864,13 @@ namespace BestHTTP.SignalR
             // Not interested about errors we received after we already closed
             if (this.State == ConnectionStates.Closed)
                 return;
+
+            // If we are just quitting, don't try to reconnect.
+            if (HTTPManager.IsQuitting)
+            {
+                Close();
+                return;
+            }
 
             HTTPManager.Logger.Error("SignalR Connection", reason);
 

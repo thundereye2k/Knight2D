@@ -182,6 +182,9 @@ namespace BestHTTP
         /// </summary>
         public static bool TryToMinimizeTCPLatency = false;
 
+        public static int SendBufferSize = 65 * 1024;
+        public static int ReceiveBufferSize = 65 * 1024;
+
         /// <summary>
         /// On most systems the maximum length of a path is around 255 character. If a cache entity's path is longer than this value it doesn't get cached. There no platform independent API to query the exact value on the current system, but it's
         /// exposed here and can be overridden. It's default value is 255.
@@ -219,6 +222,8 @@ namespace BestHTTP
         private static bool IsCallingCallbacks;
 
         internal static System.Object Locker = new System.Object();
+
+        internal static bool IsQuitting { get; private set; }
 
         #endregion
 
@@ -733,10 +738,26 @@ namespace BestHTTP
         {
             lock (Locker)
             {
+                IsQuitting = true;
+
 #if !BESTHTTP_DISABLE_CACHING && (!UNITY_WEBGL || UNITY_EDITOR)
                 Caching.HTTPCacheService.SaveLibrary();
 #endif
 
+#if !BESTHTTP_DISABLE_COOKIES && (!UNITY_WEBGL || UNITY_EDITOR)
+                Cookies.CookieJar.Persist();
+#endif
+
+                AbortAll(true);
+
+                OnUpdate();
+            }
+        }
+
+        public static void AbortAll(bool allowCallbacks = false)
+        {
+            lock (Locker)
+            {
                 var queue = RequestQueue.ToArray();
                 RequestQueue.Clear();
                 foreach (var req in queue)
@@ -744,6 +765,8 @@ namespace BestHTTP
                     // Swallow any exceptions, we are quitting anyway.
                     try
                     {
+                        if (!allowCallbacks)
+                            req.Callback = null;
                         req.Abort();
                     }
                     catch { }
@@ -758,7 +781,11 @@ namespace BestHTTP
                         try
                         {
                             if (conn.CurrentRequest != null)
+                            {
+                                if (!allowCallbacks)
+                                    conn.CurrentRequest.Callback = null;
                                 conn.CurrentRequest.State = HTTPRequestStates.Aborted;
+                            }
                             conn.Abort(HTTPConnectionStates.Closed);
                             conn.Dispose();
                         }
@@ -767,8 +794,6 @@ namespace BestHTTP
                     kvp.Value.Clear();
                 }
                 Connections.Clear();
-
-                OnUpdate();
             }
         }
 

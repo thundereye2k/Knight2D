@@ -58,6 +58,11 @@ namespace BestHTTP.Cookies
             }
         }
 
+        /// <summary>
+        /// The plugin will delete cookies that are accessed this threshold ago. Its default value is 7 days.
+        /// </summary>
+        public static TimeSpan AccessThreshold = TimeSpan.FromDays(7);
+
         #region Privates
 
         /// <summary>
@@ -180,14 +185,13 @@ namespace BestHTTP.Cookies
                 try
                 {
                     uint size = 0;
-                    TimeSpan accessThreshold = TimeSpan.FromDays(7);
 
                     for (int i = 0; i < Cookies.Count; )
                     {
                         var cookie = Cookies[i];
 
                         // Remove expired or not used cookies
-                        if (!cookie.WillExpireInTheFuture() || (cookie.LastAccess + accessThreshold) < DateTime.UtcNow)
+                        if (!cookie.WillExpireInTheFuture() || (cookie.LastAccess + AccessThreshold) < DateTime.UtcNow)
                             Cookies.RemoveAt(i);
                         else
                         {
