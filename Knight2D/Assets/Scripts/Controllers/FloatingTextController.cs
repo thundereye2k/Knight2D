@@ -9,8 +9,8 @@ public class FloatingTextController : MonoBehaviour
 
     void Start()
     {
-        myAnimator = GetComponentInChildren<Animator>();
-        var clipInfo = myAnimator.GetCurrentAnimatorClipInfo(0);
+        MyAnimator = GetComponentInChildren<Animator>();
+        var clipInfo = MyAnimator.GetCurrentAnimatorClipInfo(0);
         Destroy(gameObject, clipInfo[0].clip.length);
     }
 
