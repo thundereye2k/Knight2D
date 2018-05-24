@@ -30,6 +30,7 @@ public class EnemyTypes
 
     public static EnumEnemies getEnemyEnum(string username)
     {
+        // TODO: Use enums (1 = golems)
         var str = username.Split(' ');
         var enemy = (EnumEnemies)Enum.Parse(typeof(EnumEnemies), str[0]);
         return enemy;
