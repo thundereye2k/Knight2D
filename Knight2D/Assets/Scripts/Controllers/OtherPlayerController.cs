@@ -112,8 +112,7 @@ public class OtherPlayerController : MonoBehaviour
         var distance = Vector3.Distance(o.transform.position, transform.position);
         if (distance < 250f)
         {
-            var enemy = EnemyTypes.getEnemyEnum(o.name);
-            var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
+            var expToAdd = EnemyTypes.getEnemyType(1).exp;
             //exp += expToAdd;
 
             var res = Resources.Load("FloatingText", typeof(GameObject));

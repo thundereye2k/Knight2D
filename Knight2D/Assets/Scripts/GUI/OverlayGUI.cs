@@ -36,7 +36,7 @@ public class OverlayGUI : MonoBehaviour
         tickerText.text = network.ticker;
         //var time = DateTime.Now.ToString("h:mm tt");
 
-        var str = (Mathf.Floor((network.avgPing) * 1000f) - 100f).ToString();
+        var str = Mathf.Floor((network.avgPing) * 1000f).ToString();
         pingText.text = "Ping: " + str + "ms";
 
         if (player)
@@ -44,13 +44,13 @@ public class OverlayGUI : MonoBehaviour
             var pc = player.GetComponent<PlayerController>();
             dpsText.text = "DPS: " + Mathf.Floor(pc.dps).ToString();
 
-            playerHealthBar.fillAmount = pc.health / pc.maxHealth;
-            playerHealthText.text = pc.health + " / " + pc.maxHealth;
-            playerNameText.text = pc.gameObject.name;
+            //playerHealthBar.fillAmount = pc.health / pc.maxHealth;
+            //playerHealthText.text = pc.health + " / " + pc.maxHealth;
+            //playerNameText.text = pc.gameObject.name;
 
             var level = ExpScale.FindLevel(pc.exp);
             var percent = ExpScale.FindPercent(pc.exp);
-            playerLevelText.text = level.ToString();
+            //playerLevelText.text = level.ToString();
             playerExpBar.fillAmount = percent;
 
             if (shouldPause)

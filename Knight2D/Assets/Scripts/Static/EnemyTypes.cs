@@ -13,26 +13,18 @@ public class EnemyTypes
         this.exp = exp;
     }
 
-    public static EnemyTypes getEnemyType(EnumEnemies enemyType)
+    public static EnemyTypes getEnemyType(int enemyType)
     {
         EnemyTypes enemy;
         switch (enemyType)
         {
-            case EnumEnemies.golems:
+            case (int)EnumEnemies.golems:
                 enemy = new EnemyTypes(48f, 100f);
                 break;
             default:
                 enemy = new EnemyTypes(0f, 0f);
                 break;
         }
-        return enemy;
-    }
-
-    public static EnumEnemies getEnemyEnum(string username)
-    {
-        // TODO: Use enums (1 = golems)
-        var str = username.Split(' ');
-        var enemy = (EnumEnemies)Enum.Parse(typeof(EnumEnemies), str[0]);
         return enemy;
     }
 }

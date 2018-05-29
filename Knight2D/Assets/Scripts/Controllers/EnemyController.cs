@@ -32,8 +32,7 @@ public class EnemyController : MonoBehaviour
         healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
         healthBar.name = gameObject.name;
 
-        var enemy = EnemyTypes.getEnemyEnum(gameObject.name);
-        height = EnemyTypes.getEnemyType(enemy).height;
+        height = EnemyTypes.getEnemyType(1).height;
     }
 
     void FixedUpdate()

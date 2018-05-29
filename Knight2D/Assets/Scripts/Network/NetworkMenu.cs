@@ -30,10 +30,12 @@ public class NetworkMenu : MonoBehaviour
     {
         var options = new SocketOptions
         {
-            ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
+            //ConnectWith = BestHTTP.SocketIO.Transports.TransportTypes.WebSocket,
             Reconnection = false,
         };
-        manager = new SocketManager(new Uri("https://the-pack.herokuapp.com/socket.io/"), options);
+
+        //manager = new SocketManager(new Uri("https://knight2d.herokuapp.com/socket.io/"), options);
+        manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
 
         manager.Socket.On("menu-player", OnMenuResponse);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);

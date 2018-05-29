@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour
     public float health { get; set; }
     public float mana { get; set; }
     public float exp { get; set; }
-    public string world { get; set; }
-    public string zone { get; set; }
+    public string worldName { get; set; }
+    public string zoneName { get; set; }
     public bool pause { get; set; }
     public string[] itemsArray { get; set; }
     public string[] skillsArray { get; set; }
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
         var currentPosition = transform.position;
 
         var speed = baseSpeed; // TODO: Check items
-        world = "test";
+        //world = "test";
 
 #if MOBILE_INPUT
         //moveH = joystickMovement.Horizontal;
@@ -228,7 +228,7 @@ public class PlayerController : MonoBehaviour
 
         var WorldObject_ScreenPosition = new Vector2(
         ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
+        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 32f);
 
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
@@ -243,7 +243,7 @@ public class PlayerController : MonoBehaviour
         if (networkTimer > networkTick)
         {
             var jsonArray = jsonList.ToArray();
-            network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsArray, world, zone, health, mana, exp, itemsArray, speed, jsonArray);
+            network.CommandMove(currentPosition, (int)attackType, attackRadian, skillsArray, worldName, zoneName, health, mana, exp, itemsArray, speed, jsonArray);
             jsonList.Clear();
             networkTimer = 0f;
         }
@@ -263,8 +263,7 @@ public class PlayerController : MonoBehaviour
         var distance = Vector3.Distance(o.transform.position, transform.position);
         if (distance < 250f)
         {
-            var enemy = EnemyTypes.getEnemyEnum(o.name);
-            var expToAdd = EnemyTypes.getEnemyType(enemy).exp;
+            var expToAdd = EnemyTypes.getEnemyType(1).exp;
             exp += expToAdd;
 
             var res = Resources.Load("FloatingText", typeof(GameObject));
