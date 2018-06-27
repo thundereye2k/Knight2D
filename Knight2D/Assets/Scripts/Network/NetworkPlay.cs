@@ -20,6 +20,7 @@ public class NetworkPlay : MonoBehaviour
     public string ticker;
     public float avgPing;
     public GameObject content;
+    public GameObject avatars;
 
     void Awake()
     {
@@ -67,8 +68,9 @@ public class NetworkPlay : MonoBehaviour
         manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
 
         manager.Socket.On("player-start", OnPlayerStart);
-        manager.Socket.On("player-message", OnMessage);
+        manager.Socket.On("player-message", OnPlayerMessage);
         manager.Socket.On("get-moves", OnGetMoves);
+        manager.Socket.On("get-map", OnGetMap);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
         CommandConnect();
@@ -87,7 +89,7 @@ public class NetworkPlay : MonoBehaviour
             pingTimer = 0f;
         }
 
-        if (ping > 10f)
+        if (ping > 1f)
         {
             //holder.warn = true;
             //manager.Close();
@@ -106,7 +108,7 @@ public class NetworkPlay : MonoBehaviour
 
     public void CommandMove(Vector3 position, int attackType, float attackRadian, string[] skillsArray, string world, string zone, float health, float mana, float exp, string[] itemsArray, float speed, string[] jsonArray)
     {
-        var data = new PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsArray, health, mana, itemsArray, exp, world, zone, speed);
+        var data = new PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsArray, health, mana, itemsArray, exp, 0, 0, speed);
         var json = JsonUtility.ToJson(data);
         manager.Socket.Emit("player-move", json, jsonArray);
     }
@@ -125,9 +127,7 @@ public class NetworkPlay : MonoBehaviour
     void OnPlayerStart(Socket socket, Packet packet, params object[] args)
     {
         // token, username, positionX, positionY, moveH, moveV, lastMoveX, lastMoveY, attackType, attackRadian, skillsArray world, zone, health, mana
-        // [][] 
         var json = (string)args[0];
-        var mapArray = args[1];
         var data = JsonUtility.FromJson<PlayerJSON>(json);
         Debug.Log(json);
 
@@ -135,18 +135,18 @@ public class NetworkPlay : MonoBehaviour
         {
             var pos = new Vector3(data.positionX, data.positionY, 0);
             var rot = new Quaternion(0, 0, 0, 0);
-            var res = Resources.Load("Player", typeof(GameObject));
+            var res = Resources.Load<GameObject>("Player");
 
-            myPlayer = Instantiate(res, pos, rot) as GameObject;
+            myPlayer = Instantiate(res, pos, rot, avatars.transform);
             myPlayer.name = data.username;
 
             var pc = myPlayer.GetComponent<PlayerController>();
             pc.network = gameObject.GetComponent<NetworkPlay>();
             pc.health = data.health;
             pc.mana = data.mana;
-            pc.worldName = data.worldName;
-            pc.zoneName = data.zoneName;
             pc.exp = data.exp;
+            //pc.gold = data.gold;
+            //pc.fame = data.fame;
             pc.itemsArray = data.itemsArray;
             pc.skillsArray = data.skillsArray;
         }
@@ -168,8 +168,8 @@ public class NetworkPlay : MonoBehaviour
         var enemyN = SimpleJSON.JSONNode.Parse(enemyJSON);
         var allPlayers = new List<GameObject>(GameObject.FindGameObjectsWithTag("OtherPlayer"));
         var allEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
-        var foundPlayers = new List<GameObject>();
-        var foundEnemies = new List<GameObject>();
+        var deletePlayers = allPlayers;
+        var deleteEnemies = allEnemies;
         //Debug.Log(playerN);
         //Debug.Log(enemyN);
 
@@ -189,26 +189,26 @@ public class NetworkPlay : MonoBehaviour
                 if (player.name == data.username)
                 {
                     obj = player;
-                    foundPlayers.Add(obj);
+                    deletePlayers.Remove(obj);
                     break;
                 }
             }
 
             if (!obj)
             {
-                var res = Resources.Load("Avatar", typeof(GameObject));
+                var res = Resources.Load<GameObject>("Avatar");
                 var pos = new Vector3(data.positionX, data.positionY, 0f);
                 var rot = Quaternion.Euler(0, 0, 0);
-                obj = Instantiate(res, pos, rot) as GameObject;
+                obj = Instantiate(res, pos, rot, avatars.transform);
                 obj.name = data.username;
-                foundPlayers.Add(obj);
+                deletePlayers.Remove(obj);
             }
 
             var op = obj.GetComponent<OtherPlayerController>();
             op.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
             op.attackRadian = data.attackRadian;
             op.attackType = data.attackType;
-            op.itemsArray = data.itemsArray;
+            op.skillsArray = data.skillsArray;
             op.speed = data.speed;
             op.avgPing = avgPing;
         }
@@ -223,19 +223,19 @@ public class NetworkPlay : MonoBehaviour
                 if (enemy.name == data.username)
                 {
                     obj = enemy;
-                    foundEnemies.Add(obj);
+                    deleteEnemies.Remove(obj);
                     break;
                 }
             }
 
             if (!obj)
             {
-                var res = Resources.Load("Enemy", typeof(GameObject));
+                var res = Resources.Load<GameObject>("Enemy");
                 var pos = new Vector3(data.positionX, data.positionY, 0f);
                 var rot = Quaternion.Euler(0, 0, 0);
-                obj = Instantiate(res, pos, rot) as GameObject;
+                obj = Instantiate(res, pos, rot, avatars.transform);
                 obj.name = data.username;
-                foundEnemies.Add(obj);
+                deleteEnemies.Remove(obj);
             }
 
             var em = obj.GetComponent<EnemyController>();
@@ -245,32 +245,45 @@ public class NetworkPlay : MonoBehaviour
             em.maxHealth = data.maxHealth;
             em.speed = data.speed;
             em.target = data.target;
-            em.wait = data.wait;
-            em.attack = data.attack;
+            em.attackType = data.attackType;
         }
-
-        allPlayers.RemoveAll(player => foundPlayers.Contains(player));
-        allEnemies.RemoveAll(enemy => foundEnemies.Contains(enemy));
 
         foreach (GameObject player in allPlayers)
         {
-            player.GetComponent<OtherPlayerController>().DestroyObject();
+            Destroy(player);
         }
 
         foreach (GameObject enemy in allEnemies)
         {
-            enemy.GetComponent<EnemyController>().DestroyObject();
-            /*
-            myPlayer.GetComponent<PlayerController>().addExp(enemy);
-            foreach (GameObject otherPlayer in foundPlayers)
-            {
-                otherPlayer.GetComponent<OtherPlayerController>().addExp(enemy);
-            }
-            */
+            Destroy(enemy);
+            //myPlayer.GetComponent<PlayerController>().addExp(enemy);
+            //foreach (GameObject otherPlayer in foundPlayers)
+            //{
+            //    otherPlayer.GetComponent<OtherPlayerController>().addExp(enemy);
+            //}            
         }
     }
 
-    void OnMessage(Socket socket, Packet packet, params object[] args)
+    void OnGetMap(Socket socket, Packet packet, params object[] args)
+    {
+        // map, width, length
+        var json = (string)args[0];
+        var data = JsonUtility.FromJson<MapJSON>(json);
+        Debug.Log(json);
+
+        var list = new List<int[]>();
+        foreach (string str in data.mapString)
+        {
+            var strArray = str.Split(',');
+            var intArray = Array.ConvertAll(strArray, int.Parse);
+            list.Add(intArray);
+        }
+        var grid = list.ToArray();
+
+        StartCoroutine(TileController.CreateMap(grid, data.mapWidth, data.mapLength));
+    }
+
+    void OnPlayerMessage(Socket socket, Packet packet, params object[] args)
     {
         // token, username, message
         var json = (string)args[0];
@@ -293,8 +306,8 @@ public class NetworkPlay : MonoBehaviour
                 messageList.Remove(messageList[0]);
             }
 
-            var res = Resources.Load("Message", typeof(GameObject));
-            var obj = Instantiate(res, content.transform) as GameObject;
+            var res = Resources.Load<GameObject>("Message");
+            var obj = Instantiate(res, content.transform);
             var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
             var str = source + author + text;
 
@@ -364,11 +377,11 @@ public class NetworkPlay : MonoBehaviour
         public float health;
         public float mana;
         public float exp;
-        public string worldName;
-        public string zoneName;
+        public float gold;
+        public float fame;
         public float speed;
 
-        public PlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float exp, string worldName, string zoneName, float speed)
+        public PlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float exp, float gold, float fame, float speed)
         {
             this.token = token;
             this.username = username;
@@ -381,37 +394,59 @@ public class NetworkPlay : MonoBehaviour
             this.health = health;
             this.mana = mana;
             this.exp = exp;
-            this.worldName = worldName;
-            this.zoneName = zoneName;
+            this.gold = gold;
+            this.fame = fame;
             this.speed = speed;
         }
     }
 
     class OtherPlayerJSON
     {
-        public string token;
         public string username;
-        public string zone;
-        public string world;
         public float positionX;
         public float positionY;
         public int attackType;
         public float attackRadian;
-        public string[] itemsArray;
+        public string[] skillsArray;
         public float speed;
 
-        public OtherPlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string world, string zone, string[] itemsArray, float speed)
+        public OtherPlayerJSON(string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float speed)
         {
-            this.token = token;
             this.username = username;
             this.positionX = positionX;
             this.positionY = positionY;
             this.attackType = attackType;
             this.attackRadian = attackRadian;
-            this.world = world;
-            this.zone = zone;
-            this.itemsArray = itemsArray;
+            this.skillsArray = skillsArray;
             this.speed = speed;
+        }
+    }
+
+    class EnemyJSON
+    {
+        public string username;
+        public string target;
+        public float positionX;
+        public float positionY;
+        public float health;
+        public float speed;
+        public float maxHealth;
+        public int attackType;
+        public float targetPositionX;
+        public float targetPositionY;
+
+        public EnemyJSON(string username, float positionX, float positionY, string target, float health, float speed, float maxHealth, int attackType, float targetPositionX, float targetPositionY)
+        {
+            this.username = username;
+            this.positionX = positionX;
+            this.positionY = positionY;
+            this.target = target;
+            this.health = health;
+            this.speed = speed;
+            this.maxHealth = maxHealth;
+            this.attackType = attackType;
+            this.targetPositionX = targetPositionX;
+            this.targetPositionY = targetPositionY;
         }
     }
 
@@ -429,37 +464,23 @@ public class NetworkPlay : MonoBehaviour
         }
     }
 
-    class EnemyJSON
+    class MapJSON
     {
-        public string username;
-        public string target;
-        public float positionX;
-        public float positionY;
-        public float health;
-        public float speed;
-        public float maxHealth;
-        public bool attack;
-        public bool wait;
-        public float targetPositionX;
-        public float targetPositionY;
+        public int mapWidth;
+        public int mapLength;
+        public string[] mapString;
 
-        public EnemyJSON(string username, float positionX, float positionY, string target, float health, float speed, float maxHealth, bool attack, bool wait, float targetPositionX, float targetPositionY)
+        public MapJSON(string[] mapString, int mapWidth, int mapLength)
         {
-            this.username = username;
-            this.positionX = positionX;
-            this.positionY = positionY;
-            this.target = target;
-            this.health = health;
-            this.speed = speed;
-            this.maxHealth = maxHealth;
-            this.attack = attack;
-            this.wait = wait;
-            this.targetPositionX = targetPositionX;
-            this.targetPositionY = targetPositionY;
+            this.mapWidth = mapWidth;
+            this.mapLength = mapLength;
+            this.mapString = mapString;
         }
     }
 
     #endregion
+
+    #region Extra
 
     class MessageObject
     {
@@ -488,4 +509,6 @@ public class NetworkPlay : MonoBehaviour
         }
         return total / list.Count;
     }
+
+    #endregion
 }

@@ -37,10 +37,9 @@ GameObject:
   - component: {fileID: 4879566551997130}
   - component: {fileID: 212516592096512692}
   - component: {fileID: 95666422168997966}
-  - component: {fileID: 50982258997739570}
-  - component: {fileID: 61895948020272520}
   - component: {fileID: 114196623974130340}
   - component: {fileID: 114441537367568080}
+  - component: {fileID: 65862008129268094}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -68,58 +67,25 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1698964125256484}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -16}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children:
   - {fileID: 4228299019597520}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50982258997739570
-Rigidbody2D:
-  serializedVersion: 4
+--- !u!65 &65862008129268094
+BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1698964125256484}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
---- !u!61 &61895948020272520
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1698964125256484}
+  m_Material: {fileID: 13400000, guid: e52fb17f9b1e7fd48b8955f1391d3688, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -2}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 32, y: 32}
-    newSize: {x: 0.32, y: 0.32}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 12, y: 10}
-  m_EdgeRadius: 0
+  m_Size: {x: 32, y: 32, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &95666422168997966
 Animator:
   serializedVersion: 3
@@ -148,7 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a83e1f97166f14f93ed678b8eca4a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 0
 --- !u!114 &114441537367568080
 MonoBehaviour:
   m_ObjectHideFlags: 1

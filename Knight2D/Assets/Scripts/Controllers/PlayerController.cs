@@ -48,8 +48,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        myCamera = GameObject.FindGameObjectWithTag("CMCamera").GetComponent<CinemachineVirtualCamera>();
-        myCamera.Follow = transform;
+        //myCamera = GameObject.FindGameObjectWithTag("CMCamera").GetComponent<CinemachineVirtualCamera>();
+        //myCamera.Follow = transform;
 
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
@@ -59,10 +59,10 @@ public class PlayerController : MonoBehaviour
         GUI = GameObject.FindGameObjectWithTag("GameGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
-        var res = Resources.Load("HealthBar", typeof(GameObject));
+        var res = Resources.Load<GameObject>("HealthBar");
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
-        healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+        healthBar = Instantiate(res, pos, rot, GUI.transform);
         healthBar.name = gameObject.name;
 
 #if MOBILE_INPUT
@@ -151,10 +151,10 @@ public class PlayerController : MonoBehaviour
                 attackTimer = 0f;
                 currentPosition.x = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
                 currentPosition.y = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
-                var res = Resources.Load(attackType.ToString(), typeof(GameObject));
+                var res = Resources.Load<GameObject>(attackType.ToString());
                 var pos = new Vector3(currentPosition.x, currentPosition.y, 0);
                 var rot = Quaternion.Euler(0, 0, 0);
-                var obj = Instantiate(res, pos, rot, transform) as GameObject;
+                var obj = Instantiate(res, pos, rot, transform);
                 var oc = obj.GetComponent<AttackController>();
                 oc.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 oc.Speed = attack.attackSpeed;
@@ -266,10 +266,10 @@ public class PlayerController : MonoBehaviour
             var expToAdd = EnemyTypes.getEnemyType(1).exp;
             exp += expToAdd;
 
-            var res = Resources.Load("FloatingText", typeof(GameObject));
+            var res = Resources.Load<GameObject>("FloatingText");
             var pos = new Vector3(0, 0, 0);
             var rot = Quaternion.Euler(0, 0, 0);
-            var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+            var obj = Instantiate(res, pos, rot, GUI.transform);
 
             var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
             var WorldObject_ScreenPosition = new Vector2(

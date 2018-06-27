@@ -5,33 +5,25 @@ using UnityEngine.Tilemaps;
 
 public class TileController : MonoBehaviour
 {
-    public Tilemap tilemap;
-    private int[][] mapGrid;
-    private int pixelSize = 32;
+    private static int x = 16, y = 16, z = -16, size = 32;
 
-
-    public void CreateMap(int[][] mapArray, int width, int length)
+    public static IEnumerator CreateMap(int[][] grid, int width, int length)
     {
-        var wall = Resources.Load("Wall", typeof(Sprite)) as Sprite;
-        var floor = Resources.Load("Floor", typeof(Sprite)) as Sprite;
-        mapGrid = mapArray;
+        var map = GameObject.FindGameObjectWithTag("Map");
+        var wall = Resources.Load<GameObject>("Wall");
         for (var row = 0; row < width; row++)
         {
             for (var column = 0; column < length; column++)
             {
-                var cell = new Vector3Int(column * pixelSize, row * -pixelSize, 0); ;
-                var tile = new Tile();
-                if (mapGrid[column][row] == 1)
+                Debug.Log(grid[column][row]);
+                if (grid[column][row] == 1)
                 {
-                    tile.sprite = wall;
-                    tilemap.SetTile(cell, tile);
-                }
-                else
-                {
-                    tile.sprite = floor;
-                    tilemap.SetTile(cell, tile);
+                    var position = new Vector3((size * column) + x, (size * row) + y, z);
+                    var rotation = new Quaternion(0, 0, 0, 0);
+                    Instantiate(wall, position, rotation, map.transform);
                 }
             }
+            yield return null;
         }
     }
 }

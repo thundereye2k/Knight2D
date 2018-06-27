@@ -11,6 +11,7 @@ TagManager:
   - CMCamera
   - Item
   - GameGUI
+  - EnemyAttack
   layers:
   - Default
   - TransparentFX

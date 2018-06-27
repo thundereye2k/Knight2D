@@ -14,7 +14,7 @@ public class OtherPlayerController : MonoBehaviour
     public float attackRadian { get; set; }
     public float speed { get; set; }
     public float avgPing { get; set; }
-    public string[] itemsArray { get; set; }
+    public string[] skillsArray { get; set; }
 
     void Start()
     {
@@ -80,10 +80,10 @@ public class OtherPlayerController : MonoBehaviour
                 attackTimer = 0f;
                 var offsetX = currentPosition.x + (Mathf.Cos(attackRadian) * 10);
                 var offsetY = currentPosition.y + (Mathf.Sin(attackRadian) * 10);
-                var res = Resources.Load(attackType.ToString(), typeof(GameObject));
+                var res = Resources.Load<GameObject>(attackType.ToString());
                 var pos = new Vector3(offsetX, offsetY, 0f);
                 var rot = Quaternion.Euler(0f, 0f, attackRadian * Mathf.Rad2Deg);
-                var obj = Instantiate(res, pos, rot, transform) as GameObject;
+                var obj = Instantiate(res, pos, rot, transform);
                 var oc = obj.GetComponent<AttackController>();
                 oc.Speed = attack.attackSpeed;
                 oc.MaxDistance = attack.attackDistance;
@@ -115,10 +115,10 @@ public class OtherPlayerController : MonoBehaviour
             var expToAdd = EnemyTypes.getEnemyType(1).exp;
             //exp += expToAdd;
 
-            var res = Resources.Load("FloatingText", typeof(GameObject));
+            var res = Resources.Load<GameObject>("FloatingText");
             var pos = new Vector3(0, 0, 0);
             var rot = Quaternion.Euler(0, 0, 0);
-            var obj = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+            var obj = Instantiate(res, pos, rot, GUI.transform);
 
             var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
             var WorldObject_ScreenPosition = new Vector2(
@@ -128,10 +128,5 @@ public class OtherPlayerController : MonoBehaviour
             obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
             obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
         }
-    }
-
-    public void DestroyObject()
-    {
-        Destroy(gameObject);
     }
 }

@@ -7,14 +7,13 @@ public class EnemyController : MonoBehaviour
     private GameObject healthBar;
     private RectTransform targetCanvas;
 
-    public float height;
+    private float height;
 
     public float health { get; set; }
     public float maxHealth { get; set; }
     public string target { get; set; }
     public float speed { get; set; }
-    public bool attack { get; set; }
-    public bool wait { get; set; }
+    public int attackType { get; set; }
     public Vector3 targetPosition { get; set; }
     public Vector3 serverPosition { get; set; }
 
@@ -26,10 +25,10 @@ public class EnemyController : MonoBehaviour
         var GUI = GameObject.FindGameObjectWithTag("GameGUI");
         targetCanvas = GUI.GetComponent<RectTransform>();
 
-        var res = Resources.Load("HealthBar", typeof(GameObject));
+        var res = Resources.Load<GameObject>("HealthBar");
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
-        healthBar = Instantiate(res, pos, rot, GUI.transform) as GameObject;
+        healthBar = Instantiate(res, pos, rot, GUI.transform);
         healthBar.name = gameObject.name;
 
         height = EnemyTypes.getEnemyType(1).height;
@@ -42,7 +41,7 @@ public class EnemyController : MonoBehaviour
         transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
 
         if (currentPosition == targetPosition)
-            transform.position = new Vector3(currentPosition.x + 0.0001f, currentPosition.y + 0.0001f, 0f);
+            transform.position = new Vector3(currentPosition.x + 0.0001f, currentPosition.y + 0.0001f, -16f);
     }
 
     void Update()
@@ -102,10 +101,5 @@ public class EnemyController : MonoBehaviour
         ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + height);
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
-    }
-
-    public void DestroyObject()
-    {
-        health = 0f;
     }
 }
