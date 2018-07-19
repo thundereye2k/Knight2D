@@ -19,7 +19,7 @@ public class EnemyTypes
         switch (enemyType)
         {
             case (int)EnumEnemies.golems:
-                enemy = new EnemyTypes(48f, 100f);
+                enemy = new EnemyTypes(64f, 100f);
                 break;
             default:
                 enemy = new EnemyTypes(0f, 0f);

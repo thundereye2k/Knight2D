@@ -1088,7 +1088,7 @@ namespace BestHTTP
             lock (SyncRoot)
             {
                 bool result = streamedFragments != null && streamedFragments.Count >= baseRequest.MaxFragmentQueueLength;
-                if (result)
+                if (result && HTTPManager.Logger.Level == Logger.Loglevels.All)
                     VerboseLogging(string.Format("HasFragmentsInQueue - {0} / {1}", streamedFragments.Count, baseRequest.MaxFragmentQueueLength));
 
                 return result;
@@ -1140,6 +1140,7 @@ namespace BestHTTP
 
         void VerboseLogging(string str)
         {
+          if (HTTPManager.Logger.Level == Logger.Loglevels.All)
             HTTPManager.Logger.Verbose("HTTPResponse", "'" + this.baseRequest.CurrentUri.ToString() + "' - " + str);
         }
 

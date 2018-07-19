@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class TileController : MonoBehaviour
 {
-    private static int x = 16, y = 16, z = -16, size = 32;
+    private static float x = 16f, y = 16f, z = 0f, size = 32f;
 
     public static IEnumerator CreateMap(int[][] grid, int width, int length)
     {
@@ -15,10 +15,9 @@ public class TileController : MonoBehaviour
         {
             for (var column = 0; column < length; column++)
             {
-                Debug.Log(grid[column][row]);
                 if (grid[column][row] == 1)
                 {
-                    var position = new Vector3((size * column) + x, (size * row) + y, z);
+                    var position = new Vector3((size * row) + x, (size * column) + y, z);
                     var rotation = new Quaternion(0, 0, 0, 0);
                     Instantiate(wall, position, rotation, map.transform);
                 }

@@ -518,7 +518,7 @@ namespace BestHTTP
 
                 if (HasProxy && (!Proxy.IsTransparent || (isSecure && Proxy.NonTransparentForHTTPS)))
                 {
-                    var outStream = new BinaryWriter(Stream);
+                    var outStream = new BinaryWriter(new WriteOnlyBufferedStream(Stream, HTTPRequest.UploadChunkSize));
 
                     bool retry;
                     do

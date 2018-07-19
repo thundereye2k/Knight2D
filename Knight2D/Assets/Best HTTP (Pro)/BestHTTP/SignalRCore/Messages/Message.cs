@@ -5,13 +5,45 @@ namespace BestHTTP.SignalRCore.Messages
 {
     public enum MessageTypes : int
     {
+        /// <summary>
+        /// This is a made up message type, for easier handshake handling.
+        /// </summary>
         Handshake  = 0,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#invocation-message-encoding
+        /// </summary>
         Invocation = 1,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#streamitem-message-encoding
+        /// </summary>
         StreamItem = 2,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#completion-message-encoding
+        /// </summary>
         Completion = 3,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#streaminvocation-message-encoding
+        /// </summary>
         StreamInvocation = 4,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#cancelinvocation-message-encoding
+        /// </summary>
         CancelInvocation = 5,
-        Ping = 6
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#ping-message-encoding
+        /// </summary>
+        Ping = 6,
+
+        /// <summary>
+        /// https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#close-message-encoding
+        /// </summary>
+        Close = 7
     }
 
     public class Message
@@ -41,8 +73,10 @@ namespace BestHTTP.SignalRCore.Messages
                     return string.Format("[CancelInvocation Id: {0}]", this.invocationId);
                 case MessageTypes.Ping:
                     return "[Ping]";
+                case MessageTypes.Close:
+                    return string.IsNullOrEmpty(this.error) ? "[Close]" : string.Format("[Close {0}]", this.error);
                 default:
-                    throw new Exception("Unknown message! Type: " + this.type);
+                    return "Unknown message! Type: " + this.type;
             }
         }
     }

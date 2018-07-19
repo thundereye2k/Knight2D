@@ -368,7 +368,7 @@ namespace BestHTTP.SocketIO
         /// </summary>
         void ISocket.OnPacket(Packet packet)
         {
-            // Some preprocessing of the the packet
+            // Some preprocessing of the packet
             switch(packet.SocketIOEvent)
             {
                 case SocketIOEventTypes.Connect:

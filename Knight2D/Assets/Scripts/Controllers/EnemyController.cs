@@ -34,24 +34,27 @@ public class EnemyController : MonoBehaviour
         height = EnemyTypes.getEnemyType(1).height;
     }
 
-    void FixedUpdate()
-    {
-        var currentPosition = transform.position;
-        var step = speed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
-
-        if (currentPosition == targetPosition)
-            transform.position = new Vector3(currentPosition.x + 0.0001f, currentPosition.y + 0.0001f, -16f);
-    }
-
     void Update()
     {
         #region Movement
 
         var currentPosition = transform.position;
+        var step = speed * Time.deltaTime;
         var playerMoving = false;
         var moveH = 0f;
         var moveV = 0f;
+
+        if(serverPosition == new Vector3(0,0,0)) {
+            Debug.Log("sfd");
+        }
+
+        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
+
+        if (currentPosition == targetPosition)
+        {
+            var pon = Random.Range(0, 2) * 2 - 1;
+            transform.position = new Vector3(currentPosition.x + (0.0001f * pon), currentPosition.y + (0.0001f * pon), 0f);
+        }
 
         if (Vector3.Distance(currentPosition, targetPosition) > 1f)
         {

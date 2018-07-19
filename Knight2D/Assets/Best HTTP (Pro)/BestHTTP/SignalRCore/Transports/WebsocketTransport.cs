@@ -1,15 +1,24 @@
 ﻿#if !BESTHTTP_DISABLE_SIGNALR_CORE && !BESTHTTP_DISABLE_WEBSOCKET
 using System;
 using System.Collections.Generic;
-using BestHTTP.WebSocket;
+using System.Text;
+
+using BestHTTP.SignalRCore.Messages;
 
 namespace BestHTTP.SignalRCore.Transports
 {
+    /// <summary>
+    /// WebSockets transport implementation.
+    /// https://github.com/aspnet/SignalR/blob/dev/specs/TransportProtocols.md#websockets-full-duplex
+    /// </summary>
     internal sealed class WebSocketTransport : ITransport
     {
         public TransportTypes TransportType { get { return TransportTypes.WebSocket; } }
         public TransferModes TransferMode { get { return TransferModes.Binary; } }
 
+        /// <summary>
+        /// Current state of the transport. All changes will be propagated to the HubConnection through the onstateChanged event.
+        /// </summary>
         public TransportStates State {
             get { return this._state; }
             private set
@@ -26,14 +35,23 @@ namespace BestHTTP.SignalRCore.Transports
         }
         private TransportStates _state;
 
+        /// <summary>
+        /// This will store the reason of failures so HubConnection can include it in its OnError event.
+        /// </summary>
         public string ErrorReason { get; private set; }
 
+        /// <summary>
+        /// Called every time when the transport's <see cref="State"/> changed.
+        /// </summary>
         public event Action<TransportStates, TransportStates> OnStateChanged;
 
         private WebSocket.WebSocket webSocket;
         private HubConnection connection;
 
-        private List<Messages.Message> messages = new List<Messages.Message>();
+        /// <summary>
+        /// Cached list of parsed messages.
+        /// </summary>
+        private List<Message> messages = new List<Message>();
 
         public WebSocketTransport(HubConnection con)
         {
@@ -41,10 +59,28 @@ namespace BestHTTP.SignalRCore.Transports
             this.State = TransportStates.Initial;
         }
 
-        public void StartConnect()
+        void ITransport.StartConnect()
         {
+            HTTPManager.Logger.Verbose("WebSocketTransport", "StartConnect");
+
             if (this.webSocket == null)
-                this.webSocket = new WebSocket.WebSocket(this.connection.Uri);
+            {
+                Uri baseUri = this.connection.Uri;
+
+                // If we received an Url in the negotiation result, we have to connect to that endpoint.
+                if (this.connection.NegotiationResult != null && this.connection.NegotiationResult.Url != null)
+                    baseUri = this.connection.NegotiationResult.Url;
+
+                Uri uri = BuildUri(baseUri);
+
+                // Also, if there's an authentication provider it can alter further our uri.
+                if (this.connection.AuthenticationProvider != null)
+                    uri = this.connection.AuthenticationProvider.PrepareUri(uri) ?? uri;
+
+                HTTPManager.Logger.Verbose("WebSocketTransport", "StartConnect connecting to Uri: " + uri.ToString());
+
+                this.webSocket = new WebSocket.WebSocket(uri);
+            }
 
 #if !UNITY_WEBGL || UNITY_EDITOR
             // prepare the internal http request
@@ -62,61 +98,64 @@ namespace BestHTTP.SignalRCore.Transports
             this.State = TransportStates.Connecting;
         }
         
-        public void Send(byte[] msg)
+        void ITransport.Send(byte[] msg)
         {
+            // To help debugging, in the editor when the plugin's loggging level is set to All, we will
+            //  send all messages in textual form. This will help the readability when sent through a proxy.
+#if UNITY_EDITOR
             if (HTTPManager.Logger.Level == Logger.Loglevels.All)
                 this.webSocket.Send(System.Text.Encoding.UTF8.GetString(msg, 0, msg.Length));
             else
+#endif
                 this.webSocket.Send(msg);
         }
 
+        // The websocket connection is open
         private void OnOpen(WebSocket.WebSocket webSocket)
         {
-            // When our websocket connection is open, send the 'negotiation' message to the server.
-            // It's not a real negotiation step, as we don't expect an answer to this.
+            HTTPManager.Logger.Verbose("WebSocketTransport", "OnOpen");
 
-            string json = this.connection.ComposeNegotiationMessage();
+            // https://github.com/aspnet/SignalR/blob/dev/specs/HubProtocol.md#overview
+            // When our websocket connection is open, send the 'negotiation' message to the server.
+
+            string json = string.Format("{{'protocol':'{0}', 'version': 1}}", this.connection.Protocol.Encoder.Name);
 
             byte[] buffer = JsonProtocol.WithSeparator(json);
 
-            Send(buffer);
+            (this as ITransport).Send(buffer);
         }
 
-        private Messages.Message ParseHandshakeResponse(string data)
+        private string ParseHandshakeResponse(string data)
         {
+            // The handshake response is
+            //  -an empty json object ('{}') if the handshake process is succesfull
+            //  -otherwise it has one 'error' field
+
             Dictionary<string, object> response = BestHTTP.JSON.Json.Decode(data) as Dictionary<string, object>;
 
             if (response == null)
-                return null;
-
-            Messages.Message msg = new Messages.Message();
-            msg.type = Messages.MessageTypes.Handshake;
+                return "Couldn't parse json data: " + data;
 
             object error;
             if (response.TryGetValue("error", out error))
-                msg.error = error.ToString();
+                return error.ToString();
 
-            return msg;
+            return null;
         }
 
-        private void TryHandleHandshakeResponse(string data)
+        private void HandleHandshakeResponse(string data)
         {
-            var msg = ParseHandshakeResponse(data);
+            this.ErrorReason = ParseHandshakeResponse(data);
 
-            if (string.IsNullOrEmpty(msg.error))
-                this.State = TransportStates.Connected;
-            else
-            {
-                this.ErrorReason = msg.error;
-                this.State = TransportStates.Failed;
-            }
+            this.State = string.IsNullOrEmpty(this.ErrorReason) ? TransportStates.Connected : TransportStates.Failed;
         }
 
         private void OnMessage(WebSocket.WebSocket webSocket, string data)
         {
             if (this.State == TransportStates.Connecting)
             {
-                TryHandleHandshakeResponse(data);
+                HandleHandshakeResponse(data);
+
                 return;
             }
 
@@ -141,7 +180,7 @@ namespace BestHTTP.SignalRCore.Transports
         {
             if (this.State == TransportStates.Connecting)
             {
-                TryHandleHandshakeResponse(System.Text.Encoding.UTF8.GetString(data, 0, data.Length));
+                HandleHandshakeResponse(System.Text.Encoding.UTF8.GetString(data, 0, data.Length));
 
                 return;
             }
@@ -165,22 +204,49 @@ namespace BestHTTP.SignalRCore.Transports
 
         private void OnError(WebSocket.WebSocket webSocket, string reason)
         {
+            HTTPManager.Logger.Verbose("WebSocketTransport", "OnError: " + reason);
+
             this.ErrorReason = reason;
             this.State = TransportStates.Failed;
         }
 
         private void OnClosed(WebSocket.WebSocket webSocket, ushort code, string message)
         {
+            HTTPManager.Logger.Verbose("WebSocketTransport", "OnClosed: " + code + " " + message);
+
             this.webSocket = null;
 
             this.State = TransportStates.Closed;
         }
 
-        public void StartClose()
+        void ITransport.StartClose()
         {
+            HTTPManager.Logger.Verbose("WebSocketTransport", "StartClose");
+
             if (this.webSocket != null)
+            {
+                this.State = TransportStates.Closing;
                 this.webSocket.Close();
-            this.State = TransportStates.Closing;
+            }
+            else
+                this.State = TransportStates.Closed;
+        }
+
+        private Uri BuildUri(Uri baseUri)
+        {
+            if (this.connection.NegotiationResult == null)
+                return baseUri;
+
+            UriBuilder builder = new UriBuilder(baseUri);
+            StringBuilder queryBuilder = new StringBuilder();
+
+            queryBuilder.Append(baseUri.Query);
+            if (!string.IsNullOrEmpty(this.connection.NegotiationResult.ConnectionId))
+                queryBuilder.Append("&id=").Append(this.connection.NegotiationResult.ConnectionId);
+
+            builder.Query = queryBuilder.ToString();
+
+            return builder.Uri;
         }
     }
 }

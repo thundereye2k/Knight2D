@@ -64,8 +64,8 @@ public class NetworkPlay : MonoBehaviour
             Reconnection = false
         };
 
-        //manager = new SocketManager(new Uri("https://knight2d.herokuapp.com/socket.io/"), options);
-        manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
+        manager = new SocketManager(new Uri("http://knight2d-env.wgbanyzntw.us-east-2.elasticbeanstalk.com/socket.io/"), options);
+        //manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
 
         manager.Socket.On("player-start", OnPlayerStart);
         manager.Socket.On("player-message", OnPlayerMessage);
@@ -170,8 +170,6 @@ public class NetworkPlay : MonoBehaviour
         var allEnemies = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
         var deletePlayers = allPlayers;
         var deleteEnemies = allEnemies;
-        //Debug.Log(playerN);
-        //Debug.Log(enemyN);
 
         // Players
         foreach (SimpleJSON.JSONNode n in playerN)

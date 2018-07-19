@@ -299,10 +299,10 @@ namespace BestHTTP.WebSocket
 
             switch (req.State)
             {
-                // The request finished without any problem.
                 case HTTPRequestStates.Finished:
                     if (resp.IsSuccess || resp.StatusCode == 101)
                     {
+                        // The request finished without any problem.
                         HTTPManager.Logger.Information("WebSocket", string.Format("Request finished. Status Code: {0} Message: {1}", resp.StatusCode.ToString(), resp.Message));
 
                         return;
@@ -338,7 +338,7 @@ namespace BestHTTP.WebSocket
                     return;
             }
 
-            if (this.State != WebSocketStates.Connecting)
+            if (this.State != WebSocketStates.Connecting || !string.IsNullOrEmpty(reason))
             {
                 if (OnError != null)
                     OnError(this, req.Exception);

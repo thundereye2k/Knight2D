@@ -34,8 +34,8 @@ public class NetworkMenu : MonoBehaviour
             Reconnection = false,
         };
 
-        //manager = new SocketManager(new Uri("https://knight2d.herokuapp.com/socket.io/"), options);
-        manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
+        manager = new SocketManager(new Uri("http://knight2d-env.wgbanyzntw.us-east-2.elasticbeanstalk.com/socket.io/"), options);
+        //manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
 
         manager.Socket.On("menu-player", OnMenuResponse);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);

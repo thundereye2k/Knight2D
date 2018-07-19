@@ -77,6 +77,7 @@ namespace BestHTTP.WebSocket
 
         private List<WebSocketFrameReader> IncompleteFrames = new List<WebSocketFrameReader>();
         private List<WebSocketFrameReader> CompletedFrames = new List<WebSocketFrameReader>();
+        private List<WebSocketFrameReader> frameCache = new List<WebSocketFrameReader>();
         private WebSocketFrameReader CloseFrame;
 
         private object FrameLock = new object();
@@ -230,6 +231,7 @@ namespace BestHTTP.WebSocket
 
                 if (!sendThreadCreated)
                 {
+                    HTTPManager.Logger.Information("WebSocketResponse", "Send - Creating thread");
 #if NETFX_CORE
 #pragma warning disable 4014
                     Windows.System.Threading.ThreadPool.RunAsync(SendThreadFunc);
@@ -266,6 +268,7 @@ namespace BestHTTP.WebSocket
 
                 if (!sendThreadCreated)
                 {
+                    HTTPManager.Logger.Information("WebSocketResponse", "Insert - Creating thread");
 #if NETFX_CORE
 #pragma warning disable 4014
                     Windows.System.Threading.ThreadPool.RunAsync(SendThreadFunc);
@@ -544,49 +547,53 @@ namespace BestHTTP.WebSocket
         /// </summary>
         void IProtocol.HandleEvents()
         {
+            frameCache.Clear();
             lock (FrameLock)
             {
-                for (int i = 0; i < CompletedFrames.Count; ++i)
+                frameCache.AddRange(CompletedFrames);
+                CompletedFrames.Clear();
+            }
+
+            for (int i = 0; i < frameCache.Count; ++i)
+            {
+                WebSocketFrameReader frame = frameCache[i];
+
+                // Bugs in the clients shouldn't interrupt the code, so we need to try-catch and ignore any exception occurring here
+                try
                 {
-                    WebSocketFrameReader frame = CompletedFrames[i];
-
-                    // Bugs in the clients shouldn't interrupt the code, so we need to try-catch and ignore any exception occurring here
-                    try
+                    switch (frame.Type)
                     {
-                        switch (frame.Type)
-                        {
-                            case WebSocketFrameTypes.Continuation:
-                                if (OnIncompleteFrame != null)
-                                    OnIncompleteFrame(this, frame);
-                                break;
+                        case WebSocketFrameTypes.Continuation:
+                            if (OnIncompleteFrame != null)
+                                OnIncompleteFrame(this, frame);
+                            break;
 
-                            case WebSocketFrameTypes.Text:
-                                // Any not Final frame is handled as a fragment
-                                if (!frame.IsFinal)
-                                    goto case WebSocketFrameTypes.Continuation;
+                        case WebSocketFrameTypes.Text:
+                            // Any not Final frame is handled as a fragment
+                            if (!frame.IsFinal)
+                                goto case WebSocketFrameTypes.Continuation;
 
-                                if (OnText != null)
-                                    OnText(this, frame.DataAsText);
-                                break;
+                            if (OnText != null)
+                                OnText(this, frame.DataAsText);
+                            break;
 
-                            case WebSocketFrameTypes.Binary:
-                                // Any not Final frame is handled as a fragment
-                                if (!frame.IsFinal)
-                                    goto case WebSocketFrameTypes.Continuation;
+                        case WebSocketFrameTypes.Binary:
+                            // Any not Final frame is handled as a fragment
+                            if (!frame.IsFinal)
+                                goto case WebSocketFrameTypes.Continuation;
 
-                                if (OnBinary != null)
-                                    OnBinary(this, frame.Data);
-                                break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        HTTPManager.Logger.Exception("WebSocketResponse", "HandleEvents", ex);
+                            if (OnBinary != null)
+                                OnBinary(this, frame.Data);
+                            break;
                     }
                 }
+                catch (Exception ex)
+                {
+                    HTTPManager.Logger.Exception("WebSocketResponse", "HandleEvents", ex);
+                }
+            }
 
-                CompletedFrames.Clear();
-            }//lock (ReadLock)
+            frameCache.Clear();
 
             // 2015.05.09
             // State checking added because if there is an error the OnClose called first, and then the OnError.

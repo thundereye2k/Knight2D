@@ -1,3 +1,35 @@
+1.10.9 (2018.07.05)
+General
+-[Bugfix] Fixed a compile error under WebGL
+-[Improvement] HTTPRequest's GetEntityBody became public api
+-[Improvement] Added GetFormFields to HTTPRequest
+
+1.10.8 (2018.07.02)
+General
+-[Improvement] Greatly reduced the TCP packets that sent out for a HTTP request
+WebSocket
+-[Improvement] Frame downloading now isn't blocked while user code is executing on current completed frames
+SocketIO
+-[Bugfix] Implemented a new ToInt function instead of char.GetNumericValue as this later one throws an exception under WebGL using the new 4.x runtime
+SignalR Core
+-[Improvement] Fixed compile errors for WSA
+-[Improvement] Added HubOptions to be able to set more options
+-[Improvement] Now it's possible to skip the negotiation process and connect straigth with the (only) WebSocket protocol
+-[Bugfix] Authentication provider's PrepareRequest wasn't called on the negotiation request.
+
+1.10.7 (2018.06.05)
+General
+-[Improvement] Logger will log out time infromation too
+-[Improvement] HTTPRequest will send a Content-Length header with zero value when there's no data to send
+WebSocket
+-[Bugfix] Fixed a case where the connection reported closed unintentionally
+SignalR Core
+-[Improvement] Added PrepareUri function to the IAuthenticationProvider interface
+-[Improvement] Added negotiation request. Negotiation result now stored in the NegotiationResult property.
+-[Improvement] Added support for 'Close' server messages
+-[Improvement] More documentation and code comments
+-[Improvement] Code cleanup
+
 1.10.6 (2018.05.20)
 General
 -[Bugfix] Fixed a case where aborting a request throw and exception
@@ -10,7 +42,15 @@ SignalRCore
 -[Bugfix] The SignalR Core implementation has no dependency on SignalR classes now
 
 1.10.5 (2018.04.17)
+General
+-[Improvement] HTTPRequest will send Content-Length header with zero value if there's no data
+-[Improvement] Added timing info to logging
+WebSocket
+-[Improvement] Improved error handling
 SignalR Core
+-[Improvement] Added /negotiation request and NegotiationResult property to the HubConnection
+-[Improvement] More code comments and logging
+-[Improvement] Added support for Close server messages
 -[Bugfix] Removed compile warnings
 
 1.10.4 (2018.04.15)

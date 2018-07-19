@@ -1,5 +1,7 @@
 ﻿#if !BESTHTTP_DISABLE_SIGNALR_CORE && !BESTHTTP_DISABLE_WEBSOCKET
 
+using System;
+
 namespace BestHTTP.SignalRCore
 {
     public delegate void OnAuthenticationSuccededDelegate(IAuthenticationProvider provider);
@@ -31,6 +33,12 @@ namespace BestHTTP.SignalRCore
         /// This function will be called for every request before sending it.
         /// </summary>
         void PrepareRequest(HTTPRequest request);
+
+        /// <summary>
+        /// This function can customize the given uri. If there's no intention to modify the uri, this function
+        /// should return with the parameter.
+        /// </summary>
+        Uri PrepareUri(Uri uri);
     }
 }
 #endif

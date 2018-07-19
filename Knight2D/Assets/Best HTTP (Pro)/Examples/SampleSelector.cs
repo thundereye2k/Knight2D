@@ -93,8 +93,6 @@ public class SampleSelector : MonoBehaviour
         // Set up a global proxy in webplayer builds to breach the Socket Policy Service restriction
         BestHTTP.HTTPManager.Proxy = new BestHTTP.HTTPProxy(new Uri("http://u3assets.cloudapp.net:8888"), null, true);
 #endif
-#else
-        BestHTTP.HTTPManager.Proxy = new BestHTTP.HTTPProxy(new Uri("http://localhost:8888"), null, true);
 #endif
         Samples.Add(new SampleDescriptor(null, "HTTP Samples", string.Empty, string.Empty) { IsLabel = true } );
 
@@ -232,9 +230,8 @@ public class SampleSelector : MonoBehaviour
 
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Clear Cookies"))
-                        //BestHTTP.Cookies.CookieJar.Clear();
-                        BestHTTP.HTTPManager.OnQuit();
-
+                        BestHTTP.Cookies.CookieJar.Clear();
+ 
                     GUILayout.EndVertical();
                 }
 #endif

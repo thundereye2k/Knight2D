@@ -501,6 +501,8 @@ namespace BestHTTP.PlatformSupport.TcpClient.General
                     catch{ }
 #endif
 
+                    HTTPManager.Logger.Information("TcpClient", string.Format("Connected to {0}:{1}", address.ToString(), port.ToString()));
+
                     break;
                 }
                 catch (Exception e)

@@ -12,6 +12,7 @@ TagManager:
   - Item
   - GameGUI
   - EnemyAttack
+  - Map
   layers:
   - Default
   - TransparentFX

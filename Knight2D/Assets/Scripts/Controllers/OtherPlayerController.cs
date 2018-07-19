@@ -25,24 +25,20 @@ public class OtherPlayerController : MonoBehaviour
         targetCanvas = GUI.GetComponent<RectTransform>();
     }
 
-    void FixedUpdate()
-    {
-        var currentPosition = transform.position;
-        speed = speed != 0f ? speed : baseSpeed;
-        //var perc = 1f / (1f + avgPing);
-        //var step = speed * Time.fixedDeltaTime * perc;
-        var step = speed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
-    }
-
     void Update()
     {
         #region Movement
 
         var currentPosition = transform.position;
+        speed = speed != 0f ? speed : baseSpeed;
+        //var perc = 1f / (1f + avgPing);
+        //var step = speed * Time.deltaTime * perc;
+        var step = speed * Time.deltaTime;
         var playerMoving = false;
         var moveH = 0f;
         var moveV = 0f;
+
+        transform.position = Vector3.MoveTowards(currentPosition, targetPosition, step);
 
         if (currentPosition != targetPosition)
         {

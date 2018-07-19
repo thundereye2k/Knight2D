@@ -25,12 +25,16 @@ namespace BestHTTP.SignalRCore
         Closed
     }
 
+    /// <summary>
+    /// Possible states of a HubConnection
+    /// </summary>
     public enum ConnectionStates
     {
         Initial,
         Authenticating,
         Negotiating,
         Connected,
+        CloseInitiated,
         Closed
     }
 
@@ -115,7 +119,7 @@ namespace BestHTTP.SignalRCore
         }
     }
 
-    class Subscription
+    internal sealed class Subscription
     {
         public List<CallbackDescriptor> callbacks = new List<CallbackDescriptor>(1);
 
@@ -138,6 +142,6 @@ namespace BestHTTP.SignalRCore
                     this.callbacks.RemoveAt(idx);
             }
         }
-    }   
+    }
 }
 #endif
