@@ -6,10 +6,10 @@ using UnityStandardAssets.CrossPlatformInput;
 public class PlayerController : MonoBehaviour
 {
     private CinemachineVirtualCamera myCamera;
-    private Rigidbody2D myRigidbody;
+    private Rigidbody myRigidbody;
     private Animator myAnimator;
     private Vector2 lastMove;
-    private Vector2 moveVelocity;
+    private Vector3 moveVelocity;
     private GameObject healthBar;
     private GameObject GUI;
     private RectTransform targetCanvas;
@@ -25,16 +25,16 @@ public class PlayerController : MonoBehaviour
     private List<string> jsonList = new List<string>();
     private List<float> dpsList = new List<float>();
 
-    public float dps;
     public bool wasHit = false;
     public bool canHit = true;
-    public float maxHealth;
-    public float maxMana;
 
     public NetworkPlay network { get; set; }
+    public float dps { get; set; }
     public float health { get; set; }
     public float mana { get; set; }
     public float exp { get; set; }
+    public float maxHealth { get; set; }
+    public float maxMana { get; set; }
     public string worldName { get; set; }
     public string zoneName { get; set; }
     public bool pause { get; set; }
@@ -48,10 +48,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        //myCamera = GameObject.FindGameObjectWithTag("CMCamera").GetComponent<CinemachineVirtualCamera>();
-        //myCamera.Follow = transform;
+        myCamera = GameObject.FindGameObjectWithTag("CMCamera").GetComponent<CinemachineVirtualCamera>();
+        myCamera.Follow = transform;
 
-        myRigidbody = GetComponent<Rigidbody2D>();
+        myRigidbody = GetComponent<Rigidbody>();
         myAnimator = GetComponent<Animator>();
 
         pause = false;
@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (myRigidbody) myRigidbody.velocity = moveVelocity;
+        myRigidbody.velocity = moveVelocity;
     }
 
     void Update()
@@ -84,9 +84,8 @@ public class PlayerController : MonoBehaviour
         var moveV = 0f;
         var playerMoving = false;
         var currentPosition = transform.position;
-
-        var speed = baseSpeed; // TODO: Check items
-        //world = "test";
+        var speed = baseSpeed;
+        // TODO: Check items
 
 #if MOBILE_INPUT
         //moveH = joystickMovement.Horizontal;
@@ -114,7 +113,7 @@ public class PlayerController : MonoBehaviour
         }
 
         var walkRadian = Mathf.Atan2(moveV, moveH);
-        moveVelocity = new Vector2(Mathf.Cos(walkRadian) * speed, Mathf.Sin(walkRadian) * speed);
+        moveVelocity = new Vector3(Mathf.Cos(walkRadian) * speed, Mathf.Sin(walkRadian) * speed, 0f);
 
         #endregion
 
@@ -128,14 +127,14 @@ public class PlayerController : MonoBehaviour
         //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
         //if (isAttacking)
         //{
-        //    attackType = "fireball";
+        //    attackType = "Fireball";
         //    attackRadian = Mathf.Atan2(joystickAttack.Vertical, joystickAttack.Horizontal);
         //}
 #else
         isAttacking = CrossPlatformInputManager.GetAxisRaw("Fire1") != 0f;
         if (isAttacking)
         {
-            attackType = AttackTypes.EnumAttacks.fireball;
+            attackType = AttackTypes.EnumAttacks.Fireball;
             var mousePosition = Camera.main.ScreenToWorldPoint(CrossPlatformInputManager.mousePosition);
             attackRadian = Mathf.Atan2(mousePosition.y - currentPosition.y, mousePosition.x - currentPosition.x);
         }
@@ -143,7 +142,7 @@ public class PlayerController : MonoBehaviour
         // TODO: Get attacks
         if (attackType != 0)
         {
-            var attack = AttackTypes.getAttackType(AttackTypes.EnumAttacks.fireball);
+            var attack = AttackTypes.getAttackType(AttackTypes.EnumAttacks.Fireball);
             var tick = 1f / attack.attacksPerSecond;
 
             if (attackTimer > tick)
@@ -207,7 +206,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(1078f, -556f, 0f);
+            transform.position = new Vector3(0f, 0f, 0f);
             health = maxHealth;
         }
 
@@ -225,10 +224,9 @@ public class PlayerController : MonoBehaviour
         }
 
         var ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
-
         var WorldObject_ScreenPosition = new Vector2(
-        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 32f);
+            ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
+            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 32f);
 
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);

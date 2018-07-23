@@ -1,6 +1,6 @@
 ﻿public class AttackTypes
 {
-    public enum EnumAttacks { basic, fireball }
+    public enum EnumAttacks { Basic, Fireball }
 
     public float attackSpeed;
     public float attacksPerSecond;
@@ -20,10 +20,10 @@
         AttackTypes attack;
         switch (attackType)
         {
-            case EnumAttacks.basic:
+            case EnumAttacks.Basic:
                 attack = new AttackTypes(5f, 5f, 5f, 5f);
                 break;
-            case EnumAttacks.fireball:
+            case EnumAttacks.Fireball:
                 attack = new AttackTypes(5f, 10f, 10f, 200f);
                 break;
             default:

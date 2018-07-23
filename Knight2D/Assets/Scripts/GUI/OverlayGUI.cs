@@ -48,7 +48,7 @@ public class OverlayGUI : MonoBehaviour
             //playerHealthText.text = pc.health + " / " + pc.maxHealth;
             //playerNameText.text = pc.gameObject.name;
 
-            var level = ExpScale.FindLevel(pc.exp);
+            //var level = ExpScale.FindLevel(pc.exp);
             var percent = ExpScale.FindPercent(pc.exp);
             //playerLevelText.text = level.ToString();
             playerExpBar.fillAmount = percent;

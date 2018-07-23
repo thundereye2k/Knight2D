@@ -2,7 +2,7 @@
 
 public class ObjectFollow : MonoBehaviour
 {
-    public GameObject obj;
+    public GameObject obj;    
 
     void Start()
     {

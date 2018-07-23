@@ -64,8 +64,8 @@ public class NetworkPlay : MonoBehaviour
             Reconnection = false
         };
 
-        manager = new SocketManager(new Uri("http://knight2d-env.wgbanyzntw.us-east-2.elasticbeanstalk.com/socket.io/"), options);
-        //manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
+        //manager = new SocketManager(new Uri("http://knight2d-env.wgbanyzntw.us-east-2.elasticbeanstalk.com/socket.io/"), options);
+        manager = new SocketManager(new Uri("http://localhost:5000/socket.io/"), options);
 
         manager.Socket.On("player-start", OnPlayerStart);
         manager.Socket.On("player-message", OnPlayerMessage);
@@ -218,7 +218,7 @@ public class NetworkPlay : MonoBehaviour
             GameObject obj = null;
             foreach (GameObject enemy in allEnemies)
             {
-                if (enemy.name == data.username)
+                if (enemy.name == data.enemyID)
                 {
                     obj = enemy;
                     deleteEnemies.Remove(obj);
@@ -232,7 +232,7 @@ public class NetworkPlay : MonoBehaviour
                 var pos = new Vector3(data.positionX, data.positionY, 0f);
                 var rot = Quaternion.Euler(0, 0, 0);
                 obj = Instantiate(res, pos, rot, avatars.transform);
-                obj.name = data.username;
+                obj.name = data.enemyID;
                 deleteEnemies.Remove(obj);
             }
 
@@ -270,7 +270,7 @@ public class NetworkPlay : MonoBehaviour
         Debug.Log(json);
 
         var list = new List<int[]>();
-        foreach (string str in data.mapString)
+        foreach (string str in data.worldString)
         {
             var strArray = str.Split(',');
             var intArray = Array.ConvertAll(strArray, int.Parse);
@@ -278,7 +278,7 @@ public class NetworkPlay : MonoBehaviour
         }
         var grid = list.ToArray();
 
-        StartCoroutine(TileController.CreateMap(grid, data.mapWidth, data.mapLength));
+        StartCoroutine(TileController.CreateMap(grid, data.worldWidth, data.worldLength));
     }
 
     void OnPlayerMessage(Socket socket, Packet packet, params object[] args)
@@ -422,7 +422,7 @@ public class NetworkPlay : MonoBehaviour
 
     class EnemyJSON
     {
-        public string username;
+        public string enemyID;
         public string target;
         public float positionX;
         public float positionY;
@@ -433,9 +433,9 @@ public class NetworkPlay : MonoBehaviour
         public float targetPositionX;
         public float targetPositionY;
 
-        public EnemyJSON(string username, float positionX, float positionY, string target, float health, float speed, float maxHealth, int attackType, float targetPositionX, float targetPositionY)
+        public EnemyJSON(string enemyID, float positionX, float positionY, string target, float health, float speed, float maxHealth, int attackType, float targetPositionX, float targetPositionY)
         {
-            this.username = username;
+            this.enemyID = enemyID;
             this.positionX = positionX;
             this.positionY = positionY;
             this.target = target;
@@ -464,15 +464,15 @@ public class NetworkPlay : MonoBehaviour
 
     class MapJSON
     {
-        public int mapWidth;
-        public int mapLength;
-        public string[] mapString;
+        public int worldWidth;
+        public int worldLength;
+        public string[] worldString;
 
-        public MapJSON(string[] mapString, int mapWidth, int mapLength)
+        public MapJSON(string[] worldString, int worldWidth, int worldLength)
         {
-            this.mapWidth = mapWidth;
-            this.mapLength = mapLength;
-            this.mapString = mapString;
+            this.worldWidth = worldWidth;
+            this.worldLength = worldLength;
+            this.worldString = worldString;
         }
     }
 
