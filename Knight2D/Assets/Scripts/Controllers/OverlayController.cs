@@ -32,16 +32,14 @@ public class OverlayController : MonoBehaviour
     private float lastdps = 0f;
     private float dps = 0f;
     public float avgPing = 0f;
-    public float ping = 0f;
     private float timer = 0f;
     private List<float> pingList = new List<float>();
     public List<float> dpsList = new List<float>();
 
     void Update()
     {
-        ping += Time.deltaTime;
         timer += Time.deltaTime;
-        pingList.Add(ping);
+        pingList.Add(networkPlay.ping);
         if (timer > 1f)
         {
             avgPing = ExpScale.GetAverage(pingList);
@@ -63,7 +61,7 @@ public class OverlayController : MonoBehaviour
         pingText.text = "Ping: " + str + "ms";
         dpsText.text = "DPS: " + Mathf.Floor(dps).ToString();
         tickerText.text = networkPlay.ticker;
-        var time = DateTime.Now.ToString("h:mm tt");
+        //var time = DateTime.Now.ToString("h:mm tt");
 
         //playerHealthBar.fillAmount = pc.health / pc.maxHealth;
         //playerHealthText.text = pc.health + " / " + pc.maxHealth;

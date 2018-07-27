@@ -8,7 +8,7 @@ public class DamageController : MonoBehaviour
     {
         if (coll.gameObject.tag == "Enemy")
         {
-            var pc = gameObject.GetComponent<PlayerController>();
+            //var pc = gameObject.GetComponent<PlayerController>();
             //if (pc.canHit)
             //    pc.wasHit = true;
         }
@@ -18,7 +18,7 @@ public class DamageController : MonoBehaviour
     {
         if (coll.gameObject.tag == "Enemy")
         {
-            var pc = gameObject.GetComponent<PlayerController>();
+            //var pc = gameObject.GetComponent<PlayerController>();
             //if (pc.canHit)
             //    pc.wasHit = true;
         }

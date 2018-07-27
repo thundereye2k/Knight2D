@@ -10,8 +10,8 @@ TagManager:
   - Attack
   - Item
   - Map
-  - CMCamera
   - Object
+  - Overlay
   layers:
   - Default
   - TransparentFX

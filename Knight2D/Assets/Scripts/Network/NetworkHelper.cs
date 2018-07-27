@@ -5,9 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
+public class NetworkHelper : MonoBehaviour
 {
-    public GameObject GUI;
+    public GameObject ingame;
     public GameObject attacks;
     public GameObject avatars;
     public GameObject content;
@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
     private int maxMessages = 100;
     private List<ClassesJSON.MessageObject> messageList = new List<ClassesJSON.MessageObject>();
 
-    protected void spawnPlayer(ClassesJSON.PlayerJSON data, NetworkPlay networkPlay)
+    public void spawnPlayer(ClassesJSON.PlayerJSON data, NetworkPlay networkPlay)
     {
         var pos = new Vector3(data.positionX, data.positionY, 0);
         var rot = new Quaternion(0, 0, 0, 0);
@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
         playerController.networkPlay = networkPlay;
     }
 
-    protected void spawnOtherPlayer(ClassesJSON.OtherPlayerJSON data)
+    public void spawnOtherPlayer(ClassesJSON.OtherPlayerJSON data)
     {
         var res = Resources.Load<GameObject>("Avatar");
         var pos = new Vector3(data.positionX, data.positionY, 0f);
@@ -48,7 +48,7 @@ public class GameController : MonoBehaviour
         obj.name = data.username;
     }
 
-    protected void updateOtherPlayer(GameObject gameObj, ClassesJSON.OtherPlayerJSON data)
+    public void updateOtherPlayer(GameObject gameObj, ClassesJSON.OtherPlayerJSON data)
     {
         var otherPlayer = gameObj.GetComponent<OtherPlayerController>();
         otherPlayer.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
@@ -58,7 +58,7 @@ public class GameController : MonoBehaviour
         otherPlayer.speed = data.speed;
     }
 
-    protected void spawnEnemy(ClassesJSON.EnemyJSON data)
+    public void spawnEnemy(ClassesJSON.EnemyJSON data)
     {
         var res = Resources.Load<GameObject>("Enemy");
         var pos = new Vector3(data.positionX, data.positionY, 0f);
@@ -79,17 +79,17 @@ public class GameController : MonoBehaviour
         enemy.attackType = data.attackType;
     }
 
-    protected GameObject spawnHealthBar(GameObject gameObj)
+    public GameObject spawnHealthBar(GameObject gameObj)
     {
         var res = Resources.Load<GameObject>("HealthBar");
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
-        var healthBar = Instantiate(res, pos, rot, GUI.transform);
+        var healthBar = Instantiate(res, pos, rot, ingame.transform);
         healthBar.name = gameObj.name;
         return healthBar;
     }
 
-    protected void updateHealthBar(GameObject gameObj, GameObject healthBar)
+    public void updateHealthBar(GameObject gameObj, GameObject healthBar, float health, float maxHealth)
     {
         var ViewportPosition = Camera.main.WorldToViewportPoint(gameObj.transform.position);
         var WorldObject_ScreenPosition = new Vector2(
@@ -97,10 +97,10 @@ public class GameController : MonoBehaviour
             ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
 
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-        //HealthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
+        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
     }
 
-    protected void spawnFloatingText(GameObject gameObj)
+    public void spawnFloatingText(GameObject gameObj)
     {
         var distance = Vector3.Distance(gameObj.transform.position, gameObj.transform.position);
         if (distance < 250f)
@@ -111,7 +111,7 @@ public class GameController : MonoBehaviour
             var res = Resources.Load<GameObject>("FloatingText");
             var pos = new Vector3(0, 0, 0);
             var rot = Quaternion.Euler(0, 0, 0);
-            var obj = Instantiate(res, pos, rot, GUI.transform);
+            var obj = Instantiate(res, pos, rot, ingame.transform);
 
             var ViewportPosition = Camera.main.WorldToViewportPoint(gameObj.transform.position);
             var WorldObject_ScreenPosition = new Vector2(
@@ -139,7 +139,7 @@ public class GameController : MonoBehaviour
         attackController.Source = gameObj;
     }
 
-    protected void spawnMessage(ClassesJSON.MessageJSON data)
+    public void spawnMessage(ClassesJSON.MessageJSON data)
     {
         var source = "[Global] ";
         var author = "<b>" + data.username + "</b>: ";

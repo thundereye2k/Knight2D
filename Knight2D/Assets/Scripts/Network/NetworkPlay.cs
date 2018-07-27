@@ -4,11 +4,12 @@ using BestHTTP.SocketIO;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-public class NetworkPlay : GameController
+public class NetworkPlay : NetworkHelper
 {
     private Holder holder;
     private SocketManager manager;
     private bool isPaused = false;
+    public float ping = 0f;
 
     void Awake()
     {
@@ -63,6 +64,11 @@ public class NetworkPlay : GameController
         CommandConnect();
     }
 
+    void Update()
+    {
+        ping = +Time.deltaTime;
+    }
+
     #region Commands
 
     public void CommandConnect()
@@ -105,6 +111,7 @@ public class NetworkPlay : GameController
 
         if (holder.username == data.username)
         {
+            ping = 0f;
             spawnPlayer(data, this);
         }
         else
@@ -131,8 +138,7 @@ public class NetworkPlay : GameController
             var data = JsonUtility.FromJson<ClassesJSON.OtherPlayerJSON>(n);
             if (holder.username == data.username)
             {
-
-                //ping = 0;
+                ping = 0f;
                 continue;
             }
 
@@ -172,7 +178,7 @@ public class NetworkPlay : GameController
 
             if (!gameObj)
             {
-                spawnEnemy(data);
+                //spawnEnemy(data);
                 deleteEnemies.Remove(gameObj);
             }
 

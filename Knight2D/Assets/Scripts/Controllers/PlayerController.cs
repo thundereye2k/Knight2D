@@ -6,21 +6,22 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody myRigidbody;
     private Animator myAnimator;
-    private Vector2 lastMove;
-    private Vector3 moveVelocity;
+    private GameObject healthBar;
+    private OverlayController overlayController;
     private float timerAttack = 0f;
     //private float timerHit = 0f;
     private float timerNetwork = 0f;
     private float updatesPerSecond = 10f;
     private float baseSpeed = 100f;
-    //private float baseMaxHealth = 100f;
-    //private float baseMaxMana = 100f;
+    private float maxHealth = 100f;
+    private float maxMana = 100f;
     //private bool wasHit = false;
     //private bool canHit = true;
+    private Vector2 lastMove = new Vector2(0f, 0f);
+    private Vector3 moveVelocity = new Vector3(0f, 0f, 0f);
     private List<string> jsonList = new List<string>();
 
     public NetworkPlay networkPlay { get; set; }
-    public OverlayController overlayController { get; set; }
     public float health { get; set; }
     public float mana { get; set; }
     public float gold { get; set; }
@@ -39,12 +40,15 @@ public class PlayerController : MonoBehaviour
     {
         overlayController = GameObject.FindGameObjectWithTag("Overlay").GetComponent<OverlayController>();
         overlayController.player = gameObject;
-        if(!overlayController) {
+        if (!overlayController)
+        {
             networkPlay.CommandDisconnect();
         }
         myRigidbody = GetComponent<Rigidbody>();
         myAnimator = GetComponent<Animator>();
         pause = false;
+
+        healthBar = networkPlay.spawnHealthBar(gameObject);
 
 #if MOBILE_INPUT
         //joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove").GetComponent<FloatingJoystick>();
@@ -172,6 +176,9 @@ public class PlayerController : MonoBehaviour
             }
         }
         */
+
+        networkPlay.updateHealthBar(gameObject, healthBar, health, maxHealth);
+
         #endregion
 
         #region Network
