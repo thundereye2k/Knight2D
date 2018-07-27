@@ -4194,7 +4194,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 817779442}
   m_HandleRect: {fileID: 817779441}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 0.9999999
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6242,6 +6242,7 @@ MonoBehaviour:
   targetCanvas: {fileID: 699865526}
   myCamera: {fileID: 330541255}
   ticker: Is it working?
+  ping: 0
 --- !u!1 &646197304
 GameObject:
   m_ObjectHideFlags: 0
@@ -6557,7 +6558,6 @@ MonoBehaviour:
   pauseObject: {fileID: 65868124}
   player: {fileID: 0}
   avgPing: 0
-  ping: 0
   dpsList: []
 --- !u!1 &730219127
 GameObject:
@@ -7188,7 +7188,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000566988, y: 0.000103176135}
+  m_AnchoredPosition: {x: -0.0000566988, y: 0.00007265856}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &793898231

@@ -4,12 +4,13 @@ using BestHTTP.SocketIO;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-public class NetworkPlay : NetworkHelper
+public class NetworkPlay : GameHelper
 {
+    public float ping = 0f;
+
     private Holder holder;
     private SocketManager manager;
     private bool isPaused = false;
-    public float ping = 0f;
 
     void Awake()
     {

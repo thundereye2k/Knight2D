@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkHelper : MonoBehaviour
+public class GameHelper : MonoBehaviour
 {
     public GameObject ingame;
     public GameObject attacks;
