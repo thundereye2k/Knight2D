@@ -1,71 +1,88 @@
-﻿using TMPro;
+﻿using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class OverlayGUI : MonoBehaviour
+public class OverlayController : MonoBehaviour
 {
-    public NetworkPlay network;
+    public NetworkPlay networkPlay;
     public TextMeshProUGUI tickerText;
     public TextMeshProUGUI pingText;
-    public TextMeshProUGUI playerNameText;
-    public TextMeshProUGUI playerHealthText;
-    public TextMeshProUGUI playerManaText;
-    public TextMeshProUGUI playerLevelText;
+    //public TextMeshProUGUI playerNameText;
+    //public TextMeshProUGUI playerHealthText;
+    //public TextMeshProUGUI playerManaText;
+    //public TextMeshProUGUI playerLevelText;
     public TextMeshProUGUI dpsText;
     public TMP_InputField input;
     public GameObject chatObject;
     public GameObject pauseObject;
-    public GameObject moveJoystick;
-    public GameObject shootJoystick;
+    //public GameObject moveJoystick;
+    //public GameObject shootJoystick;
     public GameObject player;
-    public Image playerHealthBar;
-    public Image playerManaBar;
-    public Image playerExpBar;
+    //public Image playerHealthBar;
+    //public Image playerManaBar;
+    //public Image playerExpBar;
+
     private float colorTime = 0.5f;
     private float colorLerpTime = 0f;
     private bool shouldPause = false;
     private bool chatMouseOver = false;
-
-    void Start()
-    {
-
-    }
+    private float lastdps = 0f;
+    private float dps = 0f;
+    public float avgPing = 0f;
+    public float ping = 0f;
+    private float timer = 0f;
+    private List<float> pingList = new List<float>();
+    public List<float> dpsList = new List<float>();
 
     void Update()
     {
-        tickerText.text = network.ticker;
-        //var time = DateTime.Now.ToString("h:mm tt");
-
-        var str = Mathf.Floor((network.avgPing) * 1000f).ToString();
-        pingText.text = "Ping: " + str + "ms";
-
-        if (player)
+        ping += Time.deltaTime;
+        timer += Time.deltaTime;
+        pingList.Add(ping);
+        if (timer > 1f)
         {
-            var pc = player.GetComponent<PlayerController>();
-            dpsText.text = "DPS: " + Mathf.Floor(pc.dps).ToString();
-
-            //playerHealthBar.fillAmount = pc.health / pc.maxHealth;
-            //playerHealthText.text = pc.health + " / " + pc.maxHealth;
-            //playerNameText.text = pc.gameObject.name;
-
-            //var level = ExpScale.FindLevel(pc.exp);
-            var percent = ExpScale.FindPercent(pc.exp);
-            //playerLevelText.text = level.ToString();
-            playerExpBar.fillAmount = percent;
-
-            if (shouldPause)
+            avgPing = ExpScale.GetAverage(pingList);
+            if (avgPing > 1f)
             {
-                pc.pause = true;
+                networkPlay.CommandDisconnect();
             }
-            else
-            {
-                pc.pause = false;
-            }
+            pingList.Clear();
+
+            var totaldps = ExpScale.getTotal(dpsList);
+            dps = (totaldps + lastdps) / 2;
+            lastdps = dps < 1 ? 0 : dps;
+            dpsList.Clear();
+
+            timer = 0f;
+        }
+
+        var str = Mathf.Floor(avgPing * 1000f).ToString();
+        pingText.text = "Ping: " + str + "ms";
+        dpsText.text = "DPS: " + Mathf.Floor(dps).ToString();
+        tickerText.text = networkPlay.ticker;
+        var time = DateTime.Now.ToString("h:mm tt");
+
+        //playerHealthBar.fillAmount = pc.health / pc.maxHealth;
+        //playerHealthText.text = pc.health + " / " + pc.maxHealth;
+        //playerNameText.text = pc.gameObject.name;
+
+        //var level = ExpScale.FindLevel(pc.exp);
+        //var percent = ExpScale.FindPercent(pc.exp);
+        //playerLevelText.text = level.ToString();
+        //playerExpBar.fillAmount = percent;
+
+        if (shouldPause)
+        {
+            //pause = true;
         }
         else
         {
-            player = GameObject.FindGameObjectWithTag("Player");
+            //pause = false;
         }
+
 
         if (chatMouseOver)
         {
@@ -101,7 +118,7 @@ public class OverlayGUI : MonoBehaviour
 
     public void QuitGame()
     {
-        network.DisconnectFromServer();
+        networkPlay.CommandDisconnect();
     }
 
     public void ShowPasueMenu()
@@ -143,13 +160,13 @@ public class OverlayGUI : MonoBehaviour
 
     public void ChatSendMessage()
     {
-        if (input.text.Length > 0f)
+        if (input.text.Length > 0)
         {
-            network.CommandMessage(input.text);
+            networkPlay.CommandMessage(input.text);
             input.text = "";
-            //input.DeactivateInputField();
+            input.DeactivateInputField();
         }
-        else if (input.text.Length == 0f)
+        else if (input.text.Length == 0)
         {
             input.text = "";
             input.DeactivateInputField();

@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenuController : MonoBehaviour
 {
     public NetworkMenu network;
     public TMP_InputField loginUsername, loginPassword, registerUsername, registerEmail, registerPassword, registerVerify;

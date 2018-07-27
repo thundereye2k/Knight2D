@@ -13,7 +13,6 @@ public class OtherPlayerController : MonoBehaviour
     public int attackType { get; set; }
     public float attackRadian { get; set; }
     public float speed { get; set; }
-    public float avgPing { get; set; }
     public string[] skillsArray { get; set; }
 
     void Start()
@@ -21,7 +20,7 @@ public class OtherPlayerController : MonoBehaviour
         myAnimator = gameObject.GetComponent<Animator>();
         targetPosition = transform.position;
 
-        GUI = GameObject.FindGameObjectWithTag("GameGUI");
+        GUI = GameObject.FindGameObjectWithTag("GameController");
         targetCanvas = GUI.GetComponent<RectTransform>();
     }
 

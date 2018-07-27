@@ -9,11 +9,9 @@ TagManager:
   - OtherPlayer
   - Attack
   - Item
-  - GameGUI
-  - EnemyAttack
   - Map
-  - Fire
   - CMCamera
+  - Object
   layers:
   - Default
   - TransparentFX
@@ -24,7 +22,7 @@ TagManager:
   - 
   - 
   - Objects
-  - Minimap
+  - 
   - 
   - 
   - 

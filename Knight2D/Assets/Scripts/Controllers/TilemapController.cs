@@ -11,6 +11,7 @@ public class TileController : MonoBehaviour
     {
         var map = GameObject.FindGameObjectWithTag("Map");
         var wall = Resources.Load<GameObject>("Wall");
+        var floor = Resources.Load<GameObject>("Floor");
         for (var row = 0; row < width; row++)
         {
             for (var column = 0; column < length; column++)
@@ -21,6 +22,13 @@ public class TileController : MonoBehaviour
                     var rotation = new Quaternion(0, 0, 0, 0);
                     Instantiate(wall, position, rotation, map.transform);
                 }
+                else
+                {
+                    var pos = new Vector3((size * row) + x, (size * column) + y, z + size);
+                    var rot = new Quaternion(0, 0, 0, 0);
+                    Instantiate(floor, pos, rot, map.transform);
+                }
+
             }
             yield return null;
         }

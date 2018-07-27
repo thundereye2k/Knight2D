@@ -9,6 +9,7 @@ public class NetworkMenu : MonoBehaviour
     private Holder holder;
     private SocketManager manager;
     private string playerPassword;
+    private Boolean isPaused = false;
 
     public string status { get; set; }
 
@@ -24,6 +25,26 @@ public class NetworkMenu : MonoBehaviour
         {
             holder = obj.GetComponent<Holder>();
         }
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        isPaused = !hasFocus;
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        isPaused = pauseStatus;
+        if (isPaused)
+        {
+            manager.Close();
+            Application.Quit();
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        Debug.Log("Application ending after " + Time.time + " seconds");
     }
 
     void Start()
@@ -102,7 +123,7 @@ public class NetworkMenu : MonoBehaviour
                 break;
 
             case "register":
-                // Gets username and email
+                // TODO: gets username and email?
                 break;
 
             default:
