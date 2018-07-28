@@ -150,12 +150,12 @@ public class ClassesJSON : MonoBehaviour
 
     public class EnemyHitObject
     {
-        public string username;
+        public string enemyID;
         public float damage;
 
-        public EnemyHitObject(string username, float damage)
+        public EnemyHitObject(string enemyID, float damage)
         {
-            this.username = username;
+            this.enemyID = enemyID;
             this.damage = damage;
         }
     }
