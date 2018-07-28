@@ -23,7 +23,7 @@
         switch (attackType)
         {
             case EnumAttacks.Fireball:
-                attack = new AttackTypes(5f, 10f, 10f, 250f, attackType.ToString());
+                attack = new AttackTypes(10f, 10f, 10f, 250f, attackType.ToString());
                 break;
             default:
                 attack = new AttackTypes(0f, 0f, 0f, 0f, null);

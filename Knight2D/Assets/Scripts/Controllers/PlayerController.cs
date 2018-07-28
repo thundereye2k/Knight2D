@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     private Animator myAnimator;
     private GameObject healthBar;
     private float updatesPerSecond = 10f;
-    private float baseSpeed = 100f;
+    private float baseSpeed = 200f;
     private float maxHealth = 100f;
     private float maxMana = 100f;
     //private bool wasHit = false;
@@ -197,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
         if (networkTimer > networkTick)
         {
-            networkPlay.CommandMove(transform.position, (int)attackType, attackRadian, skillsArray, health, mana, itemsArray, speed, jsonList.ToArray());
+            networkPlay.CommandMove(transform.position, (int)attackType, attackRadian, skillsArray, health, mana, itemsArray, jsonList.ToArray());
             jsonList.Clear();
             networkTimer = 0f;
         }

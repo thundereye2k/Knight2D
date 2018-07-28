@@ -7,7 +7,7 @@ public class OtherPlayerController : MonoBehaviour
     private GameObject GUI;
     private RectTransform targetCanvas;
     private float attackTimer = 0f;
-    private float baseSpeed = 100f;
+    private float baseSpeed = 200f;
 
     public Vector3 targetPosition { get; set; }
     public int attackType { get; set; }

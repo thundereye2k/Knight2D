@@ -97,7 +97,7 @@ public class NetworkPlay : GameHelper
         manager.Socket.Emit("player-start", json);
     }
 
-    public void CommandMove(Vector3 position, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float speed, string[] jsonArray)
+    public void CommandMove(Vector3 position, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, string[] jsonArray)
     {
         var data = new ClassesJSON.PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsArray, health, mana, itemsArray, 0f, 0f, 0f);
         var json = JsonUtility.ToJson(data);
