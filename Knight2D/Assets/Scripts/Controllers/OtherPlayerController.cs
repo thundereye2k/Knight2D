@@ -68,7 +68,7 @@ public class OtherPlayerController : MonoBehaviour
 
         if (attackType != 0)
         {
-            var attack = AttackTypes.getAttackType((AttackTypes.EnumAttacks)attackType);
+            var attack = AttackTypes.GetAttackType((AttackTypes.EnumAttacks)attackType);
             var tick = 1f / attack.attacksPerSecond;
             if (attackTimer > tick)
             {
@@ -80,10 +80,10 @@ public class OtherPlayerController : MonoBehaviour
                 var rot = Quaternion.Euler(0f, 0f, attackRadian * Mathf.Rad2Deg);
                 var obj = Instantiate(res, pos, rot, transform);
                 var oc = obj.GetComponent<AttackController>();
-                oc.Speed = attack.attackSpeed;
-                oc.MaxDistance = attack.attackDistance;
-                oc.Damage = attack.attackDamage;
-                oc.Radian = attackRadian;
+                oc.speed = attack.attackSpeed;
+                oc.maxDistance = attack.attackDistance;
+                oc.damage = attack.attackDamage;
+                oc.radian = attackRadian;
             }
         }
 
@@ -107,7 +107,7 @@ public class OtherPlayerController : MonoBehaviour
         var distance = Vector3.Distance(o.transform.position, transform.position);
         if (distance < 250f)
         {
-            var expToAdd = EnemyTypes.getEnemyType(1).exp;
+            //var expToAdd = EnemyTypes.getEnemyType(1).exp;
             //exp += expToAdd;
 
             var res = Resources.Load<GameObject>("FloatingText");
@@ -121,7 +121,7 @@ public class OtherPlayerController : MonoBehaviour
             ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + 64f);
 
             obj.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-            obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
+            //obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
         }
     }
 }

@@ -14,7 +14,7 @@ public class FloatingTextController : MonoBehaviour
         Destroy(gameObject, clipInfo[0].clip.length);
     }
 
-    public void setText(string number, EnumFloatingText type)
+    public void SetText(string number, EnumFloatingText type)
     {
         var tmp = GetComponentInChildren<TextMeshProUGUI>();
         switch (type)

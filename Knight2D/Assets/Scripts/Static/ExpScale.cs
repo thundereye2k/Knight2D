@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class ExpScale
 {
-    public static float findLevel(float exp)
+    public static float FindLevel(float exp)
     {
         float level = Mathf.Pow(exp, 2f / 3f) / 100f;
         return Mathf.Floor(level);
     }
 
-    public static float findPercent(float exp)
+    public static float FindPercent(float exp)
     {
-        var level = findLevel(exp);
+        var level = FindLevel(exp);
         var nextLevel = level + 1f;
 
         var prevExp = Mathf.Pow(level, 1.5f) * 1000f;
@@ -24,7 +24,7 @@ public class ExpScale
         return have / need;
     }
 
-    public static float getTotal(List<float> list)
+    public static float GetTotal(List<float> list)
     {
         float total = 0f;
         foreach (float f in list)

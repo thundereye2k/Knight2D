@@ -10,67 +10,48 @@ public class OverlayController : MonoBehaviour
     public NetworkPlay networkPlay;
     public TextMeshProUGUI tickerText;
     public TextMeshProUGUI pingText;
+    public TextMeshProUGUI dpsText;
+
     //public TextMeshProUGUI playerNameText;
     //public TextMeshProUGUI playerHealthText;
     //public TextMeshProUGUI playerManaText;
     //public TextMeshProUGUI playerLevelText;
-    public TextMeshProUGUI dpsText;
     public TMP_InputField input;
     public GameObject chatObject;
     public GameObject pauseObject;
     //public GameObject moveJoystick;
     //public GameObject shootJoystick;
-    public GameObject player;
     //public Image playerHealthBar;
     //public Image playerManaBar;
-    //public Image playerExpBar;
+    public Image playerExpBar;
 
     private float colorTime = 0.5f;
     private float colorLerpTime = 0f;
     private bool shouldPause = false;
     private bool chatMouseOver = false;
-    private float lastdps = 0f;
-    private float dps = 0f;
-    public float avgPing = 0f;
-    private float timer = 0f;
-    private List<float> pingList = new List<float>();
-    public List<float> dpsList = new List<float>();
+    private string time = DateTime.Now.ToString("h:mm tt");
+
+    public PlayerController playerController { get; set; }
 
     void Update()
     {
-        timer += Time.deltaTime;
-        pingList.Add(networkPlay.ping);
-        if (timer > 1f)
+        if (playerController)
         {
-            avgPing = ExpScale.GetAverage(pingList);
-            if (avgPing > 1f)
-            {
-                networkPlay.CommandDisconnect();
-            }
-            pingList.Clear();
+            var str = Mathf.Floor(networkPlay.avgPing * 1000f).ToString();
+            pingText.text = "Ping: " + str + "ms";
+            tickerText.text = networkPlay.ticker;
+            dpsText.text = "DPS: " + Mathf.Floor(playerController.dps).ToString();
+            time = DateTime.Now.ToString("h:mm tt");
 
-            var totaldps = ExpScale.getTotal(dpsList);
-            dps = (totaldps + lastdps) / 2;
-            lastdps = dps < 1 ? 0 : dps;
-            dpsList.Clear();
+            //playerHealthBar.fillAmount = playerController.health / playerController.maxHealth;
+            //playerHealthText.text = playerController.health + " / " + playerController.maxHealth;
+            //playerNameText.text = playerController.gameObject.name;
 
-            timer = 0f;
+            //var level = ExpScale.FindLevel(playerController.exp);
+            var percent = ExpScale.FindPercent(playerController.exp);
+            //playerLevelText.text = level.ToString();
+            playerExpBar.fillAmount = percent;
         }
-
-        var str = Mathf.Floor(avgPing * 1000f).ToString();
-        pingText.text = "Ping: " + str + "ms";
-        dpsText.text = "DPS: " + Mathf.Floor(dps).ToString();
-        tickerText.text = networkPlay.ticker;
-        //var time = DateTime.Now.ToString("h:mm tt");
-
-        //playerHealthBar.fillAmount = pc.health / pc.maxHealth;
-        //playerHealthText.text = pc.health + " / " + pc.maxHealth;
-        //playerNameText.text = pc.gameObject.name;
-
-        //var level = ExpScale.FindLevel(pc.exp);
-        //var percent = ExpScale.FindPercent(pc.exp);
-        //playerLevelText.text = level.ToString();
-        //playerExpBar.fillAmount = percent;
 
         if (shouldPause)
         {
@@ -116,7 +97,7 @@ public class OverlayController : MonoBehaviour
 
     public void QuitGame()
     {
-        networkPlay.CommandDisconnect();
+        //networkPlay.CommandDisconnect();
     }
 
     public void ShowPasueMenu()

@@ -29,7 +29,7 @@ public class MainMenuController : MonoBehaviour
         popupAccept.onClick.AddListener(AcceptPopup);
     }
 
-    void LateUpdate()
+    void Update()
     {
         if (network.status == "warn")
         {

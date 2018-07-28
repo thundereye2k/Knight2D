@@ -13,22 +13,25 @@ public class GameHelper : MonoBehaviour
     public GameObject content;
     public RectTransform targetCanvas;
     public CinemachineVirtualCamera myCamera;
-    public string ticker = "";
+    public OverlayController overlayController;
 
     private int maxMessages = 100;
     private List<ClassesJSON.MessageObject> messageList = new List<ClassesJSON.MessageObject>();
 
-    public void spawnPlayer(ClassesJSON.PlayerJSON data, NetworkPlay networkPlay)
+    public string ticker { get; protected set; }
+
+    public void SpawnPlayer(ClassesJSON.PlayerJSON data, NetworkPlay networkPlay)
     {
         var pos = new Vector3(data.positionX, data.positionY, 0);
         var rot = new Quaternion(0, 0, 0, 0);
         var res = Resources.Load<GameObject>("Player");
+        var obj = Instantiate(res, pos, rot, avatars.transform);
+        obj.name = data.username;
+        myCamera.Follow = obj.transform;
 
-        var player = Instantiate(res, pos, rot, avatars.transform);
-        player.name = data.username;
-        myCamera.Follow = player.transform;
-
-        var playerController = player.GetComponent<PlayerController>();
+        var playerController = obj.GetComponent<PlayerController>();
+        playerController.networkPlay = networkPlay;
+        playerController.overlayController = overlayController;
         playerController.health = data.health;
         playerController.mana = data.mana;
         playerController.exp = data.exp;
@@ -36,50 +39,77 @@ public class GameHelper : MonoBehaviour
         playerController.gold = data.gold;
         playerController.itemsArray = data.itemsArray;
         playerController.skillsArray = data.skillsArray;
-        playerController.networkPlay = networkPlay;
     }
 
-    public void spawnOtherPlayer(ClassesJSON.OtherPlayerJSON data)
+    public void UpdatePlayer(ClassesJSON.PlayerJSON data)
+    {
+        var playerController = overlayController.playerController;
+        playerController.exp = data.exp;
+        playerController.fame = data.fame;
+        playerController.gold = data.gold;
+        // TODO: Add what server changes for the player
+    }
+
+    public void SpawnOtherPlayer(ClassesJSON.OtherPlayerJSON data)
     {
         var res = Resources.Load<GameObject>("Avatar");
         var pos = new Vector3(data.positionX, data.positionY, 0f);
         var rot = Quaternion.Euler(0, 0, 0);
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.username;
+
+        var otherPlayerController = obj.GetComponent<OtherPlayerController>();
+        otherPlayerController.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
+        otherPlayerController.attackRadian = data.attackRadian;
+        otherPlayerController.attackType = data.attackType;
+        otherPlayerController.attackRadian = data.attackRadian;
+        otherPlayerController.skillsArray = data.skillsArray;
     }
 
-    public void updateOtherPlayer(GameObject gameObj, ClassesJSON.OtherPlayerJSON data)
+    public void UpdateOtherPlayer(GameObject gameObj, ClassesJSON.OtherPlayerJSON data)
     {
-        var otherPlayer = gameObj.GetComponent<OtherPlayerController>();
-        otherPlayer.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
-        otherPlayer.attackRadian = data.attackRadian;
-        otherPlayer.attackType = data.attackType;
-        otherPlayer.skillsArray = data.skillsArray;
-        otherPlayer.speed = data.speed;
+        var otherPlayerController = gameObj.GetComponent<OtherPlayerController>();
+        otherPlayerController.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
+        otherPlayerController.attackRadian = data.attackRadian;
+        otherPlayerController.attackType = data.attackType;
+        otherPlayerController.attackRadian = data.attackRadian;
+        otherPlayerController.skillsArray = data.skillsArray;
     }
 
-    public void spawnEnemy(ClassesJSON.EnemyJSON data)
+    public void SpawnEnemy(ClassesJSON.EnemyJSON data, NetworkPlay networkPlay)
     {
         var res = Resources.Load<GameObject>("Enemy");
         var pos = new Vector3(data.positionX, data.positionY, 0f);
         var rot = Quaternion.Euler(0, 0, 0);
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.enemyID;
+
+        var enemyController = obj.GetComponent<EnemyController>();
+        enemyController.networkPlay = networkPlay;
+        enemyController.targetPosition = new Vector3(data.targetPositionX, data.targetPositionY, 0f);
+        enemyController.serverPosition = new Vector3(data.positionX, data.positionY, 0f);
+        enemyController.health = data.health;
+        enemyController.maxHealth = data.maxHealth;
+        enemyController.speed = data.speed;
+        enemyController.height = data.height;
+        enemyController.attackType = data.attackType;
+        enemyController.attackRadian = data.attackRadian;
     }
 
-    public void updateEnemy(GameObject gameObj, ClassesJSON.EnemyJSON data)
+    public void UpdateEnemy(GameObject gameObj, ClassesJSON.EnemyJSON data)
     {
-        var enemy = gameObj.GetComponent<EnemyController>();
-        enemy.targetPosition = new Vector3(data.targetPositionX, data.targetPositionY, 0f);
-        enemy.serverPosition = new Vector3(data.positionX, data.positionY, 0f);
-        enemy.health = data.health;
-        enemy.maxHealth = data.maxHealth;
-        enemy.speed = data.speed;
-        enemy.target = data.target;
-        enemy.attackType = data.attackType;
+        var enemyController = gameObj.GetComponent<EnemyController>();
+        enemyController.targetPosition = new Vector3(data.targetPositionX, data.targetPositionY, 0f);
+        enemyController.serverPosition = new Vector3(data.positionX, data.positionY, 0f);
+        enemyController.health = data.health;
+        //enemyController.maxHealth = data.maxHealth;
+        //enemyController.speed = data.speed;
+        //enemyController.height = data.height;
+        enemyController.attackType = data.attackType;
+        enemyController.attackRadian = data.attackRadian;
     }
 
-    public GameObject spawnHealthBar(GameObject gameObj)
+    public GameObject SpawnHealthBar(GameObject gameObj)
     {
         var res = Resources.Load<GameObject>("HealthBar");
         var pos = new Vector3(0, 0, 0);
@@ -89,7 +119,7 @@ public class GameHelper : MonoBehaviour
         return healthBar;
     }
 
-    public void updateHealthBar(GameObject gameObj, GameObject healthBar, float health, float maxHealth)
+    public void UpdateHealthBar(GameObject gameObj, GameObject healthBar, float health, float maxHealth)
     {
         var ViewportPosition = Camera.main.WorldToViewportPoint(gameObj.transform.position);
         var WorldObject_ScreenPosition = new Vector2(
@@ -100,7 +130,7 @@ public class GameHelper : MonoBehaviour
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
     }
 
-    public void spawnFloatingText(GameObject gameObj)
+    public void SpawnFloatingText(GameObject gameObj)
     {
         var distance = Vector3.Distance(gameObj.transform.position, gameObj.transform.position);
         if (distance < 250f)
@@ -122,7 +152,7 @@ public class GameHelper : MonoBehaviour
             //obj.GetComponent<FloatingTextController>().setText(expToAdd.ToString(), FloatingTextController.EnumFloatingText.exp);
         }
     }
-    public void spawnAttack(GameObject gameObj, AttackTypes attackType, float attackRadian)
+    public void SpawnAttack(GameObject gameObj, PlayerController playerController, AttackTypes attackType, float attackRadian)
     {
         var x = gameObj.transform.position.x + (Mathf.Cos(attackRadian) * 10);
         var y = gameObj.transform.position.y + (Mathf.Sin(attackRadian) * 10);
@@ -132,39 +162,48 @@ public class GameHelper : MonoBehaviour
         var obj = Instantiate(res, pos, rot, attacks.transform);
         var attackController = obj.GetComponent<AttackController>();
         attackController.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
-        attackController.Speed = attackType.attackSpeed;
-        attackController.MaxDistance = attackType.attackDistance;
-        attackController.Damage = attackType.attackDamage;
-        attackController.Radian = attackRadian;
-        attackController.Source = gameObj;
+        attackController.speed = attackType.attackSpeed;
+        attackController.maxDistance = attackType.attackDistance;
+        attackController.damage = attackType.attackDamage;
+        attackController.radian = attackRadian;
+        attackController.playerController = playerController;
     }
 
-    public void spawnMessage(ClassesJSON.MessageJSON data)
+    public void SpawnOtherAttack(GameObject gameObj, AttackTypes attackType, float attackRadian)
+    {
+        var x = gameObj.transform.position.x + (Mathf.Cos(attackRadian) * 10);
+        var y = gameObj.transform.position.y + (Mathf.Sin(attackRadian) * 10);
+        var res = Resources.Load<GameObject>(attackType.attackName);
+        var pos = new Vector3(x, y, 0);
+        var rot = Quaternion.Euler(0, 0, 0);
+        var obj = Instantiate(res, pos, rot, attacks.transform);
+        var attackController = obj.GetComponent<AttackController>();
+        attackController.transform.Rotate(0f, 0f, attackRadian * Mathf.Rad2Deg);
+        attackController.speed = attackType.attackSpeed;
+        attackController.maxDistance = attackType.attackDistance;
+        attackController.damage = attackType.attackDamage;
+        attackController.radian = attackRadian;
+    }
+
+    public void SpawnMessage(ClassesJSON.MessageJSON data)
     {
         var source = "[Global] ";
         var author = "<b>" + data.username + "</b>: ";
         var text = BadWords.FilterProfanity(data.message);
 
-        if (data.username == "")
+        if (messageList.Count >= maxMessages)
         {
-            ticker = text;
+            Destroy(messageList[0].obj.gameObject);
+            messageList.Remove(messageList[0]);
         }
-        else
-        {
-            if (messageList.Count >= maxMessages)
-            {
-                Destroy(messageList[0].obj.gameObject);
-                messageList.Remove(messageList[0]);
-            }
 
-            var res = Resources.Load<GameObject>("Message");
-            var obj = Instantiate(res, content.transform);
-            var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
-            var str = source + author + text;
+        var res = Resources.Load<GameObject>("Message");
+        var obj = Instantiate(res, content.transform);
+        var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
+        var str = source + author + text;
 
-            var messageObject = new ClassesJSON.MessageObject(str, obj);
-            tmp.text = str;
-            messageList.Add(messageObject);
-        }
+        var messageObject = new ClassesJSON.MessageObject(str, obj);
+        tmp.text = str;
+        messageList.Add(messageObject);
     }
 }

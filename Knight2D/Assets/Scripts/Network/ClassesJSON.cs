@@ -28,35 +28,33 @@ public class ClassesJSON : MonoBehaviour
     {
         public string token;
         public string username;
-        public string[] skillsArray;
-        public string[] itemsArray;
         public float positionX;
         public float positionY;
-        public int attackType;
-        public float attackRadian;
         public float health;
         public float mana;
         public float exp;
         public float gold;
         public float fame;
-        public float speed;
+        public string[] skillsArray;
+        public string[] itemsArray;
+        public int attackType;
+        public float attackRadian;
 
-        public PlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float exp, float gold, float fame, float speed)
+        public PlayerJSON(string token, string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float exp, float gold, float fame)
         {
             this.token = token;
             this.username = username;
             this.positionX = positionX;
             this.positionY = positionY;
-            this.attackType = attackType;
-            this.attackRadian = attackRadian;
             this.skillsArray = skillsArray;
             this.itemsArray = itemsArray;
+            this.attackType = attackType;
+            this.attackRadian = attackRadian;
             this.health = health;
             this.mana = mana;
             this.exp = exp;
             this.gold = gold;
             this.fame = fame;
-            this.speed = speed;
         }
     }
 
@@ -68,9 +66,8 @@ public class ClassesJSON : MonoBehaviour
         public int attackType;
         public float attackRadian;
         public string[] skillsArray;
-        public float speed;
 
-        public OtherPlayerJSON(string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray, float speed)
+        public OtherPlayerJSON(string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray)
         {
             this.username = username;
             this.positionX = positionX;
@@ -78,33 +75,34 @@ public class ClassesJSON : MonoBehaviour
             this.attackType = attackType;
             this.attackRadian = attackRadian;
             this.skillsArray = skillsArray;
-            this.speed = speed;
         }
     }
 
     public class EnemyJSON
     {
         public string enemyID;
-        public string target;
         public float positionX;
         public float positionY;
         public float health;
+        public float height;
         public float speed;
         public float maxHealth;
         public int attackType;
+        public float attackRadian;
         public float targetPositionX;
         public float targetPositionY;
 
-        public EnemyJSON(string enemyID, float positionX, float positionY, string target, float health, float speed, float maxHealth, int attackType, float targetPositionX, float targetPositionY)
+        public EnemyJSON(string enemyID, float positionX, float positionY, float health, float speed, float attackRadian, float maxHealth, int attackType, float targetPositionX, float targetPositionY, float height)
         {
             this.enemyID = enemyID;
             this.positionX = positionX;
             this.positionY = positionY;
-            this.target = target;
             this.health = health;
-            this.speed = speed;
             this.maxHealth = maxHealth;
+            this.height = height;
+            this.speed = speed;
             this.attackType = attackType;
+            this.attackRadian = attackRadian;
             this.targetPositionX = targetPositionX;
             this.targetPositionY = targetPositionY;
         }
@@ -147,6 +145,18 @@ public class ClassesJSON : MonoBehaviour
         {
             this.str = str;
             this.obj = obj;
+        }
+    }
+
+    public class EnemyHitObject
+    {
+        public string username;
+        public float damage;
+
+        public EnemyHitObject(string username, float damage)
+        {
+            this.username = username;
+            this.damage = damage;
         }
     }
 }

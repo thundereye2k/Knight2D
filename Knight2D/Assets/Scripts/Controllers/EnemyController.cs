@@ -5,32 +5,23 @@ public class EnemyController : MonoBehaviour
     private Animator myAnimator;
     private Vector2 lastMove;
     private GameObject healthBar;
-    private RectTransform targetCanvas;
-    private float height;
 
-    public float health { get; set; }
-    public float maxHealth { get; set; }
-    public string target { get; set; }
-    public float speed { get; set; }
-    public int attackType { get; set; }
+    public NetworkPlay networkPlay { get; set; }
     public Vector3 targetPosition { get; set; }
     public Vector3 serverPosition { get; set; }
+    public float health { get; set; }
+    public float maxHealth { get; set; }
+    public float speed { get; set; }
+    public float height { get; set; }
+    public float attackRadian { get; set; }
+    public int attackType { get; set; }
 
     void Start()
     {
         myAnimator = GetComponent<Animator>();
         targetPosition = transform.position;
-
-        var GUI = GameObject.FindGameObjectWithTag("GameController");
-        targetCanvas = GUI.GetComponent<RectTransform>();
-
-        var res = Resources.Load<GameObject>("HealthBar");
-        var pos = new Vector3(0, 0, 0);
-        var rot = Quaternion.Euler(0, 0, 0);
-        healthBar = Instantiate(res, pos, rot, GUI.transform);
-        healthBar.name = gameObject.name;
-
-        height = EnemyTypes.getEnemyType(1).height;
+        healthBar = networkPlay.SpawnHealthBar(gameObject);
+        height = 24f;
     }
 
     void Update()
@@ -85,12 +76,7 @@ public class EnemyController : MonoBehaviour
 
         #endregion
 
-        Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(transform.position);
-        Vector2 WorldObject_ScreenPosition = new Vector2(
-        ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-        ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + height);
-        healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
-        healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);
+        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth);
 
         if (health < 0f)
         {

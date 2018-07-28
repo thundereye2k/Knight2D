@@ -6,11 +6,14 @@ using System.Collections.Generic;
 
 public class NetworkPlay : GameHelper
 {
-    public float ping = 0f;
-
     private Holder holder;
     private SocketManager manager;
     private bool isPaused = false;
+    private float ping = 0f;
+    private List<float> pingList = new List<float>();
+
+    public float avgPing { get; private set; }
+    public float timer { get; private set; }
 
     void Awake()
     {
@@ -62,12 +65,27 @@ public class NetworkPlay : GameHelper
         manager.Socket.On("get-map", OnGetMap);
         manager.Socket.On(SocketIOEventTypes.Error, OnError);
 
+        timer = 0f;
+        ticker = "Welcome to Knight2D";
         CommandConnect();
     }
 
     void Update()
     {
-        ping = +Time.deltaTime;
+        ping += Time.deltaTime;
+        timer += Time.deltaTime;
+        pingList.Add(ping);
+        if (timer > 1f)
+        {
+            avgPing = ExpScale.GetAverage(pingList);
+            if (avgPing > 10f)
+            {
+                Debug.Log(manager);
+                //CommandDisconnect();
+            }
+            pingList.Clear();
+            timer = 0f;
+        }
     }
 
     #region Commands
@@ -81,7 +99,7 @@ public class NetworkPlay : GameHelper
 
     public void CommandMove(Vector3 position, int attackType, float attackRadian, string[] skillsArray, float health, float mana, string[] itemsArray, float speed, string[] jsonArray)
     {
-        var data = new ClassesJSON.PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsArray, health, mana, itemsArray, 0f, 0f, 0f, speed);
+        var data = new ClassesJSON.PlayerJSON(holder.token, holder.username, position.x, position.y, attackType, attackRadian, skillsArray, health, mana, itemsArray, 0f, 0f, 0f);
         var json = JsonUtility.ToJson(data);
         manager.Socket.Emit("player-move", json, jsonArray);
     }
@@ -113,7 +131,7 @@ public class NetworkPlay : GameHelper
         if (holder.username == data.username)
         {
             ping = 0f;
-            spawnPlayer(data, this);
+            SpawnPlayer(data, this);
         }
         else
         {
@@ -154,13 +172,15 @@ public class NetworkPlay : GameHelper
                 }
             }
 
-            if (!gameObj)
+            if (gameObj)
             {
-                spawnOtherPlayer(data);
+                UpdateOtherPlayer(gameObj, data);
+            }
+            else
+            {
+                //spawnOtherPlayer(data);
                 deletePlayers.Remove(gameObj);
             }
-
-            updateOtherPlayer(gameObj, data);
         }
 
         foreach (SimpleJSON.JSONNode n in enemyN)
@@ -177,13 +197,15 @@ public class NetworkPlay : GameHelper
                 }
             }
 
-            if (!gameObj)
+            if (gameObj)
             {
-                //spawnEnemy(data);
+                UpdateEnemy(gameObj, data);
+            }
+            else
+            {
+                SpawnEnemy(data, this);
                 deleteEnemies.Remove(gameObj);
             }
-
-            updateEnemy(gameObj, data);
         }
 
         foreach (GameObject player in allPlayers)
@@ -220,7 +242,14 @@ public class NetworkPlay : GameHelper
         var json = (string)args[0];
         var data = JsonUtility.FromJson<ClassesJSON.MessageJSON>(json);
         Debug.Log(json);
-        spawnMessage(data);
+        if (data.username == "")
+        {
+            ticker = data.message;
+        }
+        else
+        {
+            SpawnMessage(data);
+        }
     }
 
     void OnError(Socket socket, Packet packet, params object[] args)

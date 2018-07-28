@@ -7,29 +7,33 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigidbody;
     private Animator myAnimator;
     private GameObject healthBar;
-    private OverlayController overlayController;
-    private float timerAttack = 0f;
-    //private float timerHit = 0f;
-    private float timerNetwork = 0f;
     private float updatesPerSecond = 10f;
     private float baseSpeed = 100f;
     private float maxHealth = 100f;
     private float maxMana = 100f;
     //private bool wasHit = false;
     //private bool canHit = true;
+    private float dpsLast = 0f;
+    private float dpsTimer = 0f;
+    private float attackTimer = 0f;
+    private float networkTimer = 0f;
+    //private float hitTimer = 0f;
     private Vector2 lastMove = new Vector2(0f, 0f);
     private Vector3 moveVelocity = new Vector3(0f, 0f, 0f);
     private List<string> jsonList = new List<string>();
+    public List<float> dpsList = new List<float>();
 
     public NetworkPlay networkPlay { get; set; }
+    public OverlayController overlayController { get; set; }
     public float health { get; set; }
     public float mana { get; set; }
-    public float gold { get; set; }
-    public float fame { get; set; }
     public float exp { get; set; }
-    public bool pause { get; set; }
+    public float fame { get; set; }
+    public float gold { get; set; }
     public string[] itemsArray { get; set; }
     public string[] skillsArray { get; set; }
+    public float dps { get; private set; }
+    //public bool pause { get; private set; }
 
 
 #if MOBILE_INPUT
@@ -38,17 +42,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        overlayController = GameObject.FindGameObjectWithTag("Overlay").GetComponent<OverlayController>();
-        overlayController.player = gameObject;
-        if (!overlayController)
-        {
-            networkPlay.CommandDisconnect();
-        }
+        overlayController.playerController = this;
         myRigidbody = GetComponent<Rigidbody>();
         myAnimator = GetComponent<Animator>();
-        pause = false;
-
-        healthBar = networkPlay.spawnHealthBar(gameObject);
+        healthBar = networkPlay.SpawnHealthBar(gameObject);
+        //pause = false;
 
 #if MOBILE_INPUT
         //joystickMovement = GameObject.FindGameObjectWithTag("JoystickMove").GetComponent<FloatingJoystick>();
@@ -106,7 +104,7 @@ public class PlayerController : MonoBehaviour
         // TODO: Get attacks
         var isAttacking = false;
         var attackRadian = 0f;
-        var attackType = AttackTypes.EnumAttacks.Fireball;
+        var attackType = AttackTypes.EnumAttacks.None;
 
 #if MOBILE_INPUT
         //isAttacking = joystickAttack.Horizontal != 0f || joystickAttack.Vertical != 0f;
@@ -117,16 +115,27 @@ public class PlayerController : MonoBehaviour
         attackRadian = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
 
 #endif
-        timerAttack = timerAttack > 1f ? 1f : timerAttack + Time.deltaTime;
+        attackTimer = attackTimer > 1f ? 1f : attackTimer + Time.deltaTime;
         if (isAttacking)
         {
-            var attack = AttackTypes.getAttackType(attackType);
+            attackType = AttackTypes.EnumAttacks.Fireball;
+            var attack = AttackTypes.GetAttackType(attackType);
             var tick = 1f / attack.attacksPerSecond;
-            if (timerAttack > tick)
+            if (attackTimer > tick)
             {
-                timerAttack = 0f;
-                networkPlay.spawnAttack(gameObject, attack, attackRadian);
+                attackTimer = 0f;
+                networkPlay.SpawnAttack(gameObject, this, attack, attackRadian);
             }
+        }
+
+        dpsTimer += Time.deltaTime;
+        if (dpsTimer > 1f)
+        {
+            var totaldps = ExpScale.GetTotal(dpsList);
+            dps = (totaldps + dpsLast) / 2f;
+            dpsLast = dps < 1f ? 0f : dps;
+            dpsList.Clear();
+            dpsTimer = 0f;
         }
 
         #endregion
@@ -165,11 +174,11 @@ public class PlayerController : MonoBehaviour
 
         if (!canHit)
         {
-            timerHit += Time.deltaTime;
+            hitTimer += Time.deltaTime;
 
-            if (timerHit > 1f)
+            if (hitTimer > 1f)
             {
-                timerHit = 0f;
+                hitTimer = 0f;
                 canHit = true;
                 var sr = GetComponent<SpriteRenderer>();
                 sr.color = new Color(1f, 1f, 1f, 1f);
@@ -177,28 +186,29 @@ public class PlayerController : MonoBehaviour
         }
         */
 
-        networkPlay.updateHealthBar(gameObject, healthBar, health, maxHealth);
+        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth);
 
         #endregion
 
-        #region Network
+        #region Timers
 
-        timerNetwork += Time.deltaTime;
+        networkTimer += Time.deltaTime;
         var networkTick = 1f / updatesPerSecond;
-        if (timerNetwork > networkTick)
+
+        if (networkTimer > networkTick)
         {
             networkPlay.CommandMove(transform.position, (int)attackType, attackRadian, skillsArray, health, mana, itemsArray, speed, jsonList.ToArray());
             jsonList.Clear();
-            timerNetwork = 0f;
+            networkTimer = 0f;
         }
 
         #endregion
     }
 
-    public void enemyHit(AttackController.EnemyHit hit)
+    public void EnemyHit(ClassesJSON.EnemyHitObject hit)
     {
         var json = JsonUtility.ToJson(hit);
         jsonList.Add(json);
-        overlayController.dpsList.Add(hit.damage);
+        dpsList.Add(hit.damage);
     }
 }

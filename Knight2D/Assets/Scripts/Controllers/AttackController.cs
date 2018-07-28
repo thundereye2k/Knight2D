@@ -3,23 +3,22 @@
 public class AttackController : MonoBehaviour
 {
     private Vector3 targetPosition;
-    private GameObject source;
     private bool hit = false;
 
-    public float Radian { get; set; }
-    public float MaxDistance { get; set; }
-    public float Speed { get; set; }
-    public float Damage { get; set; }
-    public GameObject Source { get; set; }
+    public float radian { get; set; }
+    public float maxDistance { get; set; }
+    public float speed { get; set; }
+    public float damage { get; set; }
+    public PlayerController playerController { get; set; }
 
     void Start()
     {
-        targetPosition = new Vector3((Mathf.Cos(Radian) * MaxDistance) + transform.position.x, (Mathf.Sin(Radian) * MaxDistance) + transform.position.y, 0f);
+        targetPosition = new Vector3((Mathf.Cos(radian) * maxDistance) + transform.position.x, (Mathf.Sin(radian) * maxDistance) + transform.position.y, 0f);
     }
 
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Speed);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
 
         if (transform.position == targetPosition)
         {
@@ -37,31 +36,15 @@ public class AttackController : MonoBehaviour
         if (coll.gameObject.tag == "Enemy")
         {
             hit = true;
-            if (Source.tag == "Player")
+            if (playerController)
             {
-                var playerController = Source.GetComponent<PlayerController>();
-                if (playerController)
-                    playerController.enemyHit(new EnemyHit(coll.gameObject.name, Damage));
-                else
-                    Debug.LogError("No playerController");
+                playerController.EnemyHit(new ClassesJSON.EnemyHitObject(coll.gameObject.name, damage));
             }
         }
 
         if (coll.gameObject.tag == "Object")
         {
             hit = true;
-        }
-    }
-
-    public class EnemyHit
-    {
-        public string username;
-        public float damage;
-
-        public EnemyHit(string username, float damage)
-        {
-            this.username = username;
-            this.damage = damage;
         }
     }
 }

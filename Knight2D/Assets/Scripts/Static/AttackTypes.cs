@@ -1,6 +1,6 @@
 ﻿public class AttackTypes
 {
-    public enum EnumAttacks { Fireball }
+    public enum EnumAttacks { None, Fireball }
 
     public float attackSpeed;
     public float attacksPerSecond;
@@ -17,7 +17,7 @@
         this.attackName = attackName;
     }
 
-    public static AttackTypes getAttackType(EnumAttacks attackType)
+    public static AttackTypes GetAttackType(EnumAttacks attackType)
     {
         AttackTypes attack;
         switch (attackType)
