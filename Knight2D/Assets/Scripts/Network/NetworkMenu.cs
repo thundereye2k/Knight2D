@@ -119,7 +119,7 @@ public class NetworkMenu : MonoBehaviour
             case "login":
                 holder.token = data.token;
                 manager.Close();
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene("Game");
                 break;
 
             case "register":

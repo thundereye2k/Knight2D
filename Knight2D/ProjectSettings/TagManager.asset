@@ -12,6 +12,8 @@ TagManager:
   - Map
   - Object
   - Overlay
+  - HealthBar
+  - DummyCamera
   layers:
   - Default
   - TransparentFX

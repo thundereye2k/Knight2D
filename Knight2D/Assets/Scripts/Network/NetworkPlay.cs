@@ -154,49 +154,31 @@ public class NetworkPlay : GameHelper
 
         foreach (SimpleJSON.JSONNode n in playerN)
         {
-            var data = JsonUtility.FromJson<ClassesJSON.OtherPlayerJSON>(n);
+            var data = JsonUtility.FromJson<ClassesJSON.PlayerJSON>(n);
             if (holder.username == data.username)
             {
+                UpdatePlayer(data);
                 ping = 0f;
                 continue;
             }
 
-            GameObject gameObj = null;
-            foreach (GameObject player in allPlayers)
-            {
-                if (player.name == data.username)
-                {
-                    gameObj = player;
-                    deletePlayers.Remove(gameObj);
-                    break;
-                }
-            }
-
+            var gameObj = allPlayers.Find(player => player.name == data.username);
+            deleteEnemies.Remove(gameObj);
             if (gameObj)
             {
                 UpdateOtherPlayer(gameObj, data);
             }
             else
             {
-                //spawnOtherPlayer(data);
-                deletePlayers.Remove(gameObj);
+                //spawnOtherPlayer(data, this);
             }
         }
 
         foreach (SimpleJSON.JSONNode n in enemyN)
         {
             var data = JsonUtility.FromJson<ClassesJSON.EnemyJSON>(n);
-            GameObject gameObj = null;
-            foreach (GameObject enemy in allEnemies)
-            {
-                if (enemy.name == data.enemyID)
-                {
-                    gameObj = enemy;
-                    deleteEnemies.Remove(gameObj);
-                    break;
-                }
-            }
-
+            var gameObj = allEnemies.Find(enemy => enemy.name == data.enemyID);
+            deleteEnemies.Remove(gameObj);
             if (gameObj)
             {
                 UpdateEnemy(gameObj, data);
@@ -204,17 +186,20 @@ public class NetworkPlay : GameHelper
             else
             {
                 SpawnEnemy(data, this);
-                deleteEnemies.Remove(gameObj);
             }
         }
 
-        foreach (GameObject player in allPlayers)
+        foreach (GameObject player in deletePlayers)
         {
+            //var otherPlayerController = player.GetComponent<OtherPlayerController>();
+            //Destroy(otherPlayerController.healthBar);
             Destroy(player);
         }
 
-        foreach (GameObject enemy in allEnemies)
+        foreach (GameObject enemy in deleteEnemies)
         {
+            var enemyController = enemy.GetComponent<EnemyController>();
+            Destroy(enemyController.healthBar);
             Destroy(enemy);
         }
     }

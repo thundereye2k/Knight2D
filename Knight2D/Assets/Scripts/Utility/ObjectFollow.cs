@@ -2,17 +2,13 @@
 
 public class ObjectFollow : MonoBehaviour
 {
-    public GameObject obj;    
+    public GameObject obj;
 
-    void Start()
-    {
-        if (!obj)
-            obj = transform.parent.gameObject;
-    }
-
-    void Update()
+    void LateUpdate()
     {
         if (obj)
+        {
             transform.position = obj.transform.position;
+        }
     }
 }

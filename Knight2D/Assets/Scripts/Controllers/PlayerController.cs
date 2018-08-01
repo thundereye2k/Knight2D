@@ -7,8 +7,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigidbody;
     private Animator myAnimator;
     private GameObject healthBar;
+    private float height = -40;
     private float updatesPerSecond = 10f;
-    private float baseSpeed = 200f;
+    private float baseSpeed = 150f;
     private float maxHealth = 100f;
     private float maxMana = 100f;
     //private bool wasHit = false;
@@ -186,7 +187,7 @@ public class PlayerController : MonoBehaviour
         }
         */
 
-        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth);
+        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth, height);
 
         #endregion
 

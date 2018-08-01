@@ -7,12 +7,15 @@ public class OtherPlayerController : MonoBehaviour
     private GameObject GUI;
     private RectTransform targetCanvas;
     private float attackTimer = 0f;
-    private float baseSpeed = 200f;
+    private float baseSpeed = 150f;
 
+    public GameObject healthBar { get; set; }
     public Vector3 targetPosition { get; set; }
     public int attackType { get; set; }
     public float attackRadian { get; set; }
     public float speed { get; set; }
+    public float height { get; set; }
+
     public string[] skillsArray { get; set; }
 
     void Start()

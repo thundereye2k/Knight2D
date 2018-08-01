@@ -12,7 +12,8 @@ public class GameHelper : MonoBehaviour
     public GameObject avatars;
     public GameObject content;
     public RectTransform targetCanvas;
-    public CinemachineVirtualCamera myCamera;
+    public CinemachineVirtualCamera dummyCamera;
+    public CameraOrbit orbitCamera;
     public OverlayController overlayController;
 
     private int maxMessages = 100;
@@ -27,7 +28,10 @@ public class GameHelper : MonoBehaviour
         var res = Resources.Load<GameObject>("Player");
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.username;
-        myCamera.Follow = obj.transform;
+        dummyCamera.Follow = obj.transform;
+        orbitCamera.target = obj.transform;
+        //orbitCamera._cameraOffset = orbitCamera.gameObject.transform.position - obj.transform.position;
+        orbitCamera.enableRotation = true;
 
         var playerController = obj.GetComponent<PlayerController>();
         playerController.networkPlay = networkPlay;
@@ -50,7 +54,7 @@ public class GameHelper : MonoBehaviour
         // TODO: Add what server changes for the player
     }
 
-    public void SpawnOtherPlayer(ClassesJSON.OtherPlayerJSON data)
+    public void SpawnOtherPlayer(ClassesJSON.PlayerJSON data)
     {
         var res = Resources.Load<GameObject>("Avatar");
         var pos = new Vector3(data.positionX, data.positionY, 0f);
@@ -64,9 +68,14 @@ public class GameHelper : MonoBehaviour
         otherPlayerController.attackType = data.attackType;
         otherPlayerController.attackRadian = data.attackRadian;
         otherPlayerController.skillsArray = data.skillsArray;
+        //otherPlayerController.exp = data.exp;
+        //otherPlayerController.fame = data.fame;
+        //otherPlayerController.gold = data.gold;
+        //otherPlayerController.health = data.health;
+        //otherPlayerController.mana = data.mana;
     }
 
-    public void UpdateOtherPlayer(GameObject gameObj, ClassesJSON.OtherPlayerJSON data)
+    public void UpdateOtherPlayer(GameObject gameObj, ClassesJSON.PlayerJSON data)
     {
         var otherPlayerController = gameObj.GetComponent<OtherPlayerController>();
         otherPlayerController.targetPosition = new Vector3(data.positionX, data.positionY, 0f);
@@ -74,6 +83,11 @@ public class GameHelper : MonoBehaviour
         otherPlayerController.attackType = data.attackType;
         otherPlayerController.attackRadian = data.attackRadian;
         otherPlayerController.skillsArray = data.skillsArray;
+        //otherPlayerController.exp = data.exp;
+        //otherPlayerController.fame = data.fame;
+        //otherPlayerController.gold = data.gold;
+        //otherPlayerController.health = data.health;
+        //otherPlayerController.mana = data.mana;
     }
 
     public void SpawnEnemy(ClassesJSON.EnemyJSON data, NetworkPlay networkPlay)
@@ -111,7 +125,12 @@ public class GameHelper : MonoBehaviour
 
     public GameObject SpawnHealthBar(GameObject gameObj)
     {
-        var res = Resources.Load<GameObject>("HealthBar");
+        var str = "HealthBar";
+        if (gameObj.tag == "Enemy")
+        {
+            str = "EnemyHealthBar";
+        }
+        var res = Resources.Load<GameObject>(str);
         var pos = new Vector3(0, 0, 0);
         var rot = Quaternion.Euler(0, 0, 0);
         var healthBar = Instantiate(res, pos, rot, ingame.transform);
@@ -119,12 +138,12 @@ public class GameHelper : MonoBehaviour
         return healthBar;
     }
 
-    public void UpdateHealthBar(GameObject gameObj, GameObject healthBar, float health, float maxHealth)
+    public void UpdateHealthBar(GameObject gameObj, GameObject healthBar, float health, float maxHealth, float height)
     {
         var ViewportPosition = Camera.main.WorldToViewportPoint(gameObj.transform.position);
         var WorldObject_ScreenPosition = new Vector2(
             ((ViewportPosition.x * targetCanvas.sizeDelta.x) - (targetCanvas.sizeDelta.x * 0.5f)),
-            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) - 48f);
+            ((ViewportPosition.y * targetCanvas.sizeDelta.y) - (targetCanvas.sizeDelta.y * 0.5f)) + height);
 
         healthBar.GetComponent<RectTransform>().anchoredPosition = WorldObject_ScreenPosition;
         healthBar.GetComponentInChildren<UltimateStatusBar>().UpdateStatus(health, maxHealth);

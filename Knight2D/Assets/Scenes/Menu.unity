@@ -857,7 +857,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289650393
+    rgba: 4290243043
   m_fontColor: {r: 0.8901961, g: 0.9137255, b: 0.7176471, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -924,11 +924,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -2975,11 +2975,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -3992,7 +3992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000031239702, y: 174.66}
+  m_AnchoredPosition: {x: 0, y: 275}
   m_SizeDelta: {x: 516, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &969448618
@@ -4160,11 +4160,11 @@ RectTransform:
   - {fileID: 1609457723}
   - {fileID: 812987453}
   m_Father: {fileID: 1091547144}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000090006, y: 277.99506}
+  m_AnchoredPosition: {x: 0, y: 175}
   m_SizeDelta: {x: 516, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1002263241
@@ -4557,8 +4557,8 @@ RectTransform:
   - {fileID: 1767370646}
   - {fileID: 1486465132}
   - {fileID: 969448617}
-  - {fileID: 2024261839}
   - {fileID: 1002263240}
+  - {fileID: 2024261839}
   - {fileID: 1170560559}
   - {fileID: 149160593}
   - {fileID: 799611481}
@@ -4713,7 +4713,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000088459696, y: -32.00004}
+  m_AnchoredPosition: {x: 0, y: -25}
   m_SizeDelta: {x: 516, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1170560560
@@ -5077,7 +5077,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2136367734
+    rgba: 4284180348
   m_fontColor: {r: 0.4862745, g: 0.40392157, b: 0.35686275, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -5144,11 +5144,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -5696,7 +5696,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2136367734
+    rgba: 4284180348
   m_fontColor: {r: 0.4862745, g: 0.40392157, b: 0.35686275, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -5763,11 +5763,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -5850,7 +5850,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285435041
+    rgba: 4286949569
   m_fontColor: {r: 0.75686276, g: 0.65882355, b: 0.52156866, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -5917,11 +5917,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -6232,7 +6232,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289782235
+    rgba: 4290243043
   m_fontColor: {r: 0.8901961, g: 0.9137255, b: 0.7176471, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -6299,11 +6299,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -6994,7 +6994,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285435041
+    rgba: 4286949569
   m_fontColor: {r: 0.75686276, g: 0.65882355, b: 0.52156866, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -7061,11 +7061,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -7750,7 +7750,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285435041
+    rgba: 4286949569
   m_fontColor: {r: 0.75686276, g: 0.65882355, b: 0.52156866, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -7817,11 +7817,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -8131,11 +8131,11 @@ MonoBehaviour:
     lineCount: 0
     pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -8339,7 +8339,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2136367734
+    rgba: 4284180348
   m_fontColor: {r: 0.4862745, g: 0.40392157, b: 0.35686275, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -8406,11 +8406,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -8946,7 +8946,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285435041
+    rgba: 4286949569
   m_fontColor: {r: 0.75686276, g: 0.65882355, b: 0.52156866, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -9013,11 +9013,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -9296,7 +9296,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2136367734
+    rgba: 4284180348
   m_fontColor: {r: 0.4862745, g: 0.40392157, b: 0.35686275, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
@@ -9363,11 +9363,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -9413,16 +9413,16 @@ RectTransform:
   m_GameObject: {fileID: 2024261838}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99999255, y: 0.99999255, z: 1.0000073}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 386368186}
   - {fileID: 1182649308}
   m_Father: {fileID: 1091547144}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 71.33}
+  m_AnchoredPosition: {x: 0, y: 75}
   m_SizeDelta: {x: 516, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2024261840

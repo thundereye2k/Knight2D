@@ -58,26 +58,6 @@ public class ClassesJSON : MonoBehaviour
         }
     }
 
-    public class OtherPlayerJSON
-    {
-        public string username;
-        public float positionX;
-        public float positionY;
-        public int attackType;
-        public float attackRadian;
-        public string[] skillsArray;
-
-        public OtherPlayerJSON(string username, float positionX, float positionY, int attackType, float attackRadian, string[] skillsArray)
-        {
-            this.username = username;
-            this.positionX = positionX;
-            this.positionY = positionY;
-            this.attackType = attackType;
-            this.attackRadian = attackRadian;
-            this.skillsArray = skillsArray;
-        }
-    }
-
     public class EnemyJSON
     {
         public string enemyID;

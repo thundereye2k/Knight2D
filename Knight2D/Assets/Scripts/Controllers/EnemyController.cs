@@ -4,9 +4,9 @@ public class EnemyController : MonoBehaviour
 {
     private Animator myAnimator;
     private Vector2 lastMove;
-    private GameObject healthBar;
 
     public NetworkPlay networkPlay { get; set; }
+    public GameObject healthBar { get; set; }
     public Vector3 targetPosition { get; set; }
     public Vector3 serverPosition { get; set; }
     public float health { get; set; }
@@ -61,6 +61,7 @@ public class EnemyController : MonoBehaviour
             lastMove.y = moveV;
         }
 
+        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth, height);
         Debug.DrawLine(transform.position, targetPosition, Color.black);
         Debug.DrawLine(transform.position, serverPosition, Color.red);
 
@@ -75,13 +76,5 @@ public class EnemyController : MonoBehaviour
         myAnimator.SetFloat("LastMoveY", lastMove.y);
 
         #endregion
-
-        networkPlay.UpdateHealthBar(gameObject, healthBar, health, maxHealth);
-
-        if (health < 0f)
-        {
-            Destroy(healthBar);
-            Destroy(gameObject);
-        }
     }
 }
