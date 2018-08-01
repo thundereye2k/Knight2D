@@ -12,8 +12,8 @@ public class GameHelper : MonoBehaviour
     public GameObject avatars;
     public GameObject content;
     public RectTransform targetCanvas;
-    public CinemachineVirtualCamera dummyCamera;
-    public CameraOrbit orbitCamera;
+    public CinemachineVirtualCamera cameraCM;
+    //public CameraOrbit cameraOrbit;
     public OverlayController overlayController;
 
     private int maxMessages = 100;
@@ -28,10 +28,10 @@ public class GameHelper : MonoBehaviour
         var res = Resources.Load<GameObject>("Player");
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.username;
-        dummyCamera.Follow = obj.transform;
-        orbitCamera.target = obj.transform;
-        //orbitCamera._cameraOffset = orbitCamera.gameObject.transform.position - obj.transform.position;
-        orbitCamera.enableRotation = true;
+        cameraCM.Follow = obj.transform;
+        //cameraOrbit.target = obj.transform;
+        //cameraOrbit._cameraOffset = cameraOrbit.gameObject.transform.position - obj.transform.position;
+        //cameraOrbit.enableRotation = true;
 
         var playerController = obj.GetComponent<PlayerController>();
         playerController.networkPlay = networkPlay;

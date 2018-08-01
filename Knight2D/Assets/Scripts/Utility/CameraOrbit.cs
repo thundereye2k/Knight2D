@@ -23,11 +23,12 @@ public class CameraOrbit : MonoBehaviour
         // Rotating camera with RMB dragging on PC.
         if (enableRotation && (Input.GetMouseButton(1)))
         {
-            if (Input.GetAxis("Mouse X") != 0f)
+            var inputMouseX = Input.GetAxis("Mouse X");
+            if (inputMouseX != 0f)
             {
-                transform.RotateAround(target.transform.position, Vector3.forward, Input.GetAxis("Mouse X") * rotationSpeedMouse);
+                transform.RotateAround(target.transform.position, Vector3.forward, inputMouseX * rotationSpeedMouse);
             }
-            transform.LookAt(target);
+            //transform.LookAt(target);
         }
 
 #endif

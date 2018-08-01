@@ -13,7 +13,6 @@ TagManager:
   - Object
   - Overlay
   - HealthBar
-  - DummyCamera
   layers:
   - Default
   - TransparentFX
