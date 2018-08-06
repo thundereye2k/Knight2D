@@ -2786,7 +2786,7 @@ GameObject:
   - component: {fileID: 271238255}
   m_Layer: 0
   m_Name: DummyCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2803,7 +2803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
+  m_ShowCameraFrustum: 0
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
@@ -2838,8 +2838,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 1000
+  near clip plane: 0.01
+  far clip plane: 5000
   field of view: 40
   orthographic: 1
   orthographic size: 250
@@ -2866,7 +2866,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 271238254}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalPosition: {x: 0, y: 83.33334, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2115389921}
@@ -5379,8 +5379,8 @@ MonoBehaviour:
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 250
-    NearClipPlane: 0.1
-    FarClipPlane: 1000
+    NearClipPlane: 0.01
+    FarClipPlane: 5000
     Dutch: 0
   m_ComponentOwner: {fileID: 1301407683}
 --- !u!4 &556218416
@@ -5390,7 +5390,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 556218414}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalPosition: {x: 0, y: 83.33334, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1301407683}
@@ -5928,11 +5928,11 @@ GameObject:
   - component: {fileID: 616794929}
   m_Layer: 0
   m_Name: OrbitCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &616794924
 Transform:
   m_ObjectHideFlags: 0
@@ -5988,8 +5988,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 2000
+  near clip plane: 0
+  far clip plane: 5000
   field of view: 40
   orthographic: 1
   orthographic size: 250
@@ -6020,7 +6020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableRotation: 1
-  target: {fileID: 0}
+  target: {fileID: 271238258}
   rotationSpeedMouse: 5
   cameraOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &629607216
@@ -6272,7 +6272,6 @@ MonoBehaviour:
   content: {fileID: 793898229}
   targetCanvas: {fileID: 699865526}
   cameraCM: {fileID: 556218415}
-  cameraOrbit: {fileID: 616794929}
   overlayController: {fileID: 699865527}
 --- !u!1 &646197304
 GameObject:
@@ -12472,8 +12471,8 @@ MonoBehaviour:
   m_YDamping: 1
   m_ZDamping: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.5
-  m_CameraDistance: 100
+  m_ScreenY: 0.6666667
+  m_CameraDistance: 1000
   m_DeadZoneWidth: 0.1
   m_DeadZoneHeight: 0.1
   m_DeadZoneDepth: 0
@@ -19021,7 +19020,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2090270654}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalPosition: {x: 0, y: 0, z: -1000}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2115389921}
@@ -19045,7 +19044,7 @@ Camera:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2090270654}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -19055,8 +19054,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 1000
+  near clip plane: 0.01
+  far clip plane: 5000
   field of view: 60
   orthographic: 1
   orthographic size: 1000
