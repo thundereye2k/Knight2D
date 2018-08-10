@@ -13,7 +13,7 @@ public class GameHelper : MonoBehaviour
     public GameObject content;
     public RectTransform targetCanvas;
     public CinemachineVirtualCamera cameraCM;
-    //public CameraOrbit cameraOrbit;
+    public CameraOrbit cameraOrbit;
     public OverlayController overlayController;
 
     private int maxMessages = 100;
@@ -29,9 +29,8 @@ public class GameHelper : MonoBehaviour
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.username;
         cameraCM.Follow = obj.transform;
-        //cameraOrbit.target = obj.transform;
-        //cameraOrbit._cameraOffset = cameraOrbit.gameObject.transform.position - obj.transform.position;
-        //cameraOrbit.enableRotation = true;
+        cameraOrbit.target = obj.transform;
+        cameraOrbit.enableRotation = true;
 
         var playerController = obj.GetComponent<PlayerController>();
         playerController.networkPlay = networkPlay;
@@ -74,7 +73,7 @@ public class GameHelper : MonoBehaviour
         //otherPlayerController.health = data.health;
         //otherPlayerController.mana = data.mana;
     }
-
+    
     public void UpdateOtherPlayer(GameObject gameObj, ClassesJSON.PlayerJSON data)
     {
         var otherPlayerController = gameObj.GetComponent<OtherPlayerController>();

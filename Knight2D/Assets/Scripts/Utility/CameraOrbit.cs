@@ -6,9 +6,7 @@ public class CameraOrbit : MonoBehaviour
 {
     public bool enableRotation = true;
     public Transform target;
-    private float smoothness = 0.5f;
-    public float rotationSpeedMouse = 5;
-    public Vector3 cameraOffset;
+    public float rotationSpeedMouse;
     //public float zoomSpeedMouse = 10;
     //private float _zoomAmountMouse = 0;
     //private float _maxToClampMouse = 10;
@@ -19,22 +17,22 @@ public class CameraOrbit : MonoBehaviour
     {
 
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
-
-        // Rotating camera with RMB dragging on PC.
         if (enableRotation && (Input.GetMouseButton(1)))
         {
             var inputMouseX = Input.GetAxis("Mouse X");
             if (inputMouseX != 0f)
             {
-                transform.RotateAround(target.transform.position, Vector3.forward, inputMouseX * rotationSpeedMouse);
+                //transform.RotateAround(target.position, Vector3.forward, inputMouseX * rotationSpeedMouse);
+                transform.Rotate(Vector3.forward, inputMouseX * rotationSpeedMouse);
             }
-            //transform.LookAt(target);
+        }
+        else
+        {
+            transform.Rotate(Vector3.forward, 0f);
         }
 
 #endif
 
-
-        // Rotating camera with touch dragging on mobiles.
 #if UNITY_ANDROID || UNITY_IOS
 
                 if (enableRotation && (Input.touchCount==1))

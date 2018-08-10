@@ -72,6 +72,8 @@ public class NetworkPlay : GameHelper
 
     void Update()
     {
+        cameraCM.gameObject.transform.rotation = Camera.main.transform.rotation;
+        
         ping += Time.deltaTime;
         timer += Time.deltaTime;
         pingList.Add(ping);
