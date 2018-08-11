@@ -100,7 +100,7 @@ MonoBehaviour:
     cameraTransform: {fileID: 0}
   statusBarIcon: {fileID: 0}
   statusBarText: {fileID: 0}
-  updateVisibility: 2
+  updateVisibility: 1
   updateUsing: 0
   idleSeconds: 2
   enableDuration: 1
@@ -155,7 +155,7 @@ MonoBehaviour:
     fillConstraintMax: 1
     keepVisible: 1
     triggerValue: 0.25
-  statusBarName: PlayerHealth
+  statusBarName: 
 --- !u!114 &114854796275911446
 MonoBehaviour:
   m_ObjectHideFlags: 1

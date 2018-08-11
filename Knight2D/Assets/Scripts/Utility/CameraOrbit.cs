@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraOrbit : MonoBehaviour
 {
     public bool enableRotation = true;
-    public Transform target;
+    public Transform targetTransform;
     public float rotationSpeedMouse;
     //public float zoomSpeedMouse = 10;
     //private float _zoomAmountMouse = 0;
@@ -17,18 +17,13 @@ public class CameraOrbit : MonoBehaviour
     {
 
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+
         if (enableRotation && (Input.GetMouseButton(1)))
         {
             var inputMouseX = Input.GetAxis("Mouse X");
-            if (inputMouseX != 0f)
-            {
-                //transform.RotateAround(target.position, Vector3.forward, inputMouseX * rotationSpeedMouse);
-                transform.Rotate(Vector3.forward, inputMouseX * rotationSpeedMouse);
-            }
-        }
-        else
-        {
-            transform.Rotate(Vector3.forward, 0f);
+            //transform.RotateAround(target.position, Vector3.forward, inputMouseX * rotationSpeedMouse);
+            //transform.Rotate(Vector3.forward, inputMouseX * rotationSpeedMouse);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, target,  Time.deltaTime * smooth);
         }
 
 #endif

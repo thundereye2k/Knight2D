@@ -29,7 +29,7 @@ public class GameHelper : MonoBehaviour
         var obj = Instantiate(res, pos, rot, avatars.transform);
         obj.name = data.username;
         cameraCM.Follow = obj.transform;
-        cameraOrbit.target = obj.transform;
+        cameraOrbit.targetTransform = obj.transform;
         cameraOrbit.enableRotation = true;
 
         var playerController = obj.GetComponent<PlayerController>();
@@ -73,7 +73,7 @@ public class GameHelper : MonoBehaviour
         //otherPlayerController.health = data.health;
         //otherPlayerController.mana = data.mana;
     }
-    
+
     public void UpdateOtherPlayer(GameObject gameObj, ClassesJSON.PlayerJSON data)
     {
         var otherPlayerController = gameObj.GetComponent<OtherPlayerController>();

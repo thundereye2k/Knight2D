@@ -95,8 +95,9 @@ public class PlayerController : MonoBehaviour
             speed = 0f;
         }
 
+        var angle = Camera.main.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         var walkRadian = Mathf.Atan2(moveV, moveH);
-        moveVelocity = new Vector3(Mathf.Cos(walkRadian) * speed, Mathf.Sin(walkRadian) * speed, 0f);
+        moveVelocity = new Vector3(Mathf.Cos(walkRadian + angle) * speed, Mathf.Sin(walkRadian + angle) * speed, 0f);
 
         #endregion
 
